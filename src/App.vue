@@ -1,6 +1,22 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
+import { ref } from 'vue';
 import HelloWorld from "@/components/HelloWorld.vue";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+
+const authInstance = getAuth();
+
+
+const user = ref(authInstance.currentUser)
+
+onAuthStateChanged(authInstance, _user => {
+  console.log(_user)
+  if (user) {
+      user.value = _user
+  }
+});
+
 </script>
 
 <template>
@@ -18,9 +34,10 @@ import HelloWorld from "@/components/HelloWorld.vue";
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/login">Ingresar</RouterLink>
-        <RouterLink to="/register">Registrarme</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink v-if="user==null" to="/login">Ingresar</RouterLink>
+        <RouterLink v-if="user==null" to="/register">Registrarme</RouterLink>
+        <RouterLink v-if="user==null" to="/about">About</RouterLink>
+        <RouterLink v-if="user" to="/dashboard">Dashboard</RouterLink>
       </nav>
     </div>
   </header>
