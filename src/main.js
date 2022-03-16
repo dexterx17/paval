@@ -19,7 +19,7 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 
-
+import './index.css'
 
 const app = createApp(App);
 
