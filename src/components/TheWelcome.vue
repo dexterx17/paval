@@ -5,10 +5,20 @@ import ToolingIcon from "./icons/IconTooling.vue";
 import EcosystemIcon from "./icons/IconEcosystem.vue";
 import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
+
+import {useStore} from "vuex";
+
+ const store = useStore();
+
+ console.log('store');
+ console.log(store);
+ console.log(store.state);
+ console.log(store.state.authStore);
+
 </script>
 
 <template>
-
+  <h1>{{ this.$store.state.authStore.test }}</h1>
   <WelcomeItem>
     <template #icon>
       <EcosystemIcon />

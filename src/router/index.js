@@ -30,9 +30,20 @@ const router = createRouter({
     {
       path: "/dashboard",
       name: "dashboard",
+      meta: {
+        requiresAuth: true
+      },
       component: () => import("../views/game/Dashboard.vue"),
     },
-  ],
+  ]
+});
+
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  if (requiresAuth && !currentUser) next('login');
+  else if (!requiresAuth && currentUser) next('dashboard');
+  else next();
 });
 
 export default router;

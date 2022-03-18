@@ -24,8 +24,7 @@ export default {
           console.log('registrado');
           console.log('data',data);
           updateProfile(user,{
-              displayName: this.form.name,
-              variable: 'vasd'
+              displayName: this.form.name
             })
             .then(() => {
               this.$router.replace({ name: "dashboard" });
