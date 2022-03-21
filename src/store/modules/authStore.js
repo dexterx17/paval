@@ -6,6 +6,12 @@ import {
       onAuthStateChanged
     } from "firebase/auth";
 
+import { getFirestore,
+        doc,
+        setDoc
+    } from "firebase/firestore";
+
+
 
 const state = {
     user: null,
@@ -34,12 +40,12 @@ const state = {
       });
     },
     signUpAction({ commit }, payload) {
-      const auth = getAuth();
 
       return createUserWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
             console.log("Register", data);
             commit("setUser", data);
+            dispatch('initPlayer',data);
             return data;
          })
         .catch(error => {
@@ -47,8 +53,9 @@ const state = {
           return error;
         });
     },
-    signInAction({ commit }, payload) {
+    signInAction({ dispatch, commit }, payload) {
       const auth = getAuth();
+      var vm = this;
       return signInWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
             commit("setUser", data);
@@ -68,6 +75,25 @@ const state = {
         .catch(error => {
           commit("setError", error.message);
         });
+    },
+    initPlayer({ commit }, payload) {
+      const db = getFirestore();
+      try {
+        setDoc(doc(db, "players",payload.user.uid), {
+          nombre: payload.user.displayName ?? '',
+          bod: null,
+          nacionalidad: "ec",
+          sexo: "H",
+          avatar: payload.user.photoURL ?? null
+        }).then((docRef)=>{
+          console.log("Document written with ID: ", docRef);
+        }).catch((error)=>{
+          console.log('error init Player');
+          console.log(error);
+        });
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
     }
  };
  const mutations = {
