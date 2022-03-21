@@ -1,5 +1,5 @@
 <script>
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { mapActions, mapGetters } from "vuex";
 import { ref } from 'vue'
 
 export default {
@@ -19,24 +19,21 @@ export default {
       showPassword
     };
   },
+  computed:{
+    ...mapGetters(['getError'])
+  },
   methods: {
-    submit() {
-      const auth = getAuth();
-
-      signInWithEmailAndPassword(auth, this.form.email, this.form.password)
-        .then((data) => {
-          console.log("logeado");
-          console.log("data", data);
-          commit("setUser", data);
-          this.$router.replace({ name: "dashboard" });
-        })
-        .catch((err) => {
-          const errorCode = err.code;
-          const errorMessage = err.message;
-          commit("setError", err);
-          this.error = err.message;
-        });
-    },
+    ...mapActions(["signInAction"]),
+    submit() { 
+      console.log('submit');
+      this.signInAction({ email: this.form.email, password: this.form.password}).then((response)=>{
+        console.log('response');
+        console.log(response);
+        if(response.user){
+           this.$router.replace({ name: "dashboard" });
+        }
+      });
+    }
   },
 };
 </script>
@@ -218,6 +215,9 @@ export default {
                   ></label
                 >
               </div>
+              <div v-if="getError" class="text-red-800 text-center">
+                {{ getError }}
+              </div>
               <div class="text-center mt-6">
                 <button
                   class="
@@ -238,7 +238,7 @@ export default {
                     mb-1
                     w-full
                   "
-                  type="button"
+                  type="submit"
                   style="transition: all 0.15s ease 0s"
                 >
                   Iniciar sesión

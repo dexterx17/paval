@@ -1,4 +1,5 @@
 <script>
+    import { mapActions } from "vuex";
     import { useRouter } from 'vue-router';
 
     export default {

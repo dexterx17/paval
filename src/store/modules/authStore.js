@@ -8,7 +8,6 @@ import {
 
 
 const state = {
-    test: 'My first state!',
     user: null,
     error: null
  };
@@ -37,31 +36,32 @@ const state = {
     signUpAction({ commit }, payload) {
       const auth = getAuth();
 
-      createUserWithEmailAndPassword(auth, payload.email, payload.password)
+      return createUserWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
             console.log("Register", data);
             commit("setUser", data);
+            return data;
          })
         .catch(error => {
           commit("setError", error.message);
+          return error;
         });
     },
     signInAction({ commit }, payload) {
       const auth = getAuth();
-
-      signInWithEmailAndPassword(auth, payload.email, payload.password)
+      return signInWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
-            console.log("signIn", data);
             commit("setUser", data);
+            return data;
          })
         .catch(error => {
-          commit("setError", error.message);
+          return error;
         });
     },
     signOutAction({ commit }) {
       const auth = getAuth();
 
-      signOut(auth)
+      return signOut(auth)
         .then(() => {
           commit("setUser", null);
         })

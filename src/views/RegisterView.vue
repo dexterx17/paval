@@ -1,5 +1,5 @@
 <script>
-
+import { mapActions } from "vuex";
 import { ref } from 'vue'
 
 export default {
@@ -20,36 +20,15 @@ export default {
     };
   },
   methods: {
-    submit() {
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, this.form.email, this.form.password)
-        .then((data) => {
-          // Signed in 
-          const user = data.user;
-          console.log('registrado');
-          console.log('data',data);
-          commit("setUser", data);
-          updateProfile(user,{
-              displayName: this.form.name
-            })
-            .then(() => {
-              this.$router.replace({ name: "dashboard" });
-            }).catch((error) => {
-              console.log('fallo profile');
-              console.log(error);
-            });
-          // ...
-        })
-        .catch((error) => {
-          console.log('error');
-          console.log(error);
-          commit("setError", error);
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          this.error = error.message;
-          // ..
-        });
-
+      ...mapActions(["signUpAction"]),
+    submit() { 
+      this.signUpAction({ email: this.form.email, password: this.form.password}).then((response)=>{
+        console.log('response');
+        console.log(response);
+        if(response.user){
+           this.$router.replace({ name: "dashboard" });
+        }
+      });
     }
   }
 };
