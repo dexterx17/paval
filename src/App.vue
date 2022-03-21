@@ -1,22 +1,15 @@
-<script setup>
+<script>
 import { RouterLink, RouterView } from "vue-router";
 import { ref } from 'vue';
 import HelloWorld from "@/components/HelloWorld.vue";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+import { mapGetters } from "vuex";
 
-const authInstance = getAuth();
-
-
-const user = ref(authInstance.currentUser)
-
-onAuthStateChanged(authInstance, _user => {
-  console.log(_user)
-  if (user) {
-      user.value = _user
+export default {
+  setup(){
+    
   }
-});
-
+}
 </script>
 
 <template>

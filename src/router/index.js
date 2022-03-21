@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import { getAuth } from "firebase/auth";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,14 +37,23 @@ const router = createRouter({
       },
       component: () => import("../views/game/Dashboard.vue"),
     },
+    {
+      path: "/partidos",
+      name: "partidos",
+      meta: {
+        requiresAuth: true
+      },
+      component: () => import("../views/game/PartidosView.vue"),
+    },
   ]
 });
 
 router.beforeEach((to, from, next) => {
-  const currentUser = firebase.auth().currentUser;
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   if (requiresAuth && !currentUser) next('login');
-  else if (!requiresAuth && currentUser) next('dashboard');
+ // else if (!requiresAuth && currentUser) next('dashboard');
   else next();
 });
 
