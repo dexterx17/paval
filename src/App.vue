@@ -33,6 +33,7 @@ export default {
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/players">Players</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/login">Ingresar</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/register">Registrarme</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/about">About</RouterLink>

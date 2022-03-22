@@ -1,11 +1,13 @@
 import { createStore } from "vuex";
 
 import authStore from './modules/authStore';
+import playersStore from './modules/playersStore';
 
 
 export default createStore({
   modules: {
-    authStore
+    authStore,
+    playersStore
   },
   state: {
     products: [
