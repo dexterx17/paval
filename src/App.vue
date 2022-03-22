@@ -1,21 +1,21 @@
 <script>
 import { RouterLink, RouterView } from "vue-router";
-import { ref } from 'vue';
+import { ref } from "vue";
 import HelloWorld from "@/components/HelloWorld.vue";
 
 import { mapGetters, mapActions } from "vuex";
 
 export default {
   methods: {
-    ...mapActions(["authAction"])
+    ...mapActions(["authAction"]),
   },
-  computed:{
-    ...mapGetters(['getUser','isUserAuth'])
+  computed: {
+    ...mapGetters(["getUser", "isUserAuth"]),
   },
   mounted() {
     this.authAction();
-  }
-}
+  },
+};
 </script>
 
 <template>
@@ -33,10 +33,10 @@ export default {
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/players">Players</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/login">Ingresar</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/register">Registrarme</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/about">About</RouterLink>
+        <RouterLink v-if="isUserAuth" to="/players">Players</RouterLink>
         <RouterLink v-if="isUserAuth" to="/dashboard">Dashboard</RouterLink>
       </nav>
     </div>
