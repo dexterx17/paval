@@ -9,47 +9,37 @@ import {
 
 const state = {
   players: [],
+  playersListener: () => {},
   error: null,
 };
 
 const getters = {
   getPlayers(state) {
-    return state.user;
+    return state.plsyers;
   },
-  getPlayer(state) {
-    return !!state.user;
+  getPlayer(state, id) {
+    return state.players.find((player) => player.id === id);
   },
 };
 
 const actions = {
-  loadPlayers({ commit }, payload) {
+  async loadPlayers({ commit }, payload) {
     const db = getFirestore();
-    try {
-      return getDocs(collection(db, "players"))
-        .then((docs) => {
-          console.log("players list: ", docs);
-          let players = [];
+    const query = db
+      .collectionGroup("players")
+      .orderBy("createdAt", "desc")
+      .onSnapshot(doSnapShot);
 
-          docs.forEach((doc) => {
-            console.log(`${doc.id} => ${doc.data()}`);
-            console.log(doc.data());
-            players.push({
-              nombre: doc.get("nombre"),
-              bod: doc.get("bod"),
-              edad: doc.get("edad"),
-              nacionalidad: doc.get("nacionalidad"),
-              sexo: doc.get("sexo"),
-            });
-          });
-          commit("SET_PLAYERS", players);
-        })
-        .catch((error) => {
-          console.log("error init Player");
-          console.log(error);
-          commit("setError", error);
-        });
-    } catch (e) {
-      console.error("Error adding document: ", e);
+    commit("setMessagesListener", query);
+
+    function doSnapShot(querySnapshot) {
+      docs.forEach((doc) => {
+        let p = doc.data();
+        console.log(`${doc.id} => ${doc.data()}`);
+        p.id = doc.id;
+        players.push(p);
+      });
+      commit("SET_PLAYERS", players);
     }
   },
   addPlayer({ commit }, payload) {
@@ -96,6 +86,13 @@ const actions = {
   },
 };
 const mutations = {
+  SET_ROOMS_LISTENER(state, listener) {
+    if (listener) {
+      state.playersListener = listener;
+    } else {
+      state.playersListener();
+    }
+  },
   SET_PLAYERS(state, payload) {
     console.log("setPlayers", payload);
     state.players = payload;
