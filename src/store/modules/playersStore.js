@@ -1,6 +1,7 @@
 import {
   getFirestore,
   collection,
+  onSnapshot,
   doc,
   getDocs,
   addDoc,
@@ -25,12 +26,10 @@ const getters = {
 const actions = {
   async loadPlayers({ commit }, payload) {
     const db = getFirestore();
-    const query = db
-      .collectionGroup("players")
-      .orderBy("createdAt", "desc")
-      .onSnapshot(doSnapShot);
 
-    commit("setMessagesListener", query);
+    const query = onSnapshot(doc(db, "players"), doSnapShot);
+
+    commit("SET_PLAYERS_LISTENER", query);
 
     function doSnapShot(querySnapshot) {
       docs.forEach((doc) => {
@@ -86,7 +85,7 @@ const actions = {
   },
 };
 const mutations = {
-  SET_ROOMS_LISTENER(state, listener) {
+  SET_PLAYERS_LISTENER(state, listener) {
     if (listener) {
       state.playersListener = listener;
     } else {
