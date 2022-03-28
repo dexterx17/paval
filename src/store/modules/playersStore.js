@@ -25,14 +25,22 @@ const getters = {
 
 const actions = {
   async loadPlayers({ commit }, payload) {
+    console.log("loadPlayers");
     const db = getFirestore();
+    console.log(db);
+    const querySnapshot = await getDocs(collection(db, "players"));
 
-    const query = onSnapshot(doc(db, "players"), doSnapShot);
+    console.log(querySnapshot);
+    let players = [];
+    doSnapShot(querySnapshot);
 
-    commit("SET_PLAYERS_LISTENER", query);
+    //commit("SET_PLAYERS_LISTENER", query);
 
     function doSnapShot(querySnapshot) {
-      docs.forEach((doc) => {
+      console.log("doSnapShot");
+      console.log(querySnapshot);
+      console.log(querySnapshot.docs);
+      querySnapshot.docs.forEach((doc) => {
         let p = doc.data();
         console.log(`${doc.id} => ${doc.data()}`);
         p.id = doc.id;

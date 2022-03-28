@@ -24,8 +24,8 @@ export default {
     let players = computed(function () {
       return store.state.playersStore.players;
     });
-    console.log("players");
-    console.log(players.value);
+    // console.log("players");
+    // console.log(players.value);
 
     return {
       players,
