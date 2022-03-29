@@ -2,7 +2,8 @@ import { db } from '../../plugins/firebase';
 
 import {
     collection,
-    getDocs
+    getDocs,
+    addDoc
 } from "firebase/firestore";
 
 
@@ -44,6 +45,20 @@ const actions = {
                 torneos.push(p);
             });
             commit("SET_TORNEOS", torneos);
+        }
+    },
+    async addTorneo({ commit }, payload) {
+        try {
+            addDoc(collection(db, "torneos"), payload)
+                .then((docRef) => {
+                    console.log("Torneo with ID: ", docRef);
+                })
+                .catch((error) => {
+                    console.log("error adding Torneo");
+                    console.log(error);
+                });
+        } catch (e) {
+            console.error("Error adding document: ", e);
         }
     }
 };
