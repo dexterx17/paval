@@ -64,15 +64,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // const auth = getAuth();
-  // const currentUser = auth.currentUser;
-  // console.log('currentUser');
-  // console.log(currentUser);
-  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  // if (requiresAuth && !currentUser) next('login');
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+  console.log('currentUser');
+  console.log(currentUser);
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  console.log('requiresAuth',requiresAuth);
+  console.log('!currentUser)',(!currentUser));
+  
+  if (requiresAuth && !currentUser) next('login');
   // else if (!requiresAuth && currentUser) next('dashboard');
-  //else next();
-  next();
+  else next();
+  //next();
 });
 
 export default router;

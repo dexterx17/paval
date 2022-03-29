@@ -135,6 +135,7 @@ export default {
                   >Correo electrónico</label
                 ><input
                   type="email"
+                  name="email"
                   v-model="form.email"
                   class="
                     border-0
