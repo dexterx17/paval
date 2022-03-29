@@ -2,23 +2,18 @@ import { createStore } from "vuex";
 
 import authStore from './modules/authStore';
 import playersStore from './modules/playersStore';
+import torneosStore from './modules/torneosStore';
+
 
 
 export default createStore({
   modules: {
     authStore,
-    playersStore
+    playersStore,
+    torneosStore
   },
   state: {
-    products: [
-      {
-        id: 1,
-        name: "Chelsea Shoes",
-        price: 200,
-        shortdesc: "Best Drip in the Market",
-        url: "images/chelsea-shoes.png"
-      },
-    ],
+    products: [],
     cart: []
   },
   mutations: {

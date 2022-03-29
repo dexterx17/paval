@@ -6,6 +6,8 @@ import EcosystemIcon from "./icons/IconEcosystem.vue";
 import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
 
+import { RouterLink } from "vue-router";
+
 import {useStore} from "vuex";
 
  const store = useStore();
@@ -55,7 +57,11 @@ import {useStore} from "vuex";
     <template #icon>
       <ToolingIcon />
     </template>
-    <template #heading>Torneos</template>
+    <template #heading>
+      <RouterLink to="/torneos">
+          Torneos
+      </RouterLink>
+    </template>
 
     Club, horario, ubicación, organizador
     <br />
