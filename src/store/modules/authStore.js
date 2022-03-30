@@ -39,10 +39,11 @@ const state = {
         }
       });
     },
-    signUpAction({ commit }, payload) {
-
+    signUpAction({ commit, dispatch }, payload) {
+      const auth = getAuth();
       return createUserWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
+            data.nombre = payload.name;
             console.log("Register", data);
             commit("setUser", data);
             dispatch('initPlayer',data);
@@ -80,12 +81,25 @@ const state = {
       const db = getFirestore();
       try {
         setDoc(doc(db, "players",payload.user.uid), {
-          nombre: payload.user.displayName ?? '',
-          bod: null,
-          nacionalidad: "ec",
-          sexo: "H",
+          source: 'web',
+          created_at: Date(),
+          nombre: payload.nombre ?? payload.user.displayName,
           avatar: payload.user.photoURL ?? null
         }).then((docRef)=>{
+          console.log("Document written with ID: ", docRef);
+        }).catch((error)=>{
+          console.log('error init Player');
+          console.log(error);
+        });
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    },
+    updateProfile({ commit }, payload) {
+      const db = getFirestore();
+      try {
+        setDoc(doc(db, "players",payload.uid), payload)
+        .then((docRef)=>{
           console.log("Document written with ID: ", docRef);
         }).catch((error)=>{
           console.log('error init Player');

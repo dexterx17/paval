@@ -22,7 +22,11 @@ export default {
   methods: {
       ...mapActions(["signUpAction"]),
     submit() { 
-      this.signUpAction({ email: this.form.email, password: this.form.password}).then((response)=>{
+      this.signUpAction({ 
+        email: this.form.email,
+        password: this.form.password,
+        name: this.form.name,
+      }).then((response)=>{
         console.log('response');
         console.log(response);
         if(response.user){
