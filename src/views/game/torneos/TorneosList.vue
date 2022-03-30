@@ -2,12 +2,18 @@
 import { mapGetters, mapActions } from "vuex";
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
+
 export default {
+    
     data() {
         return {};
     },
     methods: {
         ...mapActions(["loadTorneos", "AddTorneo"]),
+        formatDate (value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+          if (!value) return value
+          return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
+        }
     },
     computed: {
         ...mapGetters(["getTorneos"]),
@@ -237,18 +243,50 @@ export default {
                 <li
                     v-for="torneo in torneos"
                     :key="torneo.id"
-                    class="flex my-2 border border-gray-300 rounded-md"
+                    class="flex justify-between  my-2 border border-gray-300 rounded-md"
                 >
-                    <img src="https://via.placeholder.com/42/42/torneo.png" :alt="torneo.nombre" />
+                    <img class="w-24" src="https://via.placeholder.com/42/42/torneo.png" :alt="torneo.nombre" />
 
-                    <div class="flex flex-col pl-2">
-                        <h5>
-                            <span v-if="torneo.serie">{{ torneo.serie }}</span>
-                            {{ torneo.fecha }} {{ torneo.hora }}
-                            <small>{{ torneo.tiempo_espera }} min.</small>
-                        </h5>
-                        <h5>{{ torneo.lugar }}</h5>
+                    <div class="flex flex-1 flex-col justify-between p-2">
+                        <div class="flex justify-between">
+                          <h5>
+                            <span v-if="torneo.club"><i class="text-xs">Club:</i> {{ torneo.club }}</span>
+                            <span v-if="torneo.serie"><i class="text-xs">Serie:</i> {{ torneo.serie }}</span>
+                          </h5>
+                          <h4 class="flex flex-col">
+                            <span>
+                              <span class="capitalize">
+                                {{ formatDate(torneo.fecha,{weekday: "long"}) }},
+                              </span>
+                              {{ formatDate(torneo.fecha) }}
+                              {{ torneo.hora }}
+
+                            </span>
+                            <small><i class="text-xs">T. espera: </i> {{ torneo.tiempo_espera }} min.</small>
+                          </h4>
+                        </div>
+                        <div>
+                          <i class="text-xs">Ubicación: </i>
+                          <span>
+                            {{ torneo.ciudad }} 
+                          </span>
+                          <small class="px-1">{{ torneo.lugar }}</small>
+                        </div>
+                        <div class="text-xs">
+                          <span>
+                            Inscritos: 
+                          </span>
+                          <ul>
+                            <li></li>
+                          </ul>
+                        </div>
                     </div>
+                    <RouterLink :to="{ name: 'torneo' , params: { id: torneo.id } }" >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </RouterLink>
                 </li>
             </ul>
             <p v-else>Aún no hay torneos registrados.</p>

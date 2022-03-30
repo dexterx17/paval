@@ -1,9 +1,12 @@
+import { db } from '../../plugins/firebase';
+
 import {
   getFirestore,
   collection,
   onSnapshot,
   doc,
   getDocs,
+  getDoc,
   addDoc,
   setDoc,
 } from "firebase/firestore";
@@ -26,7 +29,6 @@ const getters = {
 const actions = {
   async loadPlayers({ commit }, payload) {
     console.log("loadPlayers");
-    const db = getFirestore();
     console.log(db);
     const querySnapshot = await getDocs(collection(db, "players"));
 
@@ -47,6 +49,23 @@ const actions = {
         players.push(p);
       });
       commit("SET_PLAYERS", players);
+    }
+  },
+  async loadProfile({ commit }, payload) {
+    try {
+        console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+        const docRef = doc(db, "players", payload);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            return docSnap.data();
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    } catch (e) {
+        console.error("Error adding document: ", e);
     }
   },
   addPlayer({ commit }, payload) {

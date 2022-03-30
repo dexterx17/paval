@@ -36,6 +36,7 @@ export default {
         <RouterLink v-if="!isUserAuth" to="/login">Ingresar</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/register">Registrarme</RouterLink>
         <RouterLink v-if="!isUserAuth" to="/about">About</RouterLink>
+        <RouterLink v-if="isUserAuth" to="/profile">Mi Perfil</RouterLink>
         <RouterLink v-if="isUserAuth" to="/players">Players</RouterLink>
         <RouterLink v-if="isUserAuth" to="/torneos">Torneos</RouterLink>
         <RouterLink v-if="isUserAuth" to="/dashboard">Dashboard</RouterLink>

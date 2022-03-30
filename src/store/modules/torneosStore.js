@@ -3,12 +3,15 @@ import { db } from '../../plugins/firebase';
 import {
     collection,
     getDocs,
+    doc,
+    getDoc,
     addDoc
 } from "firebase/firestore";
 
 
 const state = {
     torneos: [],
+    torneo: null,
     torneosError: null,
     torneosListenes: () => { }
 };
@@ -60,6 +63,24 @@ const actions = {
         } catch (e) {
             console.error("Error adding document: ", e);
         }
+    },
+    async fetchTorneo({ commit }, payload) {
+        try {
+            console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+            const docRef = doc(db, "torneos", payload);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                console.log("Document data:", docSnap.data());
+                commit('SET_TORNEO',docSnap.data());
+                return docSnap.data();
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
     }
 };
 
@@ -74,6 +95,10 @@ const mutations = {
     SET_TORNEOS(state, payload) {
         console.log("setTorneos", payload);
         state.torneos = payload;
+    },
+    SET_TORNEO(state, payload) {
+        console.log("setTorneo", payload);
+        state.torneo = payload;
     },
     ADD_TORNEO(state, payload) {
         state.torneos.push(payload);
