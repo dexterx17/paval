@@ -7,7 +7,10 @@
 
                 <MainMenu />
 
-                <SignupButton />
+                <SignupButton v-if="!isUserAuth" />
+
+                <ProfileButton v-else />
+
             </div>
         </div>
     </header>
@@ -18,11 +21,20 @@
 import HeaderLogo from '@/components/Header/HeaderLogo.vue';
 import MainMenu from '@/components/Header/MainMenu.vue';
 import SignupButton from '@/components/Button/SignupButton.vue';
+import ProfileButton from '@/components/Button/ProfileButton.vue';
+
+import { mapGetters, mapActions } from "vuex";
+
 export default {
     components: {
         HeaderLogo,
         MainMenu,
         SignupButton,
+        ProfileButton,
+    },
+
+    computed: {
+        ...mapGetters(["getUser", "isUserAuth"]),
     },
 
     data() {

@@ -2,11 +2,11 @@
     <div class="flex items-center">
         <!-- Button Start -->
         <RouterLink
-            to="/login"
+            to="/profile"
             style="background-image:url(/images/others/btn-signup.webp);"
             class="signup-btn transition-all group hidden sm:flex"
         >
-            Ingresar
+            Mi Perfil
             <img
                 class="w-4 h-4 ml-2 group-hover:ml-3 transition-all"
                 src="/images/icon/arrrow-icon2.webp"

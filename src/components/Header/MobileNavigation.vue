@@ -13,19 +13,19 @@
                     <RouterLink
                         class="text-base font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"
                         to="/"
-                    >Match</RouterLink>
+                    >Torneos</RouterLink>
                     <ul class="sub-menu ml-5">
                         <li>
                             <RouterLink
                                 class="text-sm font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"
                                 to="/match"
-                            >Match Page</RouterLink>
+                            >Regulares</RouterLink>
                         </li>
                         <li>
                             <RouterLink
                                 class="text-sm font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"
                                 to="/match/1"
-                            >Match Details</RouterLink>
+                            >Mensuales</RouterLink>
                         </li>
                     </ul>
                 </li>

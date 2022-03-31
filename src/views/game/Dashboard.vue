@@ -2,10 +2,17 @@
     import { mapActions } from "vuex";
     import { useRouter } from 'vue-router';
 
+    import Breadcrumb from "@/components/Breadcrumb.vue";
+
     export default {
+        components:{
+            Breadcrumb
+        },
         data() {
             return {
-                error: null
+                error: null,
+                BreadcrumbTitle: "Sign Up",
+                BreadcrumbSubTitle: "Sign up",
             };
         },
         methods: {
@@ -21,6 +28,7 @@
 
 </script>
 <template>
+<Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle"/>
     <div>
         Dashboard
         <hr>

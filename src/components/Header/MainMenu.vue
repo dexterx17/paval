@@ -14,7 +14,7 @@
                     <RouterLink
                         to="/"
                         class="text-white uppercase font-bold font-exo relative"
-                    >Match</RouterLink>
+                    >Torneos</RouterLink>
                     <ul
                         class="flex flex-col bg-white absolute w-56 px-5 py-5 rounded left-0 right-auto top-12 opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all group-hover:top-9"
                     >
@@ -22,13 +22,13 @@
                             <RouterLink
                                 to="/match"
                                 class="text-sm font-medium block leading-8 capitalize text-black transition-all hover:text-primary"
-                            >Match Page</RouterLink>
+                            >Regulares</RouterLink>
                         </li>
                         <li>
                             <RouterLink
                                 to="/match/1"
                                 class="text-sm font-medium block leading-8 capitalize text-black transition-all hover:text-primary"
-                            >Match Details</RouterLink>
+                            >Mensuales</RouterLink>
                         </li>
                     </ul>
                 </li>

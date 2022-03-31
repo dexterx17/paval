@@ -34,7 +34,7 @@ export default {
   <main>
     <HeaderSection />
 
-    <!-- <OffCanvasMobileMenu :class="{ 'show-mobile-menu': navOpen }" @togglenav="navOpen = !navOpen" /> -->
+    <OffCanvasMobileMenu :class="{ 'show-mobile-menu': navOpen }" @togglenav="navOpen = !navOpen" />
 
     <!-- <header>
       <img

@@ -2,7 +2,12 @@
 import { mapActions, mapGetters } from "vuex";
 import { ref } from 'vue'
 
+import Breadcrumb from "@/components/Breadcrumb.vue";
+
 export default {
+  components:{
+    Breadcrumb
+  },
   data() {
     return {
       form: {
@@ -11,6 +16,10 @@ export default {
         recordarme: false
       },
       error: null,
+      navOpen: false,
+      BreadcrumbTitle: "Sign Up",
+      BreadcrumbSubTitle: "Sign up",
+      paddingTop: "pt-32"
     };
   },
   setup() {
@@ -39,6 +48,7 @@ export default {
 </script>
 
 <template>
+  <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle"/>
   <div class="container mx-auto px-4 h-full">
     <div class="flex content-center items-center justify-center h-full">
       <div class="w-full px-4">

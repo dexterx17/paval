@@ -7,6 +7,7 @@ import '@/plugins/firebase';
 
 
 import './index.css'
+import './assets/icofont.min.css'
 
 const app = createApp(App);
 
