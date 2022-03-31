@@ -3,17 +3,40 @@ import { mapGetters, mapActions } from "vuex";
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 
+import { CountTo } from 'vue3-count-to';
+
+import Breadcrumb from "@/components/Breadcrumb.vue";
+import Footer from "@/components/Footer.vue";
+import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
+
 import { useRoute } from 'vue-router'
 
+import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
+
+
 export default {
+    components: {
+        Breadcrumb,
+        TorneoDetails,
+        Footer,
+        VueFinalModal,
+        ModalsContainer,
+        CountTo
+    },
     data() {
-        return {};
+        return {
+            BreadcrumbTitle: "Detalles Torneo",
+            BreadcrumbSubTitle: "Torneo",
+            btnName: "INSCRIBIRME",
+            commentsVisible: true,
+
+        };
     },
     methods: {
         ...mapActions(["fetchTorneo", "inscribirEnTorneo"]),
-        formatDate (value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
-          if (!value) return value
-          return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
+        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+            if (!value) return value
+            return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         }
     },
     computed: {
@@ -22,67 +45,139 @@ export default {
     setup() {
         const route = useRoute();
         const store = useStore();
-        const torneoData = ref(null);
+        const matchesData = ref(null);
+        const showModal = ref(false);
 
-        store.dispatch('fetchTorneo',route.params.id).then((value)=>{
+        store.dispatch('fetchTorneo', route.params.id).then((value) => {
             console.log('value');
             console.log(value);
-            torneoData.value = value;
+            matchesData.value = value;
         });
 
         // fetch the user information when params change
         watch(
             () => route.params.id,
-                async newId => {
-                    console.log('newId',newId);
-                    torneoData.value = await fetchTorneo(newId)
-                }
+            async newId => {
+                console.log('newId', newId);
+                matchesData.value = await fetchTorneo(newId)
+            }
         )
 
         return {
-            torneoData
+            matchesData,
+            showModal
         }
     }
 }
 </script>
 
 <template>
-    <div>
-        <header v-if="torneoData">
-            <div class="flex flex-1 flex-col justify-between p-2">
-                <div class="flex justify-between">
-                    <h5>
-                    <span v-if="torneoData.club"><i class="text-xs">Club:</i> {{ torneoData.club }}</span>
-                    <span v-if="torneoData.serie"><i class="text-xs">Serie:</i> {{ torneoData.serie }}</span>
-                    </h5>
-                    <h4 class="flex flex-col">
-                    <span>
-                        <span class="capitalize">
-                        {{ formatDate(torneoData.fecha,{weekday: "long"}) }},
-                        </span>
-                        {{ formatDate(torneoData.fecha) }}
-                        {{ torneoData.hora }}
+    <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 
-                    </span>
-                    <small><i class="text-xs">T. espera: </i> {{ torneoData.tiempo_espera }} min.</small>
-                    </h4>
-                </div>
-                <div>
-                    <i class="text-xs">Ubicación: </i>
-                    <span>
-                    {{ torneoData.ciudad }} 
-                    </span>
-                    <small class="px-1">{{ torneoData.lugar }}</small>
-                </div>
-                <div class="text-xs">
-                    <span>
-                    Inscritos: 
-                    </span>
-                    <ul>
-                    <li></li>
-                    </ul>
+    <!-- Team Varses Team Start -->
+    <div class="container mb-12">
+        <div
+            class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 max-w-lg mx-auto"
+        >
+            <div class="grid grid-cols-1 items-center">
+                <div class="flex justify-center items-center w-full px-20 sm:px-0">
+                    <img class="lg:mr-9 mr-5" :src="matchesData.teamOne" alt="Feature Icon" />
+                    <!-- <img class="lg:mr-9 mr-5" :src="matchesData.teamVs" alt="Feature Icon" /> -->
+                    <img :src="matchesData.teamTwo" alt="Feature Icon" />
                 </div>
             </div>
-        </header>
+        </div>
     </div>
+    <!-- Team Varses Team End -->
+
+    <!-- Match Counterup Start -->
+    <div class="container">
+        <div
+            class="match_details_counterup flex flex-col sm:flex-row justify-between items-center py-12 mb-12 border-b-2 border-secondary-80"
+        >
+            <div>
+                <div v-if="commentsVisible" class="grid grid-cols-3">
+                    <div class="mr-6 pr-6 lg:mr-16 lg:pr-16 relative pt-4">
+                        <p
+                            class="uppercase md:text-lg text-sm font-semibold text-primary"
+                        >Jugadores:</p>
+                        <count-to
+                            class="text-white text-4xl lg:text-5xl font-bold"
+                            :startVal="0"
+                            :endVal="280"
+                            :duration="3000"
+                            :autoplay="true"
+                        ></count-to>
+                        <span
+                            class="absolute right-0 top-0 transform rotate-12 bg-secondary-80 h-28 w-0.5"
+                        ></span>
+                    </div>
+                    <div class="mr-6 pr-6 lg:mr-20 lg:pr-20 relative pt-4">
+                        <p
+                            class="uppercase md:text-lg text-sm font-semibold text-primary"
+                        >Ranking Avg:</p>
+                        <count-to
+                            class="text-white text-4xl lg:text-5xl font-bold"
+                            :startVal="0"
+                            :endVal="16"
+                            :duration="3000"
+                            :autoplay="true"
+                        ></count-to>
+                        <span
+                            class="absolute right-0 top-0 transform rotate-12 bg-secondary-80 h-28 w-0.5"
+                        ></span>
+                    </div>
+                    <div class="mr-6 pr-6 lg:mr-16 lg:pr-16 relative pt-4">
+                        <p
+                            class="uppercase md:text-lg text-sm font-semibold text-primary"
+                        >Premio Ganador:</p>
+                        <count-to
+                            class="text-white text-4xl lg:text-5xl font-bold"
+                            :startVal="0"
+                            :endVal="6800"
+                            :duration="3000"
+                            :autoplay="true"
+                        ></count-to>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-16 md:mt-0">
+                <button
+                    @click="showModal = true;"
+                    class="group primary-btn opacity-100 transition-all"
+                    style="background-image:url(/images/others/btn-bg.webp)"
+                >
+                    {{ btnName }}
+                    <img
+                        src="/images/icon/arrrow-icon.webp"
+                        alt="Arrow Icon"
+                        class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
+                    />
+                </button>
+            </div>
+        </div>
+        <vue-final-modal
+            class="bg-transparent"
+            name="my-modal"
+            v-model="showModal"
+            :width="1000"
+            :height="700"
+            :adaptive="true"
+        >
+            <div class="w-full h-full flex items-center align-middle bg-red-500">
+                <form>
+                    <header>Inscríbete</header>
+                </form>
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-black hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModal = false"
+                ></button>
+            </div>
+        </vue-final-modal>
+    </div>
+    <!-- Match Counterup End -->
+
+    <TorneoDetails :match="matchesData" />
+
+    <Footer />
 </template>

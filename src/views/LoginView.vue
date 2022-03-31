@@ -3,10 +3,12 @@ import { mapActions, mapGetters } from "vuex";
 import { ref } from 'vue'
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
-  components:{
-    Breadcrumb
+  components: {
+    Breadcrumb,
+    Footer
   },
   data() {
     return {
@@ -17,8 +19,8 @@ export default {
       },
       error: null,
       navOpen: false,
-      BreadcrumbTitle: "Sign Up",
-      BreadcrumbSubTitle: "Sign up",
+      BreadcrumbTitle: "Ingresar",
+      BreadcrumbSubTitle: "Ingreso",
       paddingTop: "pt-32"
     };
   },
@@ -48,16 +50,16 @@ export default {
 </script>
 
 <template>
-  <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle"/>
+  <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
   <div class="container mx-auto px-4 h-full">
     <div class="flex content-center items-center justify-center h-full">
       <div class="w-full px-4">
         <div
-          class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0"
+          class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg border-0"
         >
           <div class="rounded-t mb-0 px-6 py-6">
             <div class="text-center mb-3">
-              <h6 class="text-gray-600 text-sm font-bold">Iniciar sesión con</h6>
+              <h6 class="text-white text-sm font-bold">Ingresa con</h6>
             </div>
             <div class="btn-wrapper text-center">
               <button
@@ -78,8 +80,8 @@ export default {
             <hr class="mt-6 border-b-1 border-gray-400" />
           </div>
           <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
-            <div class="text-gray-500 text-center mb-3 font-bold">
-              <small>O inicia con tus credenciales</small>
+            <div class="text-gray-100 text-center mb-3 font-bold">
+              <small>O ingresa con tus credenciales</small>
             </div>
             <form @submit.prevent="submit">
               <div class="relative w-full mb-3">
@@ -187,4 +189,6 @@ export default {
       </div>
     </div>
   </div>
+
+  <Footer />
 </template>

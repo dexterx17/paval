@@ -10,14 +10,17 @@
   "dependencies": {
     "firebase": "^9.6.8",
     "moment": "^2.29.1",
+    "swiper": "^8.0.7",
     "tailwindcss-pseudo": "^1.0.3",
     "vue": "^3.2.31",
-    "vue-cool-lightbox": "^2.7.4",
-    "vue-count-to": "^1.0.13",
-    "vue-router": "^4.0.12",
+    "vue-awesome-swiper": "^5.0.1",
     "vue-backtotop": "^1.6.1",
     "vue-client-only": "^2.0.0",
+    "vue-cool-lightbox": "^2.7.4",
+    "vue-final-modal": "^3.4.3",
     "vue-observe-visibility": "^1.0.0",
+    "vue-router": "^4.0.12",
+    "vue3-count-to": "^1.1.2",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

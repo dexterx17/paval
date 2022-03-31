@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 import authStore from './modules/authStore';
 import playersStore from './modules/playersStore';
 import torneosStore from './modules/torneosStore';
+import clubsStore from './modules/clubsStore';
 
 
 
@@ -10,7 +11,8 @@ export default createStore({
   modules: {
     authStore,
     playersStore,
-    torneosStore
+    torneosStore,
+    clubsStore
   },
   state: {
     products: [],

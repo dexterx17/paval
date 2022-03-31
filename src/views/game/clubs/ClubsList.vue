@@ -1,22 +1,25 @@
 <script>
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import TorneosRegularesHome from "@/components/TorneosRegularesHome.vue";
-import TorneoForm from "@/components/Torneos/TorneoForm.vue";
+import ClubsBlocks from "@/components/Clubs/ClubsBlocks.vue";
+import ClubForm from "@/components/Clubs/ClubForm.vue";
+
+import CounterUp from "@/components/CounterUp.vue";
 import Footer from "@/components/Footer.vue";
 
 
 export default {
     components: {
         Breadcrumb,
-        TorneosRegularesHome,
+        ClubsBlocks,
+        CounterUp,
         Footer,
-        TorneoForm
+        ClubForm
     },
     data() {
         return {
-            BreadcrumbTitle: "Torneos",
-            BreadcrumbSubTitle: "Eventos Regulares",
+            BreadcrumbTitle: "Clubs",
+            BreadcrumbSubTitle: "Clubs",
             paddingTop: "pt-8"
         };
     },
@@ -32,9 +35,11 @@ export default {
 <template>
     <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 
-    <TorneosRegularesHome />
+    <ClubsBlocks />
 
-    <TorneoForm :paddingTop="paddingTop" />
+    <ClubForm :paddingTop="paddingTop" />
+
+    <CounterUp />
 
     <Footer />
 </template>

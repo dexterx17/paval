@@ -6,13 +6,17 @@ import store from "./store/store";
 import '@/plugins/firebase';
 
 
-import './index.css'
-import './assets/icofont.min.css'
 
 const app = createApp(App);
 
+import './index.css'
+import './assets/icofont.min.css'
+import './assets/swiper.css'
+
+
 import { ObserveVisibility } from 'vue-observe-visibility'
 app.directive('observe-visibility', ObserveVisibility)
+
 
 app.use(router);
 app.use(store);

@@ -8,14 +8,14 @@
                     :key="imageIndex"
                     class="text-white text-center"
                 >
-                    <countTo
+                    <count-to
                         class="text-white text-5xl lg:text-10xl uppercase font-metal font-normal block"
                         :class="count.className"
                         :startVal="count.startVal"
                         :endVal="count.endVal"
                         :duration="3000"
                         :autoplay="true"
-                    ></countTo>
+                    ></count-to>
                     <p class="uppercase mt-3 sm:mt-5 text-base lg:text-lg">{{ count.text }}</p>
                 </div>
             </div>
@@ -25,38 +25,39 @@
 </template>
 
 <script>
-import countTo from 'vue-count-to';
+import { CountTo } from 'vue3-count-to';
+
 export default {
     components: {
-        countTo
+        CountTo
     },
     data() {
         return {
-            commentsVisible: false,
+            commentsVisible: true,
             counter: [
                 {
                     startVal: 0,
                     endVal: 8697,
                     className: "text-yellow",
-                    text: "Twitch Streams"
+                    text: "Torneos"
                 },
                 {
                     startVal: 0,
                     endVal: 480,
                     className: "text-bright",
-                    text: "Total Games"
+                    text: "Partidos"
                 },
                 {
                     startVal: 0,
                     endVal: 5367,
                     className: "text-punch",
-                    text: "Youtube Streams"
+                    text: "Jugadores"
                 },
                 {
                     startVal: 0,
                     endVal: 249,
                     className: "text-primary",
-                    text: "Pro Team"
+                    text: "Clubs"
                 }
             ]
         }
