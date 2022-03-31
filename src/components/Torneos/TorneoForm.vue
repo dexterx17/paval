@@ -55,13 +55,19 @@
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                         for="grid-club"
                     >Club</label>
-                    <input
-                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                    <select
+                        class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         id="grid-club"
-                        type="text"
-                        placeholder="Ej: Paval"
                         v-model="torneoData.club"
-                    />
+                        required
+                    >
+                        <option value>Ninguno</option>
+                        <option
+                            v-for="club in clubsData"
+                            :key="club.id"
+                            :value="club.nombre"
+                        >{{ club.nombre }}</option>
+                    </select>
                 </div>
                 <div class="w-full md:w-1/2 px-3">
                     <label
@@ -235,7 +241,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["AddTorneo"]),
+        ...mapActions(["AddTorneo", "loadClubs"]),
     },
     setup() {
         const store = useStore();
@@ -251,10 +257,15 @@ export default {
             ciudad: "Ambato",
         };
 
+        let clubsData = computed(function () {
+            return store.state.clubsStore.clubs;
+        });
+
         const torneoData = ref(torneoModel);
 
         const initTorneo = () => {
             console.log('initTorneo');
+            store.dispatch('loadClubs');
             showForm.value = true;
             torneoData.value = torneoModel;
         };
@@ -271,6 +282,7 @@ export default {
 
         return {
             torneoData,
+            clubsData,
             showForm,
 
             initTorneo,
