@@ -53,6 +53,14 @@ const router = createRouter({
       component: () => import("../views/game/clubs/ClubsList.vue"),
     },
     {
+      path: "/club/:id",
+      name: "club",
+      meta: {
+        requiresAuth: true,
+      },
+      component: () => import("../views/game/clubs/ClubView.vue"),
+    },
+    {
       path: "/torneos",
       name: "torneos",
       meta: {

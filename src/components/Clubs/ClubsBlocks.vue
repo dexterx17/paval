@@ -50,8 +50,8 @@
                     :src="games.gameImage ?? '/images/others/popular-game-thumb1.webp'"
                     :alt="games.nombre"
                 />
-                <n-link
-                    :to="`/game/${games.slug}`"
+                <RouterLink
+                    :to="`/club/${games.id}`"
                     class="group primary-btn absolute-center opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all"
                     style="background-image:url(/images/others/btn-bg.webp)"
                 >
@@ -61,7 +61,7 @@
                         alt="Arrow Icon"
                         class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
                     />
-                </n-link>
+                </RouterLink>
             </div>
         </div>
     </div>

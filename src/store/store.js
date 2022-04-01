@@ -4,6 +4,7 @@ import authStore from './modules/authStore';
 import playersStore from './modules/playersStore';
 import torneosStore from './modules/torneosStore';
 import clubsStore from './modules/clubsStore';
+import seriesStore from './modules/seriesStore';
 
 
 
@@ -12,7 +13,8 @@ export default createStore({
     authStore,
     playersStore,
     torneosStore,
-    clubsStore
+    clubsStore,
+    seriesStore
   },
   state: {
     products: [],
