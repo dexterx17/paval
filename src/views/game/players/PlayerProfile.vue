@@ -4,10 +4,12 @@ import { computed, ref } from "vue";
 import { useStore } from "vuex";
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
+import Avatar from "@/components/Avatar.vue";
 
 export default {
   components: {
-    Breadcrumb
+    Breadcrumb,
+    Avatar
   },
   methods: {
     ...mapActions(["loadProfile"]),
@@ -38,9 +40,23 @@ export default {
       playerData.value.uid = player.value.uid;
     });
 
+    const changeImage = (image) => {
+      console.log('image');
+      console.log(image);
+      
+      store.dispatch("uploadAvatar", {
+        user: playerData.value,
+        imagen: image
+      }).then((response) => {
+        console.log("response");
+        console.log(response);
+      });
+
+    }
+
     const submit = () => {
       console.log("updateProfile");
-      console.log(store);
+      console.log(playerData.value);
       store.dispatch("updateProfile", playerData.value).then((response) => {
         console.log("response");
         console.log(response);
@@ -52,6 +68,7 @@ export default {
       showForm,
 
       submit,
+      changeImage
     };
   },
 };
@@ -60,20 +77,20 @@ export default {
 <template>
   <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 
-  <div class="container">
+  <div class="container"  v-if="playerData">
     <div class="flex md:flex-row flex-col bg-secondary-100 p-8 md:p-68 rounded-50">
       <div class="md:w-2/5">
         <div
           class="border-4 border-gray-400 rounded-3xl d-flex max-w-full md:max-w-sm overflow-hidden"
         >
-          <img class="w-full" :src="playerData.avatar ?? '/images/player/list/player-1.webp'" alt />
+          <img class="w-full" :src="playerData.avatar ?? '/images/player/list/player-1.webp'" :alt="playerData.nombre" />
         </div>
 
         <div
           class="flex flex-col justify-center items-center relative mt-8 max-w-full md:max-w-sm z-10 py-7"
         >
           <h3 class="text-white font-bold text-lg md:text-2xl uppercase">
-            <n-link :to="`/player/${playerData.slug}`">{{ playerData.nombre }}</n-link>
+            <RouterLink :to="`/player/${playerData.slug}`">{{ playerData.nombre }}</RouterLink>
           </h3>
           <span class="text-white text-sm md:text-base transition-all">
             {{ playerData.nacionalidad }}
@@ -135,7 +152,7 @@ export default {
         </div>
 
         <div class="about_btn">
-          <n-link
+          <RouterLink
             to="/contact"
             class="group primary-btn opacity-100 transition-all"
             style="background-image:url(/images/others/btn-bg.webp)"
@@ -146,7 +163,7 @@ export default {
               alt="Arrow Icon"
               class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
             />
-          </n-link>
+          </RouterLink>
         </div>
       </div>
     </div>
@@ -157,6 +174,7 @@ export default {
       <form @submit.prevent="submit" v-if="showForm" class="w-full max-w-lg mx-auto py-1">
         <h4 class="my-2 font-extrabold uppercase">Datos de perfil</h4>
 
+        <Avatar @change-image="changeImage" :imagen="playerData.avatar" />
         <div class="flex flex-wrap -mx-3 mb-2">
           <div class="w-full px-3 mb-6 md:mb-0">
             <label

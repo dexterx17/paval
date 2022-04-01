@@ -11,6 +11,7 @@ import { getFirestore,
         setDoc
     } from "firebase/firestore";
 
+import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
 
 
 const state = {
@@ -57,6 +58,7 @@ const state = {
     signInAction({ dispatch, commit }, payload) {
       const auth = getAuth();
       var vm = this;
+      console.log(payload);
       return signInWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
             commit("setUser", data);
@@ -95,7 +97,29 @@ const state = {
         console.error("Error adding document: ", e);
       }
     },
-    updateProfile({ commit }, payload) {
+    uploadAvatar({commit, dispatch},payload){
+
+      const storage = getStorage();
+
+      const storageRef = ref(storage, "files/" + payload.imagen.name);
+ 
+      uploadBytes(storageRef, payload.imagen).then(function (snapshot) {
+          
+        console.log('payload');
+        console.log(payload);
+        console.log(snapshot);
+
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+          payload.user.avatar = downloadURL;
+          dispatch('updateProfile',payload.user);
+        });
+
+      });
+
+    },
+    updateProfile({ commit, dispatch }, payload) {
       const db = getFirestore();
       try {
         setDoc(doc(db, "players",payload.uid), payload)
