@@ -33,6 +33,8 @@
         <form @submit.prevent="submit" v-if="showForm" class="w-full max-w-lg mx-auto py-1">
             <h4 class="my-2 font-extrabold uppercase">Datos Club</h4>
 
+            <Avatar @change-image="changeImage" :imagen="clubData.avatar" />
+
             <div class="flex flex-wrap -mx-3 mb-2">
                 <div class="w-full px-3 mb-6 md:mb-0">
                     <label
@@ -152,8 +154,12 @@
 <script>
 import { mapGetters, mapActions, useStore } from "vuex";
 import { computed, ref } from "vue";
+import Avatar from "@/components/Avatar.vue";
 
 export default {
+    components: {
+        Avatar
+    },
     props: {
         paddingTop: String,
     },

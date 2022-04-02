@@ -12,6 +12,7 @@ import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import { useRoute } from 'vue-router'
 
 import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
+import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 
 
 export default {
@@ -21,7 +22,8 @@ export default {
         Footer,
         VueFinalModal,
         ModalsContainer,
-        CountTo
+        CountTo,
+        InscribirseTorneo
     },
     data() {
         return {
@@ -159,20 +161,18 @@ export default {
         <vue-final-modal
             class="bg-transparent"
             name="my-modal"
+            classes="modal-container "
+            content-class="modal-content"
             v-model="showModal"
             :width="1000"
             :height="700"
             :adaptive="true"
         >
-            <div class="w-full h-full flex items-center align-middle bg-red-500">
-                <form>
-                    <header>Inscríbete</header>
-                </form>
-                <button
-                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-black hover:text-primary transition-all transform hover:rotate-90"
-                    @click="showModal = false"
-                ></button>
-            </div>
+            <InscribirseTorneo :club="matchesData" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="showModal = false"
+            ></button>
         </vue-final-modal>
     </div>
     <!-- Match Counterup End -->
@@ -181,3 +181,35 @@ export default {
 
     <Footer />
 </template>
+
+<style>
+.modal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    position: relative;
+    width: 50%;
+    max-height: 300px;
+    padding: 16px;
+    overflow: auto;
+    background-color: #281d59;
+    border-radius: 4px;
+}
+.modal-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    margin: 8px 8px 0 0;
+    cursor: pointer;
+}
+.modal-close::hover {
+    color: gray;
+}
+</style>

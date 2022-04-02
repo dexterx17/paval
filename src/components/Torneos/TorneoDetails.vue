@@ -14,7 +14,7 @@
         </p>
         <h2
             class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10"
-        >{{ match.title }}</h2>
+        >{{ match.nombre }}</h2>
         <div class="content-details">
             <div class="description mt-6">
                 <p class="leading-8">El tiempo de espera es de {{ match.tiempo_espera }} minutos.</p>

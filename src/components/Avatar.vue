@@ -3,26 +3,29 @@
     <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
       <h3>Drop files to upload</h3>
     </div>
-    <div class="avatar-upload"  v-show="!edit">
+    <div class="avatar-upload" v-show="!edit">
       <div class="text-center p-2">
         <label for="avatar">
-          <img v-if="imagen" :src="imagen"  class="rounded-full" />
-          <img v-else :src="files.length ? files[0].url : 'https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm'"  class="rounded-full" />
+          <img v-if="imagen" :src="imagen" class="rounded-full" />
+          <img
+            v-else
+            :src="files.length ? files[0].url : 'https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm'"
+            class="rounded-full"
+          />
         </label>
       </div>
       <div class="text-center p-2">
         <file-upload
           extensions="gif,jpg,jpeg,png,webp"
-          accept="image/png,image/gif,image/jpeg,image/webp"
+          accept="image/png, image/gif, image/jpeg, image/webp"
           name="avatar"
           class="btn btn-primary"
           :drop="!edit"
           v-model="files"
           @input-filter="inputFilter"
           @input-file="inputFile"
-          ref="upload">
-          Actualizar avatar
-        </file-upload>
+          ref="upload"
+        >Actualizar {{ label }}</file-upload>
       </div>
     </div>
 
@@ -31,8 +34,16 @@
         <img ref="editImage" :src="files[0].url" />
       </div>
       <div class="text-center p-4">
-        <button type="button" class="mx-2 p-2 rounded-md border hover:text-yellow border-yellow" @click.prevent="$refs.upload.clear">Cancelar</button>
-        <button type="submit" class="mx-2 p-2 bg-yellow text-black hover:text-white rounded-md border border-yellow" @click.prevent="editSave">Guardar</button>
+        <button
+          type="button"
+          class="mx-2 p-2 rounded-md border hover:text-yellow border-yellow"
+          @click.prevent="$refs.upload.clear"
+        >Cancelar</button>
+        <button
+          type="submit"
+          class="mx-2 p-2 bg-yellow text-black hover:text-white rounded-md border border-yellow"
+          @click.prevent="editSave"
+        >Guardar</button>
       </div>
     </div>
   </div>
@@ -48,11 +59,17 @@ export default {
   components: {
     FileUpload,
   },
-  props:{
-      imagen:{
-          type:String,
-          required:false
-      }
+  props: {
+    imagen: {
+      type: String,
+      required: false
+    },
+    label: {
+      type: String,
+      default: function () {
+        return "Avatar";
+      },
+    }
   },
   data() {
     return {
@@ -103,18 +120,18 @@ export default {
       alert(message)
     },
     inputFile(newFile, oldFile, prevent) {
-        console.log('newFile',newFile);
-        console.log('oldFile',oldFile);
+      console.log('newFile', newFile);
+      console.log('oldFile', oldFile);
       if (newFile && !oldFile) {
         this.$nextTick(function () {
           this.edit = true
         })
       }
       if (!newFile && oldFile) {
-          this.edit = false
+        this.edit = false
       }
-      if(newFile && oldFile){
-          this.$emit('change-image',newFile.file)
+      if (newFile && oldFile) {
+        this.$emit('change-image', newFile.file)
       }
     },
     inputFilter(newFile, oldFile, prevent) {

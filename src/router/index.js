@@ -104,10 +104,10 @@ router.beforeEach((to, from, next) => {
   console.log('requiresAuth',requiresAuth);
   console.log('!currentUser)',(!currentUser));
   
-  if (requiresAuth && !currentUser) next('login');
+  //if (requiresAuth && !currentUser) next('login');
   // else if (!requiresAuth && currentUser) next('dashboard');
-  else next();
-  //next();
+  //else next();
+  next();
 });
 
 export default router;
