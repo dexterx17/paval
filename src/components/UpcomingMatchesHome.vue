@@ -93,7 +93,8 @@ export default {
             index: null,
             currentPage: 3,
             maxPerPage: 1,
-            showReadMore: true
+            showReadMore: true,
+            oldestFirst : -1
         }
     },
     computed: {

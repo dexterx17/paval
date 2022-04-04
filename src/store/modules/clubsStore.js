@@ -5,9 +5,9 @@ import {
     getDocs,
     doc,
     getDoc,
+    setDoc,
     addDoc
 } from "firebase/firestore";
-
 
 const state = {
     clubs: [],
@@ -62,6 +62,19 @@ const actions = {
                 });
         } catch (e) {
             console.error("Error adding document: ", e);
+        }
+    },
+    async updateClub({ commit }, payload) {
+        try {
+          setDoc(doc(db, "clubs",payload.uid), payload)
+          .then((docRef)=>{
+            console.log("Document written with ID: ", docRef);
+          }).catch((error)=>{
+            console.log('error init Player');
+            console.log(error);
+          });
+        } catch (e) {
+          console.error("Error adding document: ", e);
         }
     },
     async fetchClub({ commit }, payload) {

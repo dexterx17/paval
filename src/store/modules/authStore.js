@@ -101,7 +101,8 @@ const state = {
 
       const storage = getStorage();
 
-      const storageRef = ref(storage, "files/" + payload.imagen.name);
+      const imgName = `${Date.now()}-${payload.imagen.name}`;
+      const storageRef = ref(storage, "players/" + imgName);
  
       uploadBytes(storageRef, payload.imagen).then(function (snapshot) {
           
@@ -117,7 +118,6 @@ const state = {
         });
 
       });
-
     },
     updateProfile({ commit, dispatch }, payload) {
       const db = getFirestore();

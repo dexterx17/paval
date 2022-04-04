@@ -47,9 +47,9 @@
                         <div
                             class="md:col-end-13 flex md:justify-end justify-center items-center w-full px-20 sm:px-0 sm:w-auto"
                         >
-                            <img class="lg:mr-9 mr-5" :src="match.teamOne" alt="Club" />
+                            <img class="lg:mr-9 mr-5 w-16 h-16 rounded-lg" :src="match.club ? match.club.logo : '/images/others/upcoming-game-thumb3.webp'" alt="Club" />
 
-                            <img :src="match.teamTwo" alt="Serie" />
+                            <img :src="match.serie ? match.serie.logo : '/images/others/serie.png'" :alt="match.serie ? match.serie.nombre : ''" />
                         </div>
                     </div>
                 </div>
@@ -97,7 +97,8 @@ export default {
             index: null,
             currentPage: 3,
             maxPerPage: 1,
-            showReadMore: true
+            showReadMore: true,
+            oldestFirst : -1
         }
     },
     computed: {

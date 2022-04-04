@@ -34,7 +34,7 @@
             <h4 class="my-2 font-extrabold uppercase">Datos Torneo</h4>
 
             <div class="flex flex-wrap -mx-3 mb-2">
-                <div class="w-full px-3 mb-6 md:mb-0">
+                <div class="w-full px-3">
                     <label
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                         for="grid-nombre"
@@ -50,48 +50,65 @@
             </div>
 
             <div class="flex flex-wrap -mx-3 mb-2">
-                <div class="w-full md:w-1/2 px-3">
+                <div class="w-full md:w-2/3 px-3 mb-4">
                     <label
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                         for="grid-club"
                     >Club</label>
-                    <select
-                        class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        id="grid-club"
-                        v-model="torneoData.club"
-                        required
+                    <v-select 
+                        class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        v-model="torneoData.club_id"
+                        :options="clubsData"
+                        value="id"
+                        label="nombre"
+                        @input="selectClub"
                     >
-                        <option value>Ninguno</option>
-                        <option
-                            v-for="club in clubsData"
-                            :key="club.id"
-                            :value="club.nombre"
-                        >{{ club.nombre }}</option>
-                    </select>
+                        <template #selected-option="option">
+                            <div class="flex border-b border-purple">
+                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/upcoming-game-thumb3.webp'" :alt="option.nombre">
+                                <div class="p-2">
+                                    <h3 class="font-bold">{{ option.nombre }}</h3>
+                                    <em>{{ option.ciudad }} <small>{{ option.resolucion }}</small></em>
+                                </div>
+                            </div>
+                        </template>
+                        <template #option="option">
+                            <div class="flex border-b border-purple">
+                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/upcoming-game-thumb3.webp'" :alt="option.nombre">
+                                <div class="p-2">
+                                    <h3 class="font-bold">{{ option.nombre }}</h3>
+                                    <em>{{ option.ciudad }} <small>{{ option.resolucion }}</small></em>
+                                </div>
+                            </div>
+                        </template>
+                    </v-select>
                 </div>
-                <div class="w-full md:w-1/2 px-3">
+                <div class="w-full md:w-1/3 px-3">
                     <label
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                         for="grid-serie"
                     >Serie</label>
-                    <select
-                        class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        id="grid-tiempo-espera"
+                    <v-select 
+                        class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         v-model="torneoData.serie"
-                        required
+                        :options="seriesOptions"
+                        value="id"
+                        label="nombre"
+                        @input="selectSerie"
                     >
-                        <option value>Ninguna</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                    </select>
-                    <!-- <input
-                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        id="grid-serie"
-                        type="text"
-                        placeholder="Ej: A"
-                        v-model="torneoData.serie"
-                    />-->
+                        <template #selected-option="option">
+                            <div class="flex border-b border-purple">
+                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/serie.png'" :alt="option.nombre">
+                                <h3 class="font-bold">{{ option.nombre }}</h3>
+                            </div>
+                        </template>
+                        <template #option="option">
+                            <div class="flex border-b border-purple">
+                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/serie.png'" :alt="option.nombre">
+                                <h3 class="font-bold">{{ option.nombre }}</h3>
+                            </div>
+                        </template>
+                    </v-select>
                 </div>
             </div>
             <div class="flex flex-wrap -mx-3 mb-4">
@@ -230,7 +247,13 @@
 import { mapGetters, mapActions, useStore } from "vuex";
 import { computed, ref } from "vue";
 
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css';
+
 export default {
+    components:{
+        vSelect
+    },
     props: {
         paddingTop: String,
     },
@@ -256,6 +279,7 @@ export default {
             lugar: "",
             ciudad: "Ambato",
         };
+        const seriesOptions = ref([]);
 
         let clubsData = computed(function () {
             return store.state.clubsStore.clubs;
@@ -263,12 +287,34 @@ export default {
 
         const torneoData = ref(torneoModel);
 
+
         const initTorneo = () => {
             console.log('initTorneo');
             store.dispatch('loadClubs');
             showForm.value = true;
             torneoData.value = torneoModel;
         };
+
+        const selectClub = (club) => {
+            console.log('club',club);
+            torneoData.value.club_id = club.id;
+            torneoData.value.club_data = {
+                nombre: club.nombre,
+                logo: club.logo,
+                ciudad: club.ciudad
+            };
+            seriesOptions.value = club.series;
+        }
+
+        const selectSerie = (serie) => {
+            console.log('serie',serie);
+            torneoData.value.serie_id = serie.id;
+            torneoData.value.serie_data = {
+                nombre: serie.nombre,
+                logo: serie.logo,
+                ciudad: serie.ciudad
+            };
+        }
 
 
         const submit = () => {
@@ -282,10 +328,13 @@ export default {
 
         return {
             torneoData,
+            seriesOptions,
             clubsData,
             showForm,
 
             initTorneo,
+            selectClub,
+            selectSerie,
             submit
         };
     },
