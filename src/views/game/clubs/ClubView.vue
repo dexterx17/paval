@@ -33,9 +33,9 @@ export default {
 </script>
 <template>
     <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
-    
+
     <ClubDetails />
-    
+
     <SerieForm :paddingTop="paddingTop" />
 
     <Footer />

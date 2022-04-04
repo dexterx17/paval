@@ -35,7 +35,7 @@ const actions = {
 
         doSnapShot(querySnapshot);
 
-        //commit("SET_TORNEOS_LISTENER", query);
+        //commit("SET_CLUBS_LISTENER", query);
 
         function doSnapShot(querySnapshot) {
             console.log("doSnapShot");
@@ -47,14 +47,15 @@ const actions = {
                 p.id = doc.id;
                 clubs.push(p);
             });
-            commit("SET_TORNEOS", clubs);
+            commit("SET_CLUBS", clubs);
         }
     },
     async addClub({ commit }, payload) {
         try {
-            addDoc(collection(db, "clubs"), payload)
+            return await addDoc(collection(db, "clubs"), payload)
                 .then((docRef) => {
-                    console.log("Club with ID: ", docRef);
+                    console.log("Club with ID: ", docRef.id);
+                    return docRef;
                 })
                 .catch((error) => {
                     console.log("error adding Club");
@@ -98,25 +99,25 @@ const actions = {
 };
 
 const mutations = {
-    SET_TORNEOS_LISTENER(state, listener) {
+    SET_CLUBS_LISTENER(state, listener) {
         if (listener) {
             state.clubsListener = listener;
         } else {
             state.clubsListener();
         }
     },
-    SET_TORNEOS(state, payload) {
+    SET_CLUBS(state, payload) {
         console.log("setClubs", payload);
         state.clubs = payload;
     },
-    SET_TORNEO(state, payload) {
+    SET_CLUB(state, payload) {
         console.log("setClub", payload);
         state.club = payload;
     },
-    ADD_TORNEO(state, payload) {
+    ADD_CLUB(state, payload) {
         state.clubs.push(payload);
     },
-    SET_TORNEOS_ERROR(state, payload) {
+    SET_CLUBS_ERROR(state, payload) {
         state.clubsError = payload;
     },
 };
