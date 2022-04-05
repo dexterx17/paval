@@ -57,11 +57,11 @@
                     >Club</label>
                     <v-select 
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        v-model="torneoData.club_id"
                         :options="clubsData"
+                        v-on:change="selClub"
+                        @input="selectClub"
                         value="id"
                         label="nombre"
-                        @input="selectClub"
                     >
                         <template #selected-option="option">
                             <div class="flex border-b border-purple">
@@ -244,7 +244,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, useStore } from "vuex";
+import { useStore } from "vuex";
 import { computed, ref } from "vue";
 
 import vSelect from 'vue-select'
@@ -263,8 +263,10 @@ export default {
             btnName: "Nuevo Torneo"
         }
     },
-    methods: {
-        ...mapActions(["AddTorneo", "loadClubs"]),
+    methods:{
+        selClub(club){
+            alert(club)
+        }
     },
     setup() {
         const store = useStore();
@@ -297,13 +299,20 @@ export default {
 
         const selectClub = (club) => {
             console.log('club',club);
+            alert(club.id);
             torneoData.value.club_id = club.id;
             torneoData.value.club_data = {
                 nombre: club.nombre,
                 logo: club.logo,
                 ciudad: club.ciudad
             };
-            seriesOptions.value = club.series;
+            let items = store.dispatch('loadSeriesClub',{
+                club: club.id
+            });
+
+            console.log('items');
+            seriesOptions.value = items;
+            console.log(items);
         }
 
         const selectSerie = (serie) => {

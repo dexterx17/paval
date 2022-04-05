@@ -170,7 +170,7 @@ export default {
             () => route.params.id,
             async newId => {
                 console.log('newId', newId);
-                gameData.value = await fetchTorneo(newId)
+                gameData.value = await fetchClub(newId)
             }
         )
 
