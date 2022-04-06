@@ -1,12 +1,24 @@
 <script>
+import { mapGetters, mapActions } from "vuex";
+import user from "../../../vue-firebase-esencial/src/store/user";
+
 export default {
-    props: ["club"],
+    props: ["torneo"],
     methods: {
+        ...mapActions(["inscribirEnTorneo"]),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
+        },
+        inscribirme(){
+            this.inscribirEnTorneo({
+                torneo: this.torneo.id,
+                // nombre: user.nombre,
+                // avatar: user.avatar
+            });
         }
     },
+
 }
 </script>
 <template>
@@ -15,27 +27,27 @@ export default {
             <div class="col-span-2">
                 <h2
                     class="text-white text-center font-bold uppercase xl:text-xl lg:leading-12 leading-10"
-                >{{ club.nombre }}</h2>
+                >{{ torneo.nombre }}</h2>
                 <address class="my-2">
                     <i class="text-sm text-primary">Fecha:</i>
                     <span class="px-2">
-                        <span class="uppercase">{{ formatDate(club.fecha, { weekday: "long" }) }},</span>
-                        {{ formatDate(club.fecha) }}
-                        <strong>{{ club.hora }}</strong>
+                        <span class="uppercase">{{ formatDate(torneo.fecha, { weekday: "long" }) }},</span>
+                        {{ formatDate(torneo.fecha) }}
+                        <strong>{{ torneo.hora }}</strong>
                     </span>
                 </address>
                 <address class="my-2">
                     <i class="text-sm text-primary">Hora:</i>
                     <span class="px-2">
-                        <strong>{{ club.hora }}</strong>
-                        <small class="pl-4">Tiempo espera: {{ club.tiempo_espera }} minutos</small>
+                        <strong>{{ torneo.hora }}</strong>
+                        <small class="pl-4">Tiempo espera: {{ torneo.tiempo_espera }} minutos</small>
                     </span>
                 </address>
                 <address class="my-2">
                     <i class="text-sm text-primary">Ubicación:</i>
                     <span class="px-2">
-                        {{ club.ciudad }}
-                        <strong>{{ club.lugar }}</strong>
+                        {{ torneo.ciudad }}
+                        <strong>{{ torneo.lugar }}</strong>
                     </span>
                 </address>
             </div>

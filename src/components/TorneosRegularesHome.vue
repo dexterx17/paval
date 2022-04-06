@@ -18,7 +18,15 @@
                         >
                             <p
                                 class="sm:text-base text-sm font-medium"
-                            >{{ formatDate(match.fecha) }}</p>
+                            >
+                                <span class="capitalize">
+                                    {{ formatDate(match.fecha,{weekday:"long"}) }},
+                                </span>
+                                {{ formatDate(match.fecha) }}
+                                <span class="text-primary font-bold">
+                                    {{ match.hora }}
+                                </span>
+                            </p>
                             <RouterLink
                                 :to="`/torneo/${match.id}`"
                                 class="transition-all text-2xl lg:text-4xl font-bold uppercase font-exo text-white mb-4 hover:text-primary"
@@ -42,14 +50,14 @@
                                 />
                             </a>
                             <br />
-                            <span class="text-warning">Inscribirme</span>
+                            <span class="text-warning">Galería</span>
                         </div>
                         <div
                             class="md:col-end-13 flex md:justify-end justify-center items-center w-full px-20 sm:px-0 sm:w-auto"
                         >
-                            <img class="lg:mr-9 mr-5 w-16 h-16 rounded-lg" :src="match.club ? match.club.logo : '/images/others/upcoming-game-thumb3.webp'" alt="Club" />
+                            <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg" :src="match.club ? match.club.logo : '/images/others/upcoming-game-thumb3.webp'" alt="Club" />
 
-                            <img :src="match.serie ? match.serie.logo : '/images/others/serie.png'" :alt="match.serie ? match.serie.nombre : ''" />
+                            <img class="w-24 h-24" :src="match.serie ? match.serie.logo : '/images/others/seriei.png'" :alt="match.serie ? match.serie.nombre : ''" />
                         </div>
                     </div>
                 </div>
@@ -130,11 +138,9 @@ export default {
         loadMore() {
             this.currentPage += 1
         },
-        formatDate(date) {
-            console.log('formateDate', date, String(date));
-            if (date) {
-                return moment(date, "YYYY-MM-DD hh:mm").format('YYYY-MM-DD - hh:mm A')
-            }
+        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+            if (!value) return value
+            return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         }
     },
     setup() {

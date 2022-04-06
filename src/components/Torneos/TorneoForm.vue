@@ -235,8 +235,16 @@
                 </div>
             </div>
             <div class="flex justify-around">
-                <button type="submit">Crear Torneo</button>
-                <button @click="showForm = false" type="button">Cancelar</button>
+                <button 
+                    style="background-image:url(/images/others/btn-signup.webp);"
+                    class="signup-btn transition-all"
+                    type="submit"
+                >Crear Torneo</button>
+                <button
+                    class="signup-btn transition-all border-gray-200 border rounded-2xl"
+                    @click="showForm = false"
+                    type="button"
+                >Cancelar</button>
             </div>
         </form>
     </div>
