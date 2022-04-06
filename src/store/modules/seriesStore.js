@@ -51,24 +51,27 @@ const actions = {
         }
     },
     async loadSeriesClub({ commit }, payload) {
-        console.log("loadSeries");
+        console.log("loadSeriesClub");
+        console.log(payload);
         //const db = getFirestore();
-        console.log(db);
         const docRef = doc(db, "clubs", payload.club);
+        console.log('docRef');
+        console.log(docRef);
         const colRef = collection(docRef, "series")
+        console.log('colRef');
+        console.log(colRef);
         const querySnapshot = await getDocs(colRef);
 
         console.log(querySnapshot);
 
         let series = [];
 
-        doSnapShot(querySnapshot);
+        return doSnapShot(querySnapshot);
 
         //commit("SET_SERIES_LISTENER", query);
 
         function doSnapShot(querySnapshot) {
             console.log("doSnapShot");
-            console.log(querySnapshot);
             console.log(querySnapshot.docs);
             querySnapshot.docs.forEach((doc) => {
                 let p = doc.data();
@@ -77,6 +80,7 @@ const actions = {
                 series.push(p);
             });
             commit("SET_SERIES", series);
+            return series;
         }
 
     },

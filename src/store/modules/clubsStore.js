@@ -33,9 +33,7 @@ const actions = {
 
         let clubs = [];
 
-        doSnapShot(querySnapshot);
-
-        //commit("SET_CLUBS_LISTENER", query);
+        return doSnapShot(querySnapshot);
 
         function doSnapShot(querySnapshot) {
             console.log("doSnapShot");
@@ -48,6 +46,7 @@ const actions = {
                 clubs.push(p);
             });
             commit("SET_CLUBS", clubs);
+            return clubs;
         }
     },
     async addClub({ commit }, payload) {

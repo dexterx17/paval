@@ -1,3 +1,111 @@
+<script>
+import { useStore } from "vuex";
+import { computed, ref } from "vue";
+
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css';
+
+export default {
+    components: {
+        vSelect
+    },
+    props: {
+        paddingTop: String,
+    },
+    data() {
+        return {
+            videoBannerBg: "/images/bg/gaming-update.webp",
+            btnName: "Nuevo Torneo"
+        }
+    },
+    methods: {
+        selClub(club) {
+            alert(club)
+        }
+    },
+    setup() {
+        const store = useStore();
+        const showForm = ref(false);
+        const torneoModel = {
+            club: null,
+            serie: null,
+            organizador: "",
+            tiempo_espera: 5,
+            fecha: Date(),
+            hora: "19:00",
+            lugar: "",
+            ciudad: "Ambato",
+        };
+        const seriesOptions = ref([]);
+
+        const clubsOptions = ref([]);
+
+        const torneoData = ref(torneoModel);
+
+
+        const initTorneo = () => {
+            console.log('initTorneo');
+            store.dispatch('loadClubs').then((items) => {
+                clubsOptions.value = items;
+            });
+            showForm.value = true;
+            torneoData.value = torneoModel;
+        };
+
+        const selectClub = (club) => {
+            console.log('club', club);
+            torneoData.value.club = {
+                id: club.id,
+                nombre: club.nombre,
+                logo: club.logo,
+                ciudad: club.ciudad
+            };
+
+            store.dispatch('loadSeriesClub', {
+                club: club.id
+            }).then((items) => {
+                console.log('items');
+                seriesOptions.value = items;
+                console.log(items);
+            });
+
+        }
+
+        const selectSerie = (serie) => {
+            alert(serie);
+            console.log('serie', serie);
+            torneoData.value.serie_id = serie.id;
+            torneoData.value.serie_data = {
+                nombre: serie.nombre,
+                logo: serie.logo,
+                ciudad: serie.ciudad
+            };
+        }
+
+
+        const submit = () => {
+            console.log('addTorneo');
+            console.log(store);
+            store.dispatch('addTorneo', torneoData.value).then((response) => {
+                console.log('response');
+                console.log(response);
+            });
+        }
+
+        return {
+            torneoData,
+            seriesOptions,
+            clubsOptions,
+            showForm,
+
+            initTorneo,
+            selectClub,
+            selectSerie,
+            submit
+        };
+    },
+}
+</script>
 <template>
     <!-- Contact Banner Section Start -->
     <div class="container" :class="paddingTop">
@@ -48,36 +156,48 @@
                     />
                 </div>
             </div>
-
             <div class="flex flex-wrap -mx-3 mb-2">
                 <div class="w-full md:w-2/3 px-3 mb-4">
                     <label
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                         for="grid-club"
                     >Club</label>
-                    <v-select 
+                    <v-select
+                        id="grid-club"
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        :options="clubsData"
-                        v-on:change="selClub"
-                        @input="selectClub"
-                        value="id"
-                        label="nombre"
+                        :options="clubsOptions"
+                        :modelValue="torneoData.club"
+                        @update:modelValue="selectClub"
                     >
                         <template #selected-option="option">
                             <div class="flex border-b border-purple">
-                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/upcoming-game-thumb3.webp'" :alt="option.nombre">
+                                <img
+                                    class="w-12 h-12"
+                                    :src="option.logo ?? '/images/others/upcoming-game-thumb3.webp'"
+                                    :alt="option.nombre"
+                                />
                                 <div class="p-2">
                                     <h3 class="font-bold">{{ option.nombre }}</h3>
-                                    <em>{{ option.ciudad }} <small>{{ option.resolucion }}</small></em>
+                                    <em>
+                                        {{ option.ciudad }}
+                                        <small>{{ option.resolucion }}</small>
+                                    </em>
                                 </div>
                             </div>
                         </template>
                         <template #option="option">
-                            <div class="flex border-b border-purple">
-                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/upcoming-game-thumb3.webp'" :alt="option.nombre">
+                            <div class="flex items-center bg-purple-100 rounded-md my-1">
+                                <img
+                                    class="w-12 h-12"
+                                    :src="option.logo ?? '/images/others/upcoming-game-thumb3.webp'"
+                                    :alt="option.nombre"
+                                />
                                 <div class="p-2">
                                     <h3 class="font-bold">{{ option.nombre }}</h3>
-                                    <em>{{ option.ciudad }} <small>{{ option.resolucion }}</small></em>
+                                    <em>
+                                        {{ option.ciudad }}
+                                        <small>{{ option.resolucion }}</small>
+                                    </em>
                                 </div>
                             </div>
                         </template>
@@ -88,7 +208,7 @@
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                         for="grid-serie"
                     >Serie</label>
-                    <v-select 
+                    <v-select
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         v-model="torneoData.serie"
                         :options="seriesOptions"
@@ -97,15 +217,23 @@
                         @input="selectSerie"
                     >
                         <template #selected-option="option">
-                            <div class="flex border-b border-purple">
-                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/serie.png'" :alt="option.nombre">
-                                <h3 class="font-bold">{{ option.nombre }}</h3>
+                            <div class="flex items-center border-b border-purple">
+                                <img
+                                    class="w-12 h-12"
+                                    :src="option.logo ?? '/images/others/serie.png'"
+                                    :alt="option.nombre"
+                                />
+                                <h3 class="font-bold p-2">{{ option.nombre }}</h3>
                             </div>
                         </template>
                         <template #option="option">
-                            <div class="flex border-b border-purple">
-                                <img class="w-12 h-12" :src="option.logo ?? '/images/others/serie.png'" :alt="option.nombre">
-                                <h3 class="font-bold">{{ option.nombre }}</h3>
+                            <div class="flex items-center bg-fuchsia-100 rounded-md">
+                                <img
+                                    class="w-12 h-12"
+                                    :src="option.logo ?? '/images/others/serie.png'"
+                                    :alt="option.nombre"
+                                />
+                                <h3 class="font-bold p-2">{{ option.nombre }}</h3>
                             </div>
                         </template>
                     </v-select>
@@ -242,110 +370,3 @@
     </div>
     <!-- Contact Banner Section End -->
 </template>
-
-<script>
-import { useStore } from "vuex";
-import { computed, ref } from "vue";
-
-import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css';
-
-export default {
-    components:{
-        vSelect
-    },
-    props: {
-        paddingTop: String,
-    },
-    data() {
-        return {
-            videoBannerBg: "/images/bg/gaming-update.webp",
-            btnName: "Nuevo Torneo"
-        }
-    },
-    methods:{
-        selClub(club){
-            alert(club)
-        }
-    },
-    setup() {
-        const store = useStore();
-        const showForm = ref(false);
-        const torneoModel = {
-            club: null,
-            serie: null,
-            organizador: "",
-            tiempo_espera: 5,
-            fecha: Date(),
-            hora: "19:00",
-            lugar: "",
-            ciudad: "Ambato",
-        };
-        const seriesOptions = ref([]);
-
-        let clubsData = computed(function () {
-            return store.state.clubsStore.clubs;
-        });
-
-        const torneoData = ref(torneoModel);
-
-
-        const initTorneo = () => {
-            console.log('initTorneo');
-            store.dispatch('loadClubs');
-            showForm.value = true;
-            torneoData.value = torneoModel;
-        };
-
-        const selectClub = (club) => {
-            console.log('club',club);
-            alert(club.id);
-            torneoData.value.club_id = club.id;
-            torneoData.value.club_data = {
-                nombre: club.nombre,
-                logo: club.logo,
-                ciudad: club.ciudad
-            };
-            let items = store.dispatch('loadSeriesClub',{
-                club: club.id
-            });
-
-            console.log('items');
-            seriesOptions.value = items;
-            console.log(items);
-        }
-
-        const selectSerie = (serie) => {
-            console.log('serie',serie);
-            torneoData.value.serie_id = serie.id;
-            torneoData.value.serie_data = {
-                nombre: serie.nombre,
-                logo: serie.logo,
-                ciudad: serie.ciudad
-            };
-        }
-
-
-        const submit = () => {
-            console.log('addTorneo');
-            console.log(store);
-            store.dispatch('addTorneo', torneoData.value).then((response) => {
-                console.log('response');
-                console.log(response);
-            });
-        }
-
-        return {
-            torneoData,
-            seriesOptions,
-            clubsData,
-            showForm,
-
-            initTorneo,
-            selectClub,
-            selectSerie,
-            submit
-        };
-    },
-}
-</script>
