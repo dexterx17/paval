@@ -6,7 +6,7 @@
     <div class="avatar-upload" v-show="!edit">
       <div class="text-center p-2">
         <label for="avatar">
-          <img v-if="imagen" :src="imagen" class="rounded-full" />
+          <img v-if="imagen" :src="imagen" class="rounded-full w-32 h-32" />
           <img
             v-else
             :src="files.length ? files[0].url : 'https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm'"

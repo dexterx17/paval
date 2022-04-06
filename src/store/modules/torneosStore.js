@@ -52,14 +52,33 @@ const actions = {
     },
     async addTorneo({ commit }, payload) {
         try {
-            addDoc(collection(db, "torneos"), payload)
+            return addDoc(collection(db, "torneos"), payload)
                 .then((docRef) => {
                     console.log("Torneo with ID: ", docRef);
+                    return docRef;
                 })
                 .catch((error) => {
                     console.log("error adding Torneo");
                     console.log(error);
                 });
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
+    async inscribirEnTorneo({ commit }, payload) {
+        try {
+            const docRef = doc(db, "torneos", payload.torneo);
+            const colRef = collection(docRef, "jugadores")
+
+            return await addDoc(colRef, payload)
+            .then((docRef) => {
+                console.log("Inscrito with ID: ", docRef);
+                return docRef;
+            })
+            .catch((error) => {
+                console.log("error adding Inscrito");
+                console.log(error);
+            });
         } catch (e) {
             console.error("Error adding document: ", e);
         }

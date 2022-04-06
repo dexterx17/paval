@@ -47,13 +47,13 @@ export default {
     setup() {
         const route = useRoute();
         const store = useStore();
-        const matchesData = ref(null);
+        const torneoData = ref(null);
         const showModal = ref(false);
 
         store.dispatch('fetchTorneo', route.params.id).then((value) => {
             console.log('value');
             console.log(value);
-            matchesData.value = value;
+            torneoData.value = value;
         });
 
         // fetch the user information when params change
@@ -61,12 +61,12 @@ export default {
             () => route.params.id,
             async newId => {
                 console.log('newId', newId);
-                matchesData.value = await fetchTorneo(newId)
+                torneoData.value = await fetchTorneo(newId)
             }
         )
 
         return {
-            matchesData,
+            torneoData,
             showModal
         }
     }
@@ -77,15 +77,15 @@ export default {
     <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 
     <!-- Team Varses Team Start -->
-    <div class="container mb-12">
+    <div class="container mb-12" v-if="torneoData">
         <div
             class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 max-w-lg mx-auto"
         >
             <div class="grid grid-cols-1 items-center">
                 <div class="flex justify-center items-center w-full px-20 sm:px-0">
-                    <img class="lg:mr-9 mr-5" :src="matchesData.teamOne" alt="Feature Icon" />
-                    <!-- <img class="lg:mr-9 mr-5" :src="matchesData.teamVs" alt="Feature Icon" /> -->
-                    <img :src="matchesData.teamTwo" alt="Feature Icon" />
+                    <img class="lg:mr-9 mr-5 w-16 h-16 rounded-lg" :src="torneoData.club ? torneoData.club.logo : '/images/others/upcoming-game-thumb3.webp'" alt="Club" />
+                    <!-- <img class="lg:mr-9 mr-5" :src="torneoData.teamVs" alt="Feature Icon" /> -->
+                    <img class="w-16 h-16" :src="torneoData.serie ? torneoData.serie.logo : '/images/others/seriei.png'" alt="Feature Icon" />
                 </div>
             </div>
         </div>
@@ -93,7 +93,7 @@ export default {
     <!-- Team Varses Team End -->
 
     <!-- Match Counterup Start -->
-    <div class="container">
+    <div class="container"  v-if="torneoData">
         <div
             class="match_details_counterup flex flex-col sm:flex-row justify-between items-center py-12 mb-12 border-b-2 border-secondary-80"
         >
@@ -168,7 +168,7 @@ export default {
             :height="700"
             :adaptive="true"
         >
-            <InscribirseTorneo :club="matchesData" />
+            <InscribirseTorneo :torneo="torneoData" />
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModal = false"
@@ -177,7 +177,7 @@ export default {
     </div>
     <!-- Match Counterup End -->
 
-    <TorneoDetails :match="matchesData" />
+    <TorneoDetails  v-if="torneoData" :match="torneoData" />
 
     <Footer />
 </template>

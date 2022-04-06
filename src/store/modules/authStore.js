@@ -32,7 +32,9 @@ const state = {
  const actions = {
    authAction({ commit }) {
       const auth = getAuth();
+      console.log('authAction');
       onAuthStateChanged(auth, user => {
+        console.log('onAuthStateChanged',user);
         if (user) {
           commit("setUser", user);
         } else {
