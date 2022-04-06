@@ -1,6 +1,5 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
-import user from "../../../vue-firebase-esencial/src/store/user";
 
 export default {
     props: ["torneo"],
@@ -10,12 +9,16 @@ export default {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
-        inscribirme(){
+        submit() {
+
             this.inscribirEnTorneo({
-                torneo: this.torneo.id,
+                torneo: this.torneo,
                 // nombre: user.nombre,
                 // avatar: user.avatar
-            });
+            }).then((value) => {
+                console.log('value');
+                console.log(value);
+            })
         }
     },
 
@@ -23,7 +26,11 @@ export default {
 </script>
 <template>
     <div class>
-        <form id="contact-form" class="grid sm:gap-x-8 gap-x-4 grid-cols-2">
+        <form
+            @submit.prevent="submit"
+            id="contact-form"
+            class="grid sm:gap-x-8 gap-x-4 grid-cols-2"
+        >
             <div class="col-span-2">
                 <h2
                     class="text-white text-center font-bold uppercase xl:text-xl lg:leading-12 leading-10"

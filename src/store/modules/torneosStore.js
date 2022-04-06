@@ -66,11 +66,16 @@ const actions = {
         }
     },
     async inscribirEnTorneo({ commit }, payload) {
+        console.log(payload.torneo);
         try {
+            alert(payload.torneo);
             const docRef = doc(db, "torneos", payload.torneo);
-            const colRef = collection(docRef, "jugadores")
+            const colRef = collection(docRef, "jugadores");
+            
+            console.log('inscribirEnTorneo', payload);
 
-            return await addDoc(colRef, payload)
+
+            return addDoc(colRef, payload)
             .then((docRef) => {
                 console.log("Inscrito with ID: ", docRef);
                 return docRef;
@@ -90,9 +95,11 @@ const actions = {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                console.log("Document data:", docSnap.data());
-                commit('SET_TORNEO',docSnap.data());
-                return docSnap.data();
+                let torneo = docs.data();
+                torneo.id = docs.id;
+                console.log("Document data:", torneo);
+                commit('SET_TORNEO',torneo);
+                return torneo;
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");

@@ -16,16 +16,14 @@
                         <div
                             class="md:col-start-1 md:col-end-7 flex flex-col md:justify-start md:items-start justify-center items-center text-center mr-5"
                         >
-                            <p
-                                class="sm:text-base text-sm font-medium"
-                            >
-                                <span class="capitalize">
-                                    {{ formatDate(match.fecha,{weekday:"long"}) }},
-                                </span>
+                            <p class="sm:text-base text-sm font-medium">
+                                <span
+                                    class="capitalize"
+                                >{{ formatDate(match.fecha, { weekday: "long" }) }},</span>
                                 {{ formatDate(match.fecha) }}
-                                <span class="text-primary font-bold">
-                                    {{ match.hora }}
-                                </span>
+                                <span
+                                    class="text-primary font-bold"
+                                >{{ match.hora }}</span>
                             </p>
                             <RouterLink
                                 :to="`/torneo/${match.id}`"
@@ -55,9 +53,19 @@
                         <div
                             class="md:col-end-13 flex md:justify-end justify-center items-center w-full px-20 sm:px-0 sm:w-auto"
                         >
-                            <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg" :src="match.club ? match.club.logo : '/images/others/upcoming-game-thumb3.webp'" alt="Club" />
+                            <img
+                                class="lg:mr-9 mr-5 w-24 h-24 rounded-lg"
+                                :src="match.club ? match.club.logo : '/images/others/upcoming-game-thumb3.webp'"
+                                :alt="match.club ? match.club.nombre : 'No Club'"
+                                :title="match.club ? match.club.nombre : 'No Club'"
+                            />
 
-                            <img class="w-24 h-24" :src="match.serie ? match.serie.logo : '/images/others/seriei.png'" :alt="match.serie ? match.serie.nombre : ''" />
+                            <img
+                                class="w-24 h-24"
+                                :src="match.serie ? match.serie.logo : '/images/others/seriei.png'"
+                                :alt="match.serie ? match.serie.nombre : 'No Serie'"
+                                :title="match.serie ? match.serie.nombre : 'No Serie'"
+                            />
                         </div>
                     </div>
                 </div>
@@ -106,7 +114,7 @@ export default {
             currentPage: 3,
             maxPerPage: 1,
             showReadMore: true,
-            oldestFirst : -1
+            oldestFirst: -1
         }
     },
     computed: {

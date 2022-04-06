@@ -89,6 +89,10 @@ export default {
             store.dispatch('addTorneo', torneoData.value).then((response) => {
                 console.log('response');
                 console.log(response);
+                console.log(response.id);
+                if (response.id) {
+                    showForm.value = false;
+                }
             });
         }
 
@@ -210,11 +214,11 @@ export default {
                     >Serie</label>
                     <v-select
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        v-model="torneoData.serie"
                         :options="seriesOptions"
                         value="id"
                         label="nombre"
-                        @input="selectSerie"
+                        :modelValue="torneoData.serie"
+                        @update:modelValue="selectSerie"
                     >
                         <template #selected-option="option">
                             <div class="flex items-center border-b border-purple">
@@ -363,7 +367,7 @@ export default {
                 </div>
             </div>
             <div class="flex justify-around">
-                <button 
+                <button
                     style="background-image:url(/images/others/btn-signup.webp);"
                     class="signup-btn transition-all"
                     type="submit"

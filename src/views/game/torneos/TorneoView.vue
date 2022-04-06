@@ -8,11 +8,11 @@ import { CountTo } from 'vue3-count-to';
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import Footer from "@/components/Footer.vue";
 import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
+import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 
 import { useRoute } from 'vue-router'
 
 import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
-import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 
 
 export default {
@@ -35,7 +35,6 @@ export default {
         };
     },
     methods: {
-        ...mapActions(["fetchTorneo", "inscribirEnTorneo"]),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
@@ -83,9 +82,17 @@ export default {
         >
             <div class="grid grid-cols-1 items-center">
                 <div class="flex justify-center items-center w-full px-20 sm:px-0">
-                    <img class="lg:mr-9 mr-5 w-16 h-16 rounded-lg" :src="torneoData.club ? torneoData.club.logo : '/images/others/upcoming-game-thumb3.webp'" alt="Club" />
+                    <img
+                        class="lg:mr-9 mr-5 w-16 h-16 rounded-lg"
+                        :src="torneoData.club ? torneoData.club.logo : '/images/others/upcoming-game-thumb3.webp'"
+                        alt="Club"
+                    />
                     <!-- <img class="lg:mr-9 mr-5" :src="torneoData.teamVs" alt="Feature Icon" /> -->
-                    <img class="w-16 h-16" :src="torneoData.serie ? torneoData.serie.logo : '/images/others/seriei.png'" alt="Feature Icon" />
+                    <img
+                        class="w-16 h-16"
+                        :src="torneoData.serie ? torneoData.serie.logo : '/images/others/seriei.png'"
+                        alt="Feature Icon"
+                    />
                 </div>
             </div>
         </div>
@@ -93,7 +100,7 @@ export default {
     <!-- Team Varses Team End -->
 
     <!-- Match Counterup Start -->
-    <div class="container"  v-if="torneoData">
+    <div class="container" v-if="torneoData">
         <div
             class="match_details_counterup flex flex-col sm:flex-row justify-between items-center py-12 mb-12 border-b-2 border-secondary-80"
         >
@@ -177,7 +184,7 @@ export default {
     </div>
     <!-- Match Counterup End -->
 
-    <TorneoDetails  v-if="torneoData" :match="torneoData" />
+    <TorneoDetails v-if="torneoData" :match="torneoData" />
 
     <Footer />
 </template>

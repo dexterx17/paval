@@ -28,13 +28,22 @@ export default {
     const store = useStore();
     const playerData = ref(null);
 
-    console.log("store");
-    console.log(store);
-    console.log("store.getters.getUser");
-    console.log(store.getters);
-    console.log(store.getters.getUser);
-
     const player = computed(() => store.getters["getUser"]);
+    console.log('player', player.value)
+
+    const loadInfoPlayer = (playerInfo) => {
+      console.log('loadInfoPlayer', playerInfo);
+      store.dispatch("loadProfile", playerInfo.uid).then((value) => {
+        console.log("profile", value);
+        playerData.value = value;
+        playerData.value.uid = playerInfo.uid;
+      });
+
+    }
+
+    if (player.value) {
+      loadInfoPlayer(player.value);
+    }
 
     watch(
       player, (curr, old) => {
@@ -42,12 +51,8 @@ export default {
         console.log(curr, old)
 
         console.log(curr);
-
-        store.dispatch("loadProfile", curr.uid).then((value) => {
-          console.log("profile", value);
-          playerData.value = value;
-          playerData.value.uid = curr.uid;
-        });
+        console.log(curr.uid);
+        loadInfoPlayer(curr);
       }
     )
 
@@ -63,13 +68,17 @@ export default {
 <template>
   <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 
-  <div class="container"  v-if="playerData">
+  <div class="container" v-if="playerData">
     <div class="flex md:flex-row flex-col bg-secondary-100 p-8 md:p-68 rounded-50">
       <div class="md:w-2/5">
         <div
           class="border-4 border-gray-400 rounded-3xl d-flex max-w-full md:max-w-sm overflow-hidden"
         >
-          <img class="w-full" :src="playerData.avatar ?? '/images/player/list/player-1.webp'" :alt="playerData.nombre" />
+          <img
+            class="w-full"
+            :src="playerData.avatar ?? '/images/player/list/player-1.webp'"
+            :alt="playerData.nombre"
+          />
         </div>
 
         <div
@@ -157,5 +166,4 @@ export default {
   <PlayerForm v-if="playerData" :player="playerData" />
 
   <Footer />
-
 </template>
