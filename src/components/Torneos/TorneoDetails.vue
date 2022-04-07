@@ -30,18 +30,15 @@
             </div>
         </div>
 
-        <Inscritos />
     </div>
 </template>
 
 <script>
-import Inscritos from '@/components/Players/Inscritos.vue';
+
 
 export default {
     props: ["match"],
-    components: {
-        Inscritos,
-    },
+
     methods: {
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value

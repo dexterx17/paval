@@ -30,16 +30,20 @@ const state = {
     }
  };
  const actions = {
-   authAction({ commit }) {
+   authAction({ commit, dispatch }) {
       const auth = getAuth();
       console.log('authAction');
       onAuthStateChanged(auth, user => {
         console.log('onAuthStateChanged',user);
-        if (user) {
-          commit("setUser", user);
-        } else {
-          commit("setUser", null);
-        }
+        dispatch('loadProfile',user.uid).then((player)=>{
+          console.log('loadPlayerLoggedUser',player);
+          user.player = player;
+          if (user) {
+            commit("setUser", user);
+          } else {
+            commit("setUser", null);
+          }
+        })
       });
     },
     signUpAction({ commit, dispatch }, payload) {

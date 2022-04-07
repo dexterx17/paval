@@ -1,6 +1,6 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
-
+import { computed } from 'vue';
 export default {
     props: ["torneo"],
     methods: {
@@ -10,14 +10,21 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         submit() {
-
+            const user = computed(() => this.$store.getters["getUser"]);
+            console.log('user', user.value)
             this.inscribirEnTorneo({
                 torneo: this.torneo,
-                // nombre: user.nombre,
-                // avatar: user.avatar
-            }).then((value) => {
-                console.log('value');
-                console.log(value);
+                jugador: {
+                    jugador_id: user.value.uid,
+                    nombre: user.value.player.nombre,
+                    avatar: user.value.player.avatar
+                },
+            }).then((inscrito) => {
+                console.log('inscrito');
+                console.log(inscrito);
+                if(inscrito.id){
+                    this.$emit('hide-modal')
+                }
             })
         }
     },
@@ -25,7 +32,7 @@ export default {
 }
 </script>
 <template>
-    <div class>
+    <div>
         <form
             @submit.prevent="submit"
             id="contact-form"

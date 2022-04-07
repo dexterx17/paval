@@ -1,5 +1,5 @@
 <script>
-import { useStore } from "vuex";
+import { useStore, mapActions } from "vuex";
 import { computed, ref } from "vue";
 
 import vSelect from 'vue-select'
@@ -19,6 +19,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(["loadTorneos"]),
         selClub(club) {
             alert(club)
         }
@@ -35,6 +36,7 @@ export default {
             hora: "19:00",
             lugar: "",
             ciudad: "Ambato",
+            inscritos: []
         };
         const seriesOptions = ref([]);
 
@@ -72,13 +74,11 @@ export default {
         }
 
         const selectSerie = (serie) => {
-            alert(serie);
             console.log('serie', serie);
-            torneoData.value.serie_id = serie.id;
-            torneoData.value.serie_data = {
+            torneoData.value.serie = {
+                id: serie.id,
                 nombre: serie.nombre,
-                logo: serie.logo,
-                ciudad: serie.ciudad
+                logo: serie.logo
             };
         }
 
@@ -86,12 +86,14 @@ export default {
         const submit = () => {
             console.log('addTorneo');
             console.log(store);
+            var vm = this;
             store.dispatch('addTorneo', torneoData.value).then((response) => {
                 console.log('response');
                 console.log(response);
                 console.log(response.id);
                 if (response.id) {
                     showForm.value = false;
+                    vm.loadTorneos()
                 }
             });
         }
@@ -215,8 +217,6 @@ export default {
                     <v-select
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         :options="seriesOptions"
-                        value="id"
-                        label="nombre"
                         :modelValue="torneoData.serie"
                         @update:modelValue="selectSerie"
                     >

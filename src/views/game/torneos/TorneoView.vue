@@ -9,6 +9,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Footer from "@/components/Footer.vue";
 import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
+import Inscritos from '@/components/Players/Inscritos.vue';
 
 import { useRoute } from 'vue-router'
 
@@ -23,7 +24,8 @@ export default {
         VueFinalModal,
         ModalsContainer,
         CountTo,
-        InscribirseTorneo
+        InscribirseTorneo,
+        Inscritos
     },
     data() {
         return {
@@ -31,7 +33,6 @@ export default {
             BreadcrumbSubTitle: "Torneo",
             btnName: "INSCRIBIRME",
             commentsVisible: true,
-
         };
     },
     methods: {
@@ -47,12 +48,24 @@ export default {
         const route = useRoute();
         const store = useStore();
         const torneoData = ref(null);
+        const jugadoresInscritos = ref([]);
         const showModal = ref(false);
+        
 
-        store.dispatch('fetchTorneo', route.params.id).then((value) => {
-            console.log('value');
-            console.log(value);
-            torneoData.value = value;
+        const user = computed(() => store.getters.getUser);
+        
+
+        store.dispatch('fetchTorneo', route.params.id).then((torneo) => {
+            console.log('torneoData');
+            console.log(torneo);
+            torneoData.value = torneo;
+
+        });
+
+        store.dispatch('fetchInscritosTorneo', route.params.id).then((inscritos) => {
+            console.log('inscritos');
+            console.log(inscritos);
+            jugadoresInscritos.value = inscritos;
         });
 
         // fetch the user information when params change
@@ -66,7 +79,9 @@ export default {
 
         return {
             torneoData,
-            showModal
+            jugadoresInscritos,
+            showModal,
+            user
         }
     }
 }
@@ -113,7 +128,7 @@ export default {
                         <count-to
                             class="text-white text-4xl lg:text-5xl font-bold"
                             :startVal="0"
-                            :endVal="280"
+                            :endVal="torneoData.inscritos.length"
                             :duration="3000"
                             :autoplay="true"
                         ></count-to>
@@ -150,8 +165,23 @@ export default {
                     </div>
                 </div>
             </div>
-            <div class="flex justify-end mt-16 md:mt-0">
+            <div v-if="user" class="flex justify-end mt-16 md:mt-0">
+                <div
+                 v-if="torneoData.inscritos.includes(user.uid)"
+                 class="flex flex-col align-content-center  content-center"
+                >
+                    <h3>Ya estas inscrito en este torneo</h3>
+                    <h2 class="flex flex-col py-2 uppercase text-2xl font-semibold text-primary text-center">
+                        <small class="text-xs italic capitalize">
+                            Jugador
+                        </small>
+                        <span>
+                        # {{ (torneoData.inscritos.indexOf(user.uid) + 1) }}
+                        </span>
+                    </h2>
+                </div>
                 <button
+                    v-else
                     @click="showModal = true;"
                     class="group primary-btn opacity-100 transition-all"
                     style="background-image:url(/images/others/btn-bg.webp)"
@@ -175,7 +205,7 @@ export default {
             :height="700"
             :adaptive="true"
         >
-            <InscribirseTorneo :torneo="torneoData" />
+            <InscribirseTorneo :torneo="torneoData" @hide-modal="showModal = false" />
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModal = false"
@@ -185,6 +215,10 @@ export default {
     <!-- Match Counterup End -->
 
     <TorneoDetails v-if="torneoData" :match="torneoData" />
+
+    <div class="container">
+        <Inscritos v-if="jugadoresInscritos" :jugadores-inscritos="jugadoresInscritos" />
+    </div>
 
     <Footer />
 </template>

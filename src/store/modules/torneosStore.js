@@ -5,7 +5,11 @@ import {
     getDocs,
     doc,
     getDoc,
-    addDoc
+    addDoc,
+    updateDoc,
+    serverTimestamp,
+    arrayUnion,
+    arrayRemove
 } from "firebase/firestore";
 
 
@@ -66,19 +70,23 @@ const actions = {
         }
     },
     async inscribirEnTorneo({ commit }, payload) {
-        console.log(payload.torneo);
+        console.log(payload);
         try {
-            alert(payload.torneo);
-            const docRef = doc(db, "torneos", payload.torneo);
+            const docRef = doc(db, "torneos", payload.torneo.id);
             const colRef = collection(docRef, "jugadores");
             
-            console.log('inscribirEnTorneo', payload);
+            payload.jugador.timestamp = serverTimestamp();
+            
+            await updateDoc(docRef, {
+                inscritos: arrayUnion(payload.jugador.jugador_id)
+            });     
+            
+            return await addDoc(colRef, payload.jugador)
+            .then((docRes) => {
+                console.log("Inscrito with ID: ", payload.jugador.jugador_id);
 
 
-            return addDoc(colRef, payload)
-            .then((docRef) => {
-                console.log("Inscrito with ID: ", docRef);
-                return docRef;
+                return docRes;
             })
             .catch((error) => {
                 console.log("error adding Inscrito");
@@ -95,8 +103,8 @@ const actions = {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                let torneo = docs.data();
-                torneo.id = docs.id;
+                let torneo = docSnap.data();
+                torneo.id = docSnap.id;
                 console.log("Document data:", torneo);
                 commit('SET_TORNEO',torneo);
                 return torneo;
@@ -104,6 +112,35 @@ const actions = {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
             }
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
+    async fetchInscritosTorneo({ commit }, payload) {
+        try {
+            console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+            const docRef = doc(db, "torneos", payload);
+            const querySnapshot = await getDocs(collection(docRef, "jugadores"));
+            
+            let inscritos = [];
+
+            return doSnapShot(querySnapshot);
+    
+            //commit("SET_TORNEOS_LISTENER", query);
+    
+            function doSnapShot(querySnapshot) {
+                console.log("doSnapShot");
+                console.log(querySnapshot);
+                console.log(querySnapshot.docs);
+                querySnapshot.docs.forEach((doc) => {
+                    let p = doc.data();
+                    console.log(`${doc.id} => ${doc.data()}`);
+                    p.id = doc.id;
+                    inscritos.push(p);
+                });
+                return inscritos;
+            }
+
         } catch (e) {
             console.error("Error adding document: ", e);
         }
