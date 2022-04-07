@@ -90,10 +90,10 @@ const actions = {
       console.error("Error adding document: ", e);
     }
   },
-  updatePlayer({ commit }, payload) {
+  async updatePlayer({ commit }, payload) {
     const db = getFirestore();
     try {
-      setDoc(doc(db, "players", payload.user.uid), {
+      return await setDoc(doc(db, "players", payload.user.uid), {
         nombre: payload.user.displayName ?? "",
         bod: null,
         nacionalidad: "ec",
@@ -102,10 +102,12 @@ const actions = {
       })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef);
+          return docRef;
         })
         .catch((error) => {
           console.log("error init Player");
           console.log(error);
+          return null;
         });
     } catch (e) {
       console.error("Error adding document: ", e);

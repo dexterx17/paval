@@ -9,6 +9,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Footer from "@/components/Footer.vue";
 import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
+import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
 import Inscritos from '@/components/Players/Inscritos.vue';
 
 import { useRoute } from 'vue-router'
@@ -25,6 +26,7 @@ export default {
         ModalsContainer,
         CountTo,
         InscribirseTorneo,
+        ConfigurarTorneo,
         Inscritos
     },
     data() {
@@ -50,10 +52,11 @@ export default {
         const torneoData = ref(null);
         const jugadoresInscritos = ref([]);
         const showModal = ref(false);
-        
+        const showModalConfigurarTorneo = ref(false);
+
 
         const user = computed(() => store.getters.getUser);
-        
+
 
         store.dispatch('fetchTorneo', route.params.id).then((torneo) => {
             console.log('torneoData');
@@ -81,6 +84,7 @@ export default {
             torneoData,
             jugadoresInscritos,
             showModal,
+            showModalConfigurarTorneo,
             user
         }
     }
@@ -165,19 +169,17 @@ export default {
                     </div>
                 </div>
             </div>
-            <div v-if="user" class="flex justify-end mt-16 md:mt-0">
+            <div v-if="user" class="flex flex-col justify-end mt-16 md:mt-0">
                 <div
-                 v-if="torneoData.inscritos.includes(user.uid)"
-                 class="flex flex-col align-content-center  content-center"
+                    v-if="torneoData.inscritos.includes(user.uid)"
+                    class="flex flex-col align-content-center content-center"
                 >
                     <h3>Ya estas inscrito en este torneo</h3>
-                    <h2 class="flex flex-col py-2 uppercase text-2xl font-semibold text-primary text-center">
-                        <small class="text-xs italic capitalize">
-                            Jugador
-                        </small>
-                        <span>
-                        # {{ (torneoData.inscritos.indexOf(user.uid) + 1) }}
-                        </span>
+                    <h2
+                        class="flex justify-center items-center py-2 uppercase text-2xl font-semibold text-primary text-center"
+                    >
+                        <small class="text-xs italic capitalize">Jugador</small>
+                        <span class="pl-2"># {{ (torneoData.inscritos.indexOf(user.uid) + 1) }}</span>
                     </h2>
                 </div>
                 <button
@@ -187,6 +189,18 @@ export default {
                     style="background-image:url(/images/others/btn-bg.webp)"
                 >
                     {{ btnName }}
+                    <img
+                        src="/images/icon/arrrow-icon.webp"
+                        alt="Arrow Icon"
+                        class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
+                    />
+                </button>
+                <button
+                    @click="showModalConfigurarTorneo = true;"
+                    class="group primary-btn opacity-100 transition-all"
+                    style="background-image:url(/images/others/btn-bg.webp)"
+                >
+                    Iniciar Torneo
                     <img
                         src="/images/icon/arrrow-icon.webp"
                         alt="Arrow Icon"
@@ -209,6 +223,22 @@ export default {
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModal = false"
+            ></button>
+        </vue-final-modal>
+        <vue-final-modal
+            class="bg-transparent"
+            name="my-modal"
+            classes="modal-container "
+            content-class="modal-content"
+            v-model="showModalConfigurarTorneo"
+            :width="1000"
+            :height="700"
+            :adaptive="true"
+        >
+            <ConfigurarTorneo :torneo="torneoData" @hide-modal="showModalConfigurarTorneo = false" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="showModalConfigurarTorneo = false"
             ></button>
         </vue-final-modal>
     </div>

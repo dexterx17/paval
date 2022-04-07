@@ -31,7 +31,7 @@
                             >{{ match.nombre }}</RouterLink>
                             <span
                                 class="text-primary font-normal text-sm font-exo"
-                            >{{ match.players }} jugadores inscritos</span>
+                            >{{ match.inscritos.length }} jugadores inscritos</span>
                         </div>
                         <div
                             class="md:col-start-7 md:col-end-9 lg:mr-12 mr-5 md:my-auto my-8 flex flex-col items-center text-center"
