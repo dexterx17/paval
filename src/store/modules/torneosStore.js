@@ -96,6 +96,38 @@ const actions = {
             console.error("Error adding document: ", e);
         }
     },
+    async configurarTorneo({ commit }, payload) {
+        try {
+            const docRef = doc(db, "torneos", payload.torneo_id);
+            
+            const colRef = collection(docRef, "grupos");
+            
+            payload.grupos.forEach((grupo)=>{
+                addDoc(colRef, grupo)
+                .then((docRes) => {
+                    console.log("User grupo with ID: ", grupo);
+                })
+                .catch((error) => {
+                    console.log("error adding User a grupo");
+                    console.log(error);
+                });
+
+            });
+
+            return await updateDoc(docRef, payload.data)
+                .then((docRes) => {
+                    console.log("Update config torneo with ID: ", payload);
+                    return docRes;
+                })
+                .catch((error) => {
+                    console.log("error config torneo");
+                    console.log(error);
+                });
+            
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
     async fetchTorneo({ commit }, payload) {
         try {
             console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);

@@ -29,7 +29,7 @@ export default {
   setup(props) {
     const store = useStore();
     const playerData = ref(null);
-    const showForm = ref(true);
+    const showForm = ref(false);
 
     console.log("store");
     console.log(store);
@@ -70,6 +70,9 @@ export default {
       store.dispatch("updateProfile", playerData.value).then((response) => {
         console.log("response");
         console.log(response);
+		if(response.id){
+			showForm.value = false;
+		}
       });
     };
 
@@ -85,7 +88,16 @@ export default {
 };
 </script>
 <template>
-        <div v-if="playerData">
+    <div class="mt-4 flex justify-end">
+        <button 
+            style="background-image:url(/images/others/btn-signup.webp); background-size: 275px 60px;"
+            class="signup-btn transition-all w-auto	 px-3"
+            type="button"
+			v-if="!showForm"
+			@click="showForm = true"
+        >Actualizar Datos de Perfil</button>
+    </div>
+    <div v-if="playerData">
       <form @submit.prevent="submit" v-if="showForm" class="w-full max-w-lg mx-auto py-1">
         <h4 class="my-2 font-extrabold uppercase">Datos de perfil</h4>
 

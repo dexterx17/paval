@@ -125,15 +125,17 @@ const state = {
 
       });
     },
-    updateProfile({ commit, dispatch }, payload) {
+    async updateProfile({ commit, dispatch }, payload) {
       const db = getFirestore();
       try {
-        setDoc(doc(db, "players",payload.uid), payload)
+        return await setDoc(doc(db, "players",payload.uid), payload)
         .then((docRef)=>{
           console.log("Document written with ID: ", docRef);
+          return docRef;
         }).catch((error)=>{
           console.log('error init Player');
           console.log(error);
+          return null;
         });
       } catch (e) {
         console.error("Error adding document: ", e);

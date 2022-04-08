@@ -235,7 +235,7 @@ export default {
             :height="700"
             :adaptive="true"
         >
-            <ConfigurarTorneo :torneo="torneoData" @hide-modal="showModalConfigurarTorneo = false" />
+            <ConfigurarTorneo :torneo="torneoData" :inscritos="jugadoresInscritos" @hide-modal="showModalConfigurarTorneo = false" />
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModalConfigurarTorneo = false"

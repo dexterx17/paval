@@ -9,17 +9,30 @@ export default {
     components: {
         vSelect
     },
-    props: ["torneo"],
+    props: ["torneo", 'inscritos'],
     methods: {
         ...mapActions(["configurarTorneo"]),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
+        asignarJugadores(){
+            let grupo = 0;
+            console.log('this.inscritos');
+            console.log(this.inscritos);
+            for (let index = 0; index < this.inscritos.length; index++) {
+                const inscrito = this.inscritos[index];
+                this.grupos[grupo].jugadores.push(inscrito);
+            }
+        },
         submit() {
             this.configurarTorneo({
-                modo_juego: this.modoJuego,
-                n_grupos: this.nGrupos
+                torneo_id: this.torneo.id,
+                data:{
+                    modo_juego: this.modoJuego,
+                    n_grupos: this.nGrupos
+                },
+                grupos: this.grupos
             }).then((torneo) => {
                 console.log('torneo');
                 console.log(torneo);
@@ -27,19 +40,6 @@ export default {
                     this.$emit('hide-modal')
                 }
             })
-        }
-    },
-    computed: {
-        grupos: function () {
-            let grupos = [];
-            for (let index = 0; index < this.nGrupos; index++) {
-                const element = this.nGrupos;
-                grupos.push({
-                    grupo: (index + 1),
-                    jugadores: []
-                });
-            }
-            return grupos;
         }
     },
     data() {
@@ -70,9 +70,29 @@ export default {
         const modoJuego = ref('2de3');
         const nGrupos = ref(1);
 
+        const grupos = ref([
+            {
+                    grupo: 1,
+                    jugadores: []
+            }
+        ])
+
+        const selectTotalGrupos = (total) => {
+            grupos.value = [];
+            for (let index = 1; index <= total; index++) {
+                grupos.value.push({
+                    grupo: (index ),
+                    jugadores: []
+                });
+            }
+        }
+
         return {
             modoJuego,
-            nGrupos
+            nGrupos,
+            grupos,
+
+            selectTotalGrupos
         }
     }
 
@@ -110,7 +130,7 @@ export default {
                 </address>
             </div>
             <div class="col-span-2 flex flex-wrap -mx-3 mb-2">
-                <div class="w-full md:w-2/3 px-3 mb-0">
+                <div class="w-full md:w-2/3 px-3 mb-2">
                     <label
                         class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
                         for="grid-club"
@@ -121,8 +141,9 @@ export default {
                         :options="modosJuego"
                         value="id"
                         label="label"
-                        :clearable="false"
+                        v-model="modoJuego"
                         :modelValue="modoJuego"
+                        :clearable="false"
                     ></v-select>
                 </div>
                 <div class="w-full md:w-1/3 px-3">
@@ -134,17 +155,34 @@ export default {
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         :options="gruposOptions"
                         v-model="nGrupos"
-                        :modelValue="nGrupos"
                         :clearable="false"
+                        :modelValue="nGrupos"
+                         @update:modelValue="selectTotalGrupos"
                     ></v-select>
                 </div>
             </div>
-            <div class="col-span-2 flex justify-around">
-                <div v-for="grp in grupos" :key="grp.id" class="border border-white">
-                    <h2>Grupo {{ grp.grupo }}</h2>
-                    <ul>
-                        <li v-for="ply in grp.jugadores" :key="ply">{{ ply }}</li>
-                    </ul>
+            <div class="col-span-2">
+                <button type="button" @click="asignarJugadores">Asignar jugadores</button>
+                <div class="flex justify-around">
+                    <div v-for="grp in grupos" :key="grp.id" class="border border-white rounded-md">
+                        <h2 class="text-center bg-primary rounded-t-md">Grupo {{ grp.grupo }}</h2>
+                        <ul class="px-1 ">
+                            <li v-for="ply in grp.jugadores"
+                                :key="ply"
+                                class="flex my-1">
+                                <img class="w-8 h-8 rounded-xl" :src="ply.avatar" :alt="ply.nombre">
+                                <div class="flex flex-col pl-1">
+                                    <span class="">
+                                        {{ ply.nombre }}
+                                    </span>
+                                    <small class="text-xs text-primary">
+                                        # {{ ( torneo.inscritos.indexOf(ply.jugador_id) + 1) }}
+                                    </small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
             <div class="single-fild col-span-2">

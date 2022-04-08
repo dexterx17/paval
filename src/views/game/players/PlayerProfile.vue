@@ -85,10 +85,9 @@ export default {
           class="flex flex-col justify-center items-center relative mt-8 max-w-full md:max-w-sm z-10 py-7"
         >
           <h3 class="text-white font-bold text-lg md:text-2xl uppercase">
-            <RouterLink :to="`/player/${playerData.slug}`">{{ playerData.nombre }}</RouterLink>
+            {{ playerData.nacionalidad }}
           </h3>
           <span class="text-white text-sm md:text-base transition-all">
-            {{ playerData.nacionalidad }}
             <small>{{ playerData.ciudad }}</small>
           </span>
           <span class="text-white text-sm md:text-base transition-all">
@@ -131,19 +130,16 @@ export default {
         <div class="about_title lg:mb-6 mb-4">
           <h5
             class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16"
-          >Player Profile</h5>
+          >Perfil de Jugador</h5>
           <h2
             class="text-white font-exo font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
-          >{{ playerData.title }}</h2>
+          >{{ playerData.nombre }}</h2>
         </div>
 
         <div class="about_desc mb-10">
           <p
             class="lg:text-xl lg:leading-8"
-          >It is a long established fact that a reader will be distracted the readable content of page when looking at it layout the point using lorem Ipsum is that it has a more-or-less normal distribution.</p>
-          <p
-            class="lg:text-xl lg:leading-8"
-          >It is a long established fact that a reader will be distracted the readable content of page when looking at it layout the point using lorem Ipsum is that it has a more-or-less normal distribution.</p>
+          >{{ playerData.about }}</p>
         </div>
 
         <div class="about_btn">
@@ -152,7 +148,7 @@ export default {
             class="group primary-btn opacity-100 transition-all"
             style="background-image:url(/images/others/btn-bg.webp)"
           >
-            Partido
+            Retar
             <img
               src="/images/icon/arrrow-icon.webp"
               alt="Arrow Icon"
@@ -160,10 +156,12 @@ export default {
             />
           </RouterLink>
         </div>
+
+        <PlayerForm v-if="playerData" :player="playerData" />
+
       </div>
     </div>
   </div>
-  <PlayerForm v-if="playerData" :player="playerData" />
 
   <Footer />
 </template>
