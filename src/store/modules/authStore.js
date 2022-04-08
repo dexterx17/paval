@@ -1,3 +1,5 @@
+import { db } from '../../plugins/firebase';
+
 import { 
       getAuth,
       signInWithEmailAndPassword,
@@ -51,6 +53,7 @@ const state = {
       return createUserWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
             data.nombre = payload.name;
+            data.uid = payload.user.uid;
             console.log("Register", data);
             commit("setUser", data);
             dispatch('initPlayer',data);
@@ -86,7 +89,6 @@ const state = {
         });
     },
     initPlayer({ commit }, payload) {
-      const db = getFirestore();
       try {
         setDoc(doc(db, "players",payload.user.uid), {
           source: 'web',
@@ -126,9 +128,8 @@ const state = {
       });
     },
     async updateProfile({ commit, dispatch }, payload) {
-      const db = getFirestore();
       try {
-        return await setDoc(doc(db, "players",payload.uid), payload)
+        return setDoc(doc(db, "players",payload.uid), payload)
         .then((docRef)=>{
           console.log("Document written with ID: ", docRef);
           return docRef;

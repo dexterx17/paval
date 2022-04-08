@@ -33,13 +33,15 @@ const actions = {
         console.log(db);
         const querySnapshot = await getDocs(collection(db, "torneos"));
 
+        console.log('querySnapshot');
         console.log(querySnapshot);
 
         let torneos = [];
-
-        doSnapShot(querySnapshot);
-
+        
+        return doSnapShot(querySnapshot);
+        
         //commit("SET_TORNEOS_LISTENER", query);
+        
 
         function doSnapShot(querySnapshot) {
             console.log("doSnapShot");
@@ -52,6 +54,7 @@ const actions = {
                 torneos.push(p);
             });
             commit("SET_TORNEOS", torneos);
+            return torneos;
         }
     },
     async addTorneo({ commit }, payload) {
@@ -176,7 +179,33 @@ const actions = {
         } catch (e) {
             console.error("Error adding document: ", e);
         }
-    }
+    },
+    async fetchGruposTorneo({ commit }, payload) {
+        try {
+            console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+            const docRef = doc(db, "torneos", payload);
+            const querySnapshot = await getDocs(collection(docRef, "grupos"));
+            
+            let grupos = [];
+
+            return doSnapShot(querySnapshot);
+    
+            //commit("SET_TORNEOS_LISTENER", query);
+    
+            function doSnapShot(querySnapshot) {
+                querySnapshot.docs.forEach((doc) => {
+                    let p = doc.data();
+                    console.log(`${doc.id} => ${doc.data()}`);
+                    p.id = doc.id;
+                    grupos.push(p);
+                });
+                return grupos;
+            }
+
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
 };
 
 const mutations = {

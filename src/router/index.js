@@ -63,9 +63,6 @@ const router = createRouter({
     {
       path: "/torneos",
       name: "torneos",
-      meta: {
-        requiresAuth: true,
-      },
       component: () => import("../views/game/torneos/TorneosList.vue"),
     },
     {

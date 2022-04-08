@@ -1,7 +1,6 @@
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { useStore, mapGetters, mapActions } from "vuex";
 import { computed, ref, watch } from "vue";
-import { useStore } from "vuex";
 
 import { CountTo } from 'vue3-count-to';
 
@@ -10,6 +9,8 @@ import Footer from "@/components/Footer.vue";
 import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
+import CrearPartidoTorneo from "@/components/Torneos/CrearPartidoTorneo.vue";
+
 import Inscritos from '@/components/Players/Inscritos.vue';
 
 import { useRoute } from 'vue-router'
@@ -27,6 +28,7 @@ export default {
         CountTo,
         InscribirseTorneo,
         ConfigurarTorneo,
+        CrearPartidoTorneo,
         Inscritos
     },
     data() {
@@ -38,6 +40,7 @@ export default {
         };
     },
     methods: {
+        ...mapActions(["fetchTorneo"]),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
@@ -51,25 +54,73 @@ export default {
         const store = useStore();
         const torneoData = ref(null);
         const jugadoresInscritos = ref([]);
+        const gruposTorneo = ref([]);
         const showModal = ref(false);
         const showModalConfigurarTorneo = ref(false);
+        const showModalCrearPartido = ref(false);
+
+        const newPartidoData = ref({
+            playerA: null,
+            playerB: null,
+            grupo: null,
+            torneo: null,
+            resultados: []
+        });
 
 
         const user = computed(() => store.getters.getUser);
 
 
-        store.dispatch('fetchTorneo', route.params.id).then((torneo) => {
-            console.log('torneoData');
-            console.log(torneo);
-            torneoData.value = torneo;
+        const loadInscritos = () => {
+            store.dispatch('fetchInscritosTorneo', route.params.id).then((inscritos) => {
+                console.log('inscritos');
+                console.log(inscritos);
+                jugadoresInscritos.value = inscritos;
+            });
+        };
 
-        });
+        const loadTorneoData = () => {
+            store.dispatch('fetchTorneo', route.params.id).then((torneo) => {
+                console.log('torneoData');
+                console.log(torneo);
+                torneoData.value = torneo;
+                newPartidoData.value.torneo = torneo;
+            });
+        };
 
-        store.dispatch('fetchInscritosTorneo', route.params.id).then((inscritos) => {
-            console.log('inscritos');
-            console.log(inscritos);
-            jugadoresInscritos.value = inscritos;
-        });
+        const loadGruposData = () => {
+            store.dispatch('fetchGruposTorneo', route.params.id).then((grupos) => {
+                console.log('gruposTorneo');
+                console.log(grupos);
+                gruposTorneo.value = grupos;
+
+            });
+        };
+
+        loadTorneoData();
+        loadInscritos();
+        loadGruposData();
+
+        const crearPartido = (grupo, playerA, playerB) => {
+
+            newPartidoData.value.grupo = grupo;
+            newPartidoData.value.playerA = playerA;
+            newPartidoData.value.playerB = playerB;
+            showModalCrearPartido.value = true;
+        }
+
+        const hideModalInscripcion = () => {
+            showModal.value = false;
+            loadTorneoData();
+            loadInscritos();
+        }
+
+        const hideModalConfigurar = () => {
+            showModal.value = false;
+            showModalConfigurarTorneo.value = false;
+            loadTorneoData();
+            loadGruposData();
+        }
 
         // fetch the user information when params change
         watch(
@@ -83,9 +134,16 @@ export default {
         return {
             torneoData,
             jugadoresInscritos,
+            gruposTorneo,
             showModal,
             showModalConfigurarTorneo,
-            user
+            showModalCrearPartido,
+            user,
+            newPartidoData,
+
+            hideModalConfigurar,
+            hideModalInscripcion,
+            crearPartido
         }
     }
 }
@@ -197,6 +255,7 @@ export default {
                 </button>
                 <button
                     @click="showModalConfigurarTorneo = true;"
+                    v-if="!torneoData.modo_juego && !torneoData.n_grupos"
                     class="group primary-btn opacity-100 transition-all"
                     style="background-image:url(/images/others/btn-bg.webp)"
                 >
@@ -219,7 +278,7 @@ export default {
             :height="700"
             :adaptive="true"
         >
-            <InscribirseTorneo :torneo="torneoData" @hide-modal="showModal = false" />
+            <InscribirseTorneo :torneo="torneoData" @hide-modal="hideModalInscripcion" />
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModal = false"
@@ -235,7 +294,11 @@ export default {
             :height="700"
             :adaptive="true"
         >
-            <ConfigurarTorneo :torneo="torneoData" :inscritos="jugadoresInscritos" @hide-modal="showModalConfigurarTorneo = false" />
+            <ConfigurarTorneo
+                :torneo="torneoData"
+                :inscritos="jugadoresInscritos"
+                @hide-modal="hideModalConfigurar"
+            />
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModalConfigurarTorneo = false"
@@ -248,6 +311,124 @@ export default {
 
     <div class="container">
         <Inscritos v-if="jugadoresInscritos" :jugadores-inscritos="jugadoresInscritos" />
+    </div>
+
+    <div class="container">
+        <div class="my-16" v-for="grupo in gruposTorneo" :key="grupo.id">
+            <div class="team-one">
+                <span
+                    class="text-primary text-lg uppercase font-semibold mb-4 block"
+                >Grupo {{ grupo.grupo }}</span>
+                <!-- <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Jugadores Inscritos</h2> -->
+                <section>
+                    <table class="border-2 border-primary mx-auto">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="flex flex-col italic text-primary">
+                                        <span>{{ (grupo.jugadores.length * grupo.jugadores.length) - grupo.jugadores.length }}</span>
+                                        <span>Partidos</span>
+                                    </div>
+                                </th>
+                                <th v-for="ply in grupo.jugadores" :key="ply.id" class="border p-1">
+                                    <div class="flex flex-col align-middle">
+                                        <img
+                                            class="w-8 h-8 rounded-xl mx-auto"
+                                            :src="ply.avatar ?? '/images/blog/blog3.webp'"
+                                            :alt="ply.nombre"
+                                        />
+                                        <div>
+                                            <span class>{{ ply.nombre }}</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="border px-1">Puntos</th>
+                                <th class="border px-1">Sets</th>
+                                <th class="border px-1">Puesto</th>
+                                <th class="border px-1">Llave</th>
+                                <th class="border px-1">
+                                    Puesto
+                                    <br />Final
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border" v-for="ply in grupo.jugadores" :key="ply.id">
+                                <td>
+                                    <div class="flex flex-col align-middle pl-1">
+                                        <img
+                                            class="w-8 h-8 rounded-xl mx-auto"
+                                            :src="ply.avatar ?? '/images/blog/blog3.webp'"
+                                            :alt="ply.nombre"
+                                        />
+                                        <div class="text-center">
+                                            <span class="text-center">{{ ply.nombre }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td
+                                    v-for="play in grupo.jugadores"
+                                    :key="play.id"
+                                    class="text-center border"
+                                >
+                                    <div v-if="play.id == ply.id" class="flex flex-col">
+                                        <img
+                                            class="w-8 h-8 rounded-xl mx-auto"
+                                            src="/images/others/santana.png"
+                                            alt="Ping Pong Ranking"
+                                        />
+                                    </div>
+                                    <div v-else>
+                                        <button
+                                            @click="crearPartido(grupo, ply, play)"
+                                            type="button"
+                                            class="p-1"
+                                            title="Registrar Partido"
+                                        >
+                                            <img
+                                                class="w-8 h-8 rounded-xl mx-auto"
+                                                src="/images/others/play-btn.webp"
+                                                alt="Registrar Partido"
+                                            />
+                                        </button>
+                                        <div class="flex flex-col">
+                                            <span>P1</span>
+                                            <span>P2</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="border text-center">0</td>
+                                <td class="border text-center">0</td>
+                                <td class="border text-center">0</td>
+                                <td class="border text-center">0</td>
+                                <td class="border text-center">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <vue-final-modal
+                        class="bg-transparent"
+                        name="my-modal"
+                        classes="modal-container "
+                        content-class="modal-content"
+                        v-model="showModalCrearPartido"
+                        :width="1000"
+                        :height="700"
+                        :adaptive="true"
+                    >
+                        <CrearPartidoTorneo
+                            v-if="torneoData"
+                            :partido="newPartidoData"
+                            @hide-modal="showModalCrearPartido = false"
+                        />
+                        <button
+                            class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                            @click="showModalCrearPartido = false"
+                        ></button>
+                    </vue-final-modal>
+                </section>
+            </div>
+        </div>
     </div>
 
     <Footer />

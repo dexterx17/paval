@@ -2,6 +2,11 @@
 import { mapGetters, mapActions } from "vuex";
 import { computed } from 'vue';
 export default {
+    data() {
+        return {
+            procesando: false
+        }
+    },
     props: ["torneo"],
     methods: {
         ...mapActions(["inscribirEnTorneo"]),
@@ -12,6 +17,9 @@ export default {
         submit() {
             const user = computed(() => this.$store.getters["getUser"]);
             console.log('user', user.value)
+            console.log('nombre', user.value.player.nombre)
+            console.log('avatar', user.value.player.avatar)
+            this.procesando = true;
             this.inscribirEnTorneo({
                 torneo: this.torneo,
                 jugador: {
@@ -20,9 +28,10 @@ export default {
                     avatar: user.value.player.avatar
                 },
             }).then((inscrito) => {
+                this.procesando = false;
                 console.log('inscrito');
                 console.log(inscrito);
-                if(inscrito.id){
+                if (inscrito.id) {
                     this.$emit('hide-modal')
                 }
             })
@@ -66,7 +75,10 @@ export default {
                 </address>
             </div>
             <div class="single-fild col-span-2">
-                <div class="form-btn-wrap flex justify-center w-full mt-4">
+                <div v-if="procesando">
+                    <h3>Procesando...</h3>
+                </div>
+                <div v-else class="form-btn-wrap flex justify-center w-full mt-4">
                     <button
                         type="submit"
                         value="submit"

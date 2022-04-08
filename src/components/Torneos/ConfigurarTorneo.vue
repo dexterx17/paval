@@ -16,7 +16,7 @@ export default {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
-        asignarJugadores(){
+        asignarJugadores() {
             let grupo = 0;
             console.log('this.inscritos');
             console.log(this.inscritos);
@@ -26,14 +26,16 @@ export default {
             }
         },
         submit() {
+            this.procesando = true;
             this.configurarTorneo({
                 torneo_id: this.torneo.id,
-                data:{
+                data: {
                     modo_juego: this.modoJuego,
                     n_grupos: this.nGrupos
                 },
                 grupos: this.grupos
             }).then((torneo) => {
+                this.procesando = false;
                 console.log('torneo');
                 console.log(torneo);
                 if (torneo.id) {
@@ -69,11 +71,12 @@ export default {
     setup() {
         const modoJuego = ref('2de3');
         const nGrupos = ref(1);
+        const procesando = ref(false);
 
         const grupos = ref([
             {
-                    grupo: 1,
-                    jugadores: []
+                grupo: 1,
+                jugadores: []
             }
         ])
 
@@ -81,7 +84,7 @@ export default {
             grupos.value = [];
             for (let index = 1; index <= total; index++) {
                 grupos.value.push({
-                    grupo: (index ),
+                    grupo: (index),
                     jugadores: []
                 });
             }
@@ -91,6 +94,7 @@ export default {
             modoJuego,
             nGrupos,
             grupos,
+            procesando,
 
             selectTotalGrupos
         }
@@ -157,7 +161,7 @@ export default {
                         v-model="nGrupos"
                         :clearable="false"
                         :modelValue="nGrupos"
-                         @update:modelValue="selectTotalGrupos"
+                        @update:modelValue="selectTotalGrupos"
                     ></v-select>
                 </div>
             </div>
@@ -166,27 +170,29 @@ export default {
                 <div class="flex justify-around">
                     <div v-for="grp in grupos" :key="grp.id" class="border border-white rounded-md">
                         <h2 class="text-center bg-primary rounded-t-md">Grupo {{ grp.grupo }}</h2>
-                        <ul class="px-1 ">
-                            <li v-for="ply in grp.jugadores"
-                                :key="ply"
-                                class="flex my-1">
-                                <img class="w-8 h-8 rounded-xl" :src="ply.avatar" :alt="ply.nombre">
+                        <ul class="px-1">
+                            <li v-for="ply in grp.jugadores" :key="ply" class="flex my-1">
+                                <img
+                                    class="w-8 h-8 rounded-xl"
+                                    :src="ply.avatar ?? '/images/blog/blog3.webp'"
+                                    :alt="ply.nombre"
+                                />
                                 <div class="flex flex-col pl-1">
-                                    <span class="">
-                                        {{ ply.nombre }}
-                                    </span>
-                                    <small class="text-xs text-primary">
-                                        # {{ ( torneo.inscritos.indexOf(ply.jugador_id) + 1) }}
-                                    </small>
+                                    <span class>{{ ply.nombre }}</span>
+                                    <small
+                                        class="text-xs text-primary"
+                                    ># {{ (torneo.inscritos.indexOf(ply.jugador_id) + 1) }}</small>
                                 </div>
                             </li>
                         </ul>
                     </div>
-
                 </div>
             </div>
             <div class="single-fild col-span-2">
-                <div class="form-btn-wrap flex justify-center w-full mt-4">
+                <div v-if="procesando" class="flex justify-center w-full">
+                    <h2 class="text-primary">Procesando...</h2>
+                </div>
+                <div v-else class="form-btn-wrap flex justify-center w-full mt-4">
                     <button
                         type="submit"
                         value="submit"

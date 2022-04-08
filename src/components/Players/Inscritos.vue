@@ -9,8 +9,14 @@
                 <swiper-slide v-for="(team, index) in jugadoresInscritos" :key="index">
                     <div class="rounded-50">
                         <div class>
-                            <img :src="team.avatar" :alt="team.nombre" />
-                            <h3 class="absolute w-full text-center text-white  bg-gray-800 bg-opacity-90 bottom-0">{{ team.nombre }}</h3>
+                            <img
+                                class="rounded-2xl"
+                                :src="team.avatar ?? '/images/blog/blog3.webp'"
+                                :alt="team.nombre"
+                            />
+                            <h3
+                                class="absolute w-full text-center text-white bg-gray-800 bg-opacity-90 bottom-0"
+                            >{{ team.nombre }}</h3>
                         </div>
                     </div>
                 </swiper-slide>
@@ -31,8 +37,8 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css/bundle';
 
 export default {
-    props:{
-        jugadoresInscritos:{
+    props: {
+        jugadoresInscritos: {
             type: Object
         }
     },

@@ -84,9 +84,9 @@ export default {
         <div
           class="flex flex-col justify-center items-center relative mt-8 max-w-full md:max-w-sm z-10 py-7"
         >
-          <h3 class="text-white font-bold text-lg md:text-2xl uppercase">
-            {{ playerData.nacionalidad }}
-          </h3>
+          <h3
+            class="text-white font-bold text-lg md:text-2xl uppercase"
+          >{{ playerData.nacionalidad }}</h3>
           <span class="text-white text-sm md:text-base transition-all">
             <small>{{ playerData.ciudad }}</small>
           </span>
@@ -131,18 +131,23 @@ export default {
           <h5
             class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16"
           >Perfil de Jugador</h5>
+
+          <div v-if="!playerData.sexo">
+            <h3 class="text-lg italic">Bienvenid@</h3>
+          </div>
           <h2
             class="text-white font-exo font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
           >{{ playerData.nombre }}</h2>
         </div>
 
-        <div class="about_desc mb-10">
-          <p
-            class="lg:text-xl lg:leading-8"
-          >{{ playerData.about }}</p>
+        <div class="about_desc mb-10" v-if="playerData.sexo">
+          <p class="lg:text-xl lg:leading-8">{{ playerData.about }}</p>
+        </div>
+        <div v-else>
+          <p>Por favor actualiza tus datos de perfil</p>
         </div>
 
-        <div class="about_btn">
+        <!-- <div class="about_btn">
           <RouterLink
             to="/contact"
             class="group primary-btn opacity-100 transition-all"
@@ -155,10 +160,9 @@ export default {
               class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
             />
           </RouterLink>
-        </div>
+        </div>-->
 
         <PlayerForm v-if="playerData" :player="playerData" />
-
       </div>
     </div>
   </div>
