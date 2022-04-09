@@ -24,6 +24,10 @@ export default {
                 playerA: this.partido.playerA,
                 playerB: this.partido.playerB,
                 modo_juego: this.modoJuego,
+                fecha: this.partido.torneo.fecha,
+                hora: this.partido.torneo.hora,
+                ciudad: this.partido.torneo.ciudad,
+                lugar: this.partido.torneo.lugar,
                 resultados: []
             }).then((torneo) => {
                 this.procesando = false;
@@ -31,6 +35,7 @@ export default {
                 console.log(torneo);
                 if (torneo.id) {
                     this.$emit('hide-modal')
+                    this.$router.replace({ name: "partido", params:{ id: torneo.id } });
                 }
             })
         }
@@ -163,7 +168,7 @@ export default {
 }
 .modal-content {
     position: relative;
-    width: 50%;
+    width: 80% !important;
     /* max-height: 300px; */
     padding: 16px;
     overflow: auto;

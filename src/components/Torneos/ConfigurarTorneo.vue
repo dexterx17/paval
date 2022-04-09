@@ -36,11 +36,12 @@ export default {
                 grupos: this.grupos
             }).then((torneo) => {
                 this.procesando = false;
+                this.$emit('hide-modal')
                 console.log('torneo');
                 console.log(torneo);
-                if (torneo.id) {
-                    this.$emit('hide-modal')
-                }
+                // if (torneo.id) {
+                // this.$emit('hide-modal')
+                // }
             })
         }
     },
@@ -76,7 +77,9 @@ export default {
         const grupos = ref([
             {
                 grupo: 1,
-                jugadores: []
+                jugadores: [],
+                partidos: [],
+                jugados: []
             }
         ])
 

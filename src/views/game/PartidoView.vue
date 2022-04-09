@@ -19,7 +19,11 @@
             formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
                 if (!value) return value
                 return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
-            }
+            },
+            visibilityChanged(isVisible) {
+                console.log('visible', isVisible);
+                this.commentsVisible = isVisible;
+            },
         },
         data() {
             return {
@@ -32,6 +36,7 @@
             const store = useStore();
             const route = useRoute();
             const partidoData = ref(null);
+            const nPartidos = ref(0)
             
             const user = computed(() => store.getters.getUser);
 
@@ -42,13 +47,21 @@
                     console.log('partidoData');
                     console.log(partido);
                     partidoData.value = partido;
+
+                    let modoJuegos = partido.modo_juego.split('de');
+
+                    console.log('modoJuegos',modoJuegos);
+
+                    nPartidos.value = parseInt(modoJuegos[1]);
+
                 });
             };
 
             loadPartidoData();
 
             return {
-                partidoData
+                partidoData,
+                nPartidos
             }
         }
     }
@@ -106,21 +119,84 @@
 
         <div class="container" v-if="partidoData">
             <p class="date text-primary font-bold mb-3 flex justify-between">
-                <!-- <span>
-                    <span class="capitalize">{{ formatDate(partido.fecha, { weekday: "long" }) }},</span>
-                    {{ formatDate(partido.fecha) }}
-                    {{ partido.hora }}
+                <span>
+                    <span class="capitalize">{{ formatDate(partidoData.fecha, { weekday: "long" }) }},</span>
+                    {{ formatDate(partidoData.fecha) }}
+                    {{ partidoData.hora }}
                 </span>
                 <span>
                     <i class="text-xs"></i>
-                    <span>{{ partido.ciudad }}</span>
-                    <small class="px-1">{{ partido.lugar }}</small>
-                </span> -->
+                    <span>{{ partidoData.ciudad }}</span>
+                    <small class="px-1">{{ partidoData.lugar }}</small>
+                </span>
             </p>
             <h2
                 class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10"
-            >{{ partidoData.nombre }}</h2>
+            >{{ partidoData.playerA.nombre }} <small>vs</small> {{ partidoData.playerB.nombre }} </h2>
+            <div class="content-details">
+                <div class="description mt-6">
+                    <!-- <h3 class="text-2xl text-primary uppercase font-bold mb-5">Whats New!</h3> -->
+                    <p class="leading-8">...</p>
+                </div>
+
+
+                <div class="additional-information-area bg-secondary-100 px-9 py-9 rounded-2xl mb-9">
+                    <h3 class="text-2xl text-white uppercase font-bold mb-6">Resultados</h3>
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th>
+                                </th>
+                                <th v-for="(n,index) in nPartidos" :key="index" class="border border-primary">{{ (index+1) }}</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border border-primary">
+                                <th>
+                                    <div class="flex flex-col align-middle pl-1">
+                                        <img
+                                            class="w-8 h-8 rounded-xl mx-auto"
+                                            :src="partidoData.playerA.avatar ?? '/images/blog/blog3.webp'"
+                                            :alt="partidoData.playerA.nombre"
+                                        />
+                                        <div class="text-center">
+                                            <span class="text-center">{{ partidoData.playerA.nombre }}</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td v-for="(n,index) in nPartidos" :key="index" class="text-center border border-primary">0</td>
+                                <td class="text-center font-semibold border border-primary">0</td>
+                            </tr>
+                            <tr class="border border-primary">
+                                <th>
+                                    <div class="flex flex-col align-middle pl-1">
+                                        <img
+                                            class="w-8 h-8 rounded-xl mx-auto"
+                                            :src="partidoData.playerB.avatar ?? '/images/blog/blog3.webp'"
+                                            :alt="partidoData.playerB.nombre"
+                                        />
+                                        <div class="text-center">
+                                            <span class="text-center">{{ partidoData.playerB.nombre }}</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td v-for="(n,index) in nPartidos" :key="index" class="text-center border border-primary">0</td>
+                                <td class="text-center font-semibold border border-primary">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <blockquote class="py-2 mb-5">
+                    <p class="font-bold text-center text-yellow italic lg:text-3xl text-xl">{{ partidoData.playerA.nombre }} Ganador</p>
+                </blockquote>
+            </div>
         </div>
+
+
+
+        
 
         <Footer></Footer>
 </template>

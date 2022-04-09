@@ -128,7 +128,7 @@ export default {
             async newId => {
                 console.log('newId', newId);
                 if(newId){
-                    torneoData.value = await fetchTorneo(newId)
+                    loadTorneoData();
                 }
             }
         )
@@ -170,7 +170,7 @@ export default {
                     <img
                         class="w-16 h-16"
                         :src="torneoData.serie ? torneoData.serie.logo : '/images/others/seriei.png'"
-                        alt="Feature Icon"
+                        alt="Serie"
                     />
                 </div>
             </div>
