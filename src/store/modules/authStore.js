@@ -37,24 +37,29 @@ const state = {
       console.log('authAction');
       onAuthStateChanged(auth, user => {
         console.log('onAuthStateChanged',user);
-        dispatch('loadProfile',user.uid).then((player)=>{
-          console.log('loadPlayerLoggedUser',player);
-          user.player = player;
-          if (user) {
-            commit("setUser", user);
-          } else {
-            commit("setUser", null);
-          }
-        })
+        if(user){
+          dispatch('loadProfile',user.uid).then((player)=>{
+            console.log('loadPlayerLoggedUser',player);
+            user.player = player;
+            if (user) {
+              commit("setUser", user);
+            } else {
+              commit("setUser", null);
+            }
+          })
+        }else{
+          commit("setUser", null);
+        }
       });
     },
     signUpAction({ commit, dispatch }, payload) {
       const auth = getAuth();
       return createUserWithEmailAndPassword(auth, payload.email, payload.password)
          .then((data) => {
+            
             data.nombre = payload.name;
-            data.uid = payload.user.uid;
             console.log("Register", data);
+            data.uid = data.user.uid;
             commit("setUser", data);
             dispatch('initPlayer',data);
             return data;

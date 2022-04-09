@@ -11,16 +11,16 @@ export default {
     },
     props: ["partido"],
     methods: {
-        ...mapActions(["crearPartidoClub"]),
+        ...mapActions(["addPartidoTorneo"]),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         submit() {
             this.procesando = true;
-            this.crearPartidoClub({
+            this.addPartidoTorneo({
                 torneo_id: this.partido.torneo.id,
-                grupo: this.partido.grupo,
+                grupo_id: this.partido.grupo.id,
                 playerA: this.partido.playerA,
                 playerB: this.partido.playerB,
                 modo_juego: this.modoJuego,
@@ -83,22 +83,28 @@ export default {
                         class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 max-w-lg mx-auto"
                     >
                         <div class="grid grid-cols-1 items-center">
-                            <div class="flex justify-center items-center w-full px-20 sm:px-0">
+                            <div class="flex justify-center items-center w-full px-0 lg:px-8">
+                                <div>
+                                    <img
+                                        class="w-24 h-24 rounded-2xl"
+                                        :src="partido.playerA ? (partido.playerA.avatar ??  '/images/blog/blog3.webp') : ''"
+                                        :alt="partido.playerA ? partido.playerA.nombre : ''"
+                                    />
+                                    <h4 class="text-center">{{ partido.playerA ? partido.playerA.nombre : '' }}</h4>
+                                </div>
                                 <img
-                                    class="lg:mr-9 mr-5 w-24 h-24 rounded-2xl"
-                                    :src="partido.playerA ? partido.playerA.avatar : ''"
-                                    :alt="partido.playerA ? partido.playerA.nombre : ''"
-                                />
-                                <img
-                                    class="lg:mr-9 mr-5"
+                                    class="w-16 h-16 lg:mx-9 mx-5"
                                     src="/images/others/game-vs1.webp"
                                     alt="Feature Icon"
                                 />
-                                <img
-                                    class="w-24 h-24 rounded-2xl"
-                                    :src="partido.playerB ? partido.playerB.avatar : ''"
-                                    :alt="partido.playerB ? partido.playerB.nombre : ''"
-                                />
+                                <div>
+                                    <img
+                                        class="w-24 h-24 rounded-2xl"
+                                        :src="partido.playerB ? ( partido.playerB.avatar ?? '/images/blog/blog3.webp') : ''"
+                                        :alt="partido.playerB ? partido.playerB.nombre : ''"
+                                    />
+                                    <h4 class="text-center">{{ partido.playerB ? partido.playerB.nombre : '' }}</h4>
+                                </div>
                             </div>
                         </div>
                     </div>

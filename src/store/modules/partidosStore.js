@@ -5,7 +5,9 @@ import {
     getDocs,
     doc,
     getDoc,
-    addDoc
+    addDoc,
+    updateDoc,
+    arrayUnion
 } from "firebase/firestore";
 
 
@@ -102,6 +104,32 @@ const actions = {
             console.error("Error adding document: ", e);
         }
     },
+    async addPartidoTorneo({ commit }, payload) {
+        try {
+            console.log('addPartidoTorneo');
+            console.log(payload);
+            const colPartidos = collection(db, "partidos");
+
+            let partido = await addDoc(colPartidos, payload);
+
+            let partido_key = payload.playerA.id+'_'+payload.playerB.id;
+
+            const torneoRef = doc(db, `torneos/${payload.torneo_id}/grupos/${payload.grupo_id}`);
+            console.log('torneoRef');
+            console.log(torneoRef);
+            
+            await updateDoc(torneoRef, {
+                partidos: arrayUnion(partido.id),
+                jugados: arrayUnion(partido_key)
+            });  
+            
+            console.log(partido);
+            return partido;
+
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
     async fetchPartido({ commit }, payload) {
         try {
             console.log('%cpartidosStore.js line:69 payload', 'color: #007acc;', payload);
@@ -115,6 +143,7 @@ const actions = {
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
+                return null;
             }
         } catch (e) {
             console.error("Error adding document: ", e);

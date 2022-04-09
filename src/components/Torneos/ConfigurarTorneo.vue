@@ -85,7 +85,9 @@ export default {
             for (let index = 1; index <= total; index++) {
                 grupos.value.push({
                     grupo: (index),
-                    jugadores: []
+                    jugadores: [],
+                    partidos: [],
+                    jugados:[]
                 });
             }
         }

@@ -127,7 +127,9 @@ export default {
             () => route.params.id,
             async newId => {
                 console.log('newId', newId);
-                torneoData.value = await fetchTorneo(newId)
+                if(newId){
+                    torneoData.value = await fetchTorneo(newId)
+                }
             }
         )
 
@@ -379,7 +381,14 @@ export default {
                                         />
                                     </div>
                                     <div v-else>
+                                        <div v-if="grupo.jugados.includes(ply.id+'_'+play.id)">
+                                            <RouterLink :to="{ name: 'partido', params: {id: grupo.partidos[grupo.jugados.indexOf(ply.id+'_'+play.id)] } }" class="flex flex-col">
+                                                <span>P1</span>
+                                                <span>P2</span>
+                                            </RouterLink>
+                                        </div>
                                         <button
+                                            v-else
                                             @click="crearPartido(grupo, ply, play)"
                                             type="button"
                                             class="p-1"
@@ -391,10 +400,6 @@ export default {
                                                 alt="Registrar Partido"
                                             />
                                         </button>
-                                        <div class="flex flex-col">
-                                            <span>P1</span>
-                                            <span>P2</span>
-                                        </div>
                                     </div>
                                 </td>
                                 <td class="border text-center">0</td>

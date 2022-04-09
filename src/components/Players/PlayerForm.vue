@@ -67,13 +67,14 @@ export default {
     const submit = () => {
       console.log("updateProfile");
       console.log(playerData.value);
-      store.dispatch("updateProfile", playerData.value).then((response) => {
-        console.log("response");
-        console.log(response);
-        if (response.id) {
-          showForm.value = false;
-        }
-      });
+      store.dispatch("updateProfile", playerData.value)
+        .then((response) => {
+          console.log("response");
+          console.log(response);
+          if (response.id) {
+            showForm.value = false;
+          }
+        });
     };
 
     return {

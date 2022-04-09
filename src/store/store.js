@@ -5,6 +5,7 @@ import playersStore from './modules/playersStore';
 import torneosStore from './modules/torneosStore';
 import clubsStore from './modules/clubsStore';
 import seriesStore from './modules/seriesStore';
+import partidosStore from './modules/partidosStore';
 
 
 
@@ -14,7 +15,8 @@ export default createStore({
     playersStore,
     torneosStore,
     clubsStore,
-    seriesStore
+    seriesStore,
+    partidosStore
   },
   state: {
     products: [],
