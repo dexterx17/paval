@@ -130,6 +130,30 @@ const actions = {
             console.error("Error adding document: ", e);
         }
     },
+    async setResultadosPartido({ commit }, payload) {
+        try {
+            console.log('setResultadosPartido');
+            console.log(payload);
+            //const refPartido = collection(db, "partidos", payload.partido_id);
+
+            const refPartido = doc(db, `partidos/${payload.partido_id}`);
+
+            console.log('refPartido');
+            console.log(refPartido);
+            
+            return updateDoc(refPartido, {
+                resultados: payload.resultados,
+                resultado: payload.resultado
+            }).then((partido) => {
+                console.log('resultados partido seteado');
+                console.log(partido);
+                return partido;
+            }); 
+
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
     async fetchPartido({ commit }, payload) {
         try {
             console.log('%cpartidosStore.js line:69 payload', 'color: #007acc;', payload);
@@ -137,9 +161,11 @@ const actions = {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                console.log("Document data:", docSnap.data());
-                commit('SET_PARTIDO',docSnap.data());
-                return docSnap.data();
+                let item = docSnap.data();
+                item.id = docSnap.id;
+                console.log("Document data:", item);
+                commit('SET_PARTIDO',item);
+                return item;
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");

@@ -3,16 +3,22 @@
     import { computed, ref, watch } from "vue";
     import { useRoute } from 'vue-router';
     import { CountTo } from 'vue3-count-to';
-
+    import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
 
     import Breadcrumb from "@/components/Breadcrumb.vue";
     import Footer from "@/components/Footer.vue";
+
+    import EstablecerResultados from "@/components/Partidos/EstablecerResultados.vue";
 
     export default {
         components:{
             Breadcrumb,
             Footer,
-            CountTo
+            CountTo,
+            EstablecerResultados,
+
+            VueFinalModal,
+            ModalsContainer
         },
         methods: {
             ...mapActions(["fetchPartido"]),
@@ -36,7 +42,8 @@
             const store = useStore();
             const route = useRoute();
             const partidoData = ref(null);
-            const nPartidos = ref(0)
+            const nPartidos = ref(0);
+            const showModalResultadosPartido = ref(false);
             
             const user = computed(() => store.getters.getUser);
 
@@ -61,7 +68,8 @@
 
             return {
                 partidoData,
-                nPartidos
+                nPartidos,
+                showModalResultadosPartido
             }
         }
     }
@@ -108,7 +116,16 @@
                     </div>
                 </div>
                 <div class="flex justify-end mt-16 md:mt-0">
-                    <button class="group primary-btn opacity-100 transition-all" style="background-image:url(/images/others/btn-bg.webp)">
+                    <div v-if="partidoData.resultado">
+                        <p class="uppercase md:text-lg text-sm font-semibold text-primary">Resultado:</p>
+                        <countTo class="text-white text-4xl lg:text-5xl font-bold" :startVal='0' :endVal='partidoData.resultado.split(":")[0]' :duration='3000' :autoplay='true'></countTo>
+                        a
+                        <countTo class="text-white text-4xl lg:text-5xl font-bold" :startVal='0' :endVal='partidoData.resultado.split(":")[1]' :duration='3000' :autoplay='true'></countTo>
+                    </div>
+                    <button
+                        v-else
+                        @click="showModalResultadosPartido = true"
+                        class="group primary-btn opacity-100 transition-all" style="background-image:url(/images/others/btn-bg.webp)">
                         Resultados
                         <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon" class="ml-3 w-5 h-5 group-hover:ml-4 transition-all">
                     </button>  
@@ -135,8 +152,13 @@
             >{{ partidoData.playerA.nombre }} <small>vs</small> {{ partidoData.playerB.nombre }} </h2>
             <div class="content-details">
                 <div class="description mt-6">
-                    <!-- <h3 class="text-2xl text-primary uppercase font-bold mb-5">Whats New!</h3> -->
                     <p class="leading-8">...</p>
+
+                    <!-- <RouterLink :to="{ name: 'torneo', params: { id: partidoData.torneo_id } }">
+                        <h3 class="text-2xl text-primary uppercase font-bold mb-5">
+                            Regresar a Torneo
+                        </h3>
+                    </RouterLink> -->
                 </div>
 
 
@@ -147,7 +169,7 @@
                             <tr>
                                 <th>
                                 </th>
-                                <th v-for="(n,index) in nPartidos" :key="index" class="border border-primary">{{ (index+1) }}</th>
+                                <th v-for="(resultado) in partidoData.resultados" :key="resultado.set" class="border border-primary">{{ (resultado.set) }}</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
@@ -165,8 +187,13 @@
                                         </div>
                                     </div>
                                 </th>
-                                <td v-for="(n,index) in nPartidos" :key="index" class="text-center border border-primary">0</td>
-                                <td class="text-center font-semibold border border-primary">0</td>
+                                <td v-for="(resultado) in partidoData.resultados"
+                                    :key="resultado.set"
+                                    class="text-center border border-primary"
+                                >{{ resultado.playerA }}</td>
+                                <td class="text-center font-semibold border border-primary" v-if="partidoData.resultado">
+                                    {{ partidoData.resultado.split(':')[0] }}
+                                </td>
                             </tr>
                             <tr class="border border-primary">
                                 <th>
@@ -181,8 +208,12 @@
                                         </div>
                                     </div>
                                 </th>
-                                <td v-for="(n,index) in nPartidos" :key="index" class="text-center border border-primary">0</td>
-                                <td class="text-center font-semibold border border-primary">0</td>
+                                <td v-for="(resultado) in partidoData.resultados" :key="resultado.set" class="text-center border border-primary">
+                                    {{ resultado.playerB }}
+                                </td>
+                                <td class="text-center font-semibold border border-primary">
+                                    {{ partidoData.resultado.split(':')[1] }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -191,10 +222,39 @@
                 <blockquote class="py-2 mb-5">
                     <p class="font-bold text-center text-yellow italic lg:text-3xl text-xl">{{ partidoData.playerA.nombre }} Ganador</p>
                 </blockquote>
+
+                <div class="description mt-6">
+                    <RouterLink :to="{ name: 'torneo', params: { id: partidoData.torneo_id } }">
+                        <h3 class="text-2xl text-primary uppercase font-bold mb-5">
+                            Regresar a Torneo
+                        </h3>
+                    </RouterLink>
+                </div>
             </div>
+
+
+            <vue-final-modal
+                class="bg-transparent"
+                name="my-modal"
+                classes="modal-container "
+                content-class="modal-content"
+                v-model="showModalResultadosPartido"
+                :width="1000"
+                :height="700"
+                :adaptive="true"
+            >
+                <EstablecerResultados
+                    :partido="partidoData"
+                    @hide-modal="showModalResultadosPartido = false"
+                />
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModalResultadosPartido = false"
+                ></button>
+            </vue-final-modal>
+
+            
         </div>
-
-
 
         
 

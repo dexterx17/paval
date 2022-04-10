@@ -9,7 +9,7 @@ import Footer from "@/components/Footer.vue";
 import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
-import CrearPartidoTorneo from "@/components/Torneos/CrearPartidoTorneo.vue";
+import CrearPartidoTorneo from "@/components/Partidos/CrearPartidoTorneo.vue";
 
 import Inscritos from '@/components/Players/Inscritos.vue';
 

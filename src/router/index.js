@@ -42,7 +42,7 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
       },
-      component: () => import("../views/game/PartidosView.vue"),
+      component: () => import("../views/game/partidos/PartidosView.vue"),
     },
     {
       path: "/partido/:id",
@@ -50,7 +50,7 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
       },
-      component: () => import("../views/game/PartidoView.vue"),
+      component: () => import("../views/game/partidos/PartidoView.vue"),
     },
     {
       path: "/clubs",
