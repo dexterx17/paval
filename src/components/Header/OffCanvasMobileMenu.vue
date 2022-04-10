@@ -10,11 +10,12 @@
             <div class="flex justify-between pb-8">
                 <!-- Button Start -->
                 <RouterLink
-                    to="/signup"
+                    v-if="!isUserAuth"
+                    to="/login"
                     style="background-image:url(/images/others/btn-signup.webp);"
                     class="signup-btn transition-all group"
                 >
-                    Sign up
+                    INGRESAR
                     <img
                         class="w-4 h-4 ml-2 group-hover:ml-3 transition-all"
                         src="/images/icon/arrrow-icon2.webp"
@@ -22,6 +23,8 @@
                     />
                 </RouterLink>
                 <!-- Button End -->
+                
+                <ProfileButton v-else />
 
                 <button
                     class="icofont-close-line z-999 font-bold text-3xl text-black hover:text-primary transition-all transform hover:rotate-90"
@@ -37,12 +40,18 @@
 
 <script>
 import MobileNavigation from '@/components/Header/MobileNavigation.vue';
+import ProfileButton from '@/components/Button/ProfileButton.vue';
+
+import { mapGetters } from "vuex";
 
 export default {
     components: {
-        MobileNavigation
+        MobileNavigation,
+        ProfileButton
     },
-
+    computed: {
+        ...mapGetters(["isUserAuth"]),
+    },
     methods: {
         // offcanvas menu close
         mobiletoggleClass(addRemoveClass, className) {

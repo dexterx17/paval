@@ -99,6 +99,25 @@ const actions = {
             console.error("Error adding document: ", e);
         }
     },
+    async addImageTorneo({ commit }, payload) {
+        console.log(payload);
+        try {
+            const docRef = doc(db, "torneos", payload.torneo_id);
+            
+            return await updateDoc(docRef, {
+                imagenes: arrayUnion(payload.imagenURL)
+            }).then((docRes) => {
+                console.log("Imagen torneo with ID: ", docRes);
+                return docRes;
+            })
+            .catch((error) => {
+                console.log("error adding Imagen torneo");
+                console.log(error);
+            });
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
     async configurarTorneo({ commit }, payload) {
         try {
             const docRef = doc(db, "torneos", payload.torneo_id);

@@ -159,18 +159,23 @@ export default {
         const gameData = ref(null);
         const showModal = ref(false);
 
-        store.dispatch('fetchClub', route.params.id).then((value) => {
-            console.log('value');
-            console.log(value);
-            gameData.value = value;
-        });
+        const loadClubData = (clubId) => {
+            store.dispatch('fetchClub', clubId).then((value) => {
+                console.log('value');
+                console.log(value);
+                gameData.value = value;
+            });
+        }
+
+        loadClubData(route.params.id);
+
 
         // fetch the user information when params change
         watch(
             () => route.params.id,
             async newId => {
                 console.log('newId', newId);
-                gameData.value = await fetchClub(newId)
+                loadClubData(newId);
             }
         )
 

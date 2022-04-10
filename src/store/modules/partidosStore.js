@@ -147,7 +147,11 @@ const actions = {
             }).then((partido) => {
                 console.log('resultados partido seteado');
                 console.log(partido);
-                return partido;
+                return refPartido;
+            }).catch((e)=>{
+                console.log('error seteado resultados partido ');
+                console.log(e);
+                return null;
             }); 
 
         } catch (e) {

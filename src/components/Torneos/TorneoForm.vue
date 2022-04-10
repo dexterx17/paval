@@ -36,7 +36,8 @@ export default {
             hora: "19:00",
             lugar: "",
             ciudad: "Ambato",
-            inscritos: []
+            inscritos: [],
+            imagenes: []
         };
         const seriesOptions = ref([]);
 

@@ -66,10 +66,17 @@
 
             loadPartidoData();
 
+            
+            const hideModalPartido = () => {
+                showModalResultadosPartido.value = false;
+                loadPartidoData();
+            }
+
             return {
                 partidoData,
                 nPartidos,
-                showModalResultadosPartido
+                showModalResultadosPartido,
+                hideModalPartido
             }
         }
     }
@@ -118,9 +125,9 @@
                 <div class="flex justify-end mt-16 md:mt-0">
                     <div v-if="partidoData.resultado">
                         <p class="uppercase md:text-lg text-sm font-semibold text-primary">Resultado:</p>
-                        <countTo class="text-white text-4xl lg:text-5xl font-bold" :startVal='0' :endVal='partidoData.resultado.split(":")[0]' :duration='3000' :autoplay='true'></countTo>
+                        <countTo class="text-white text-4xl lg:text-5xl font-bold" :startVal='0' :endVal='parseInt(partidoData.resultado.split(":")[0])' :duration='3000' :autoplay='true'></countTo>
                         a
-                        <countTo class="text-white text-4xl lg:text-5xl font-bold" :startVal='0' :endVal='partidoData.resultado.split(":")[1]' :duration='3000' :autoplay='true'></countTo>
+                        <countTo class="text-white text-4xl lg:text-5xl font-bold" :startVal='0' :endVal='parseInt(partidoData.resultado.split(":")[1])' :duration='3000' :autoplay='true'></countTo>
                     </div>
                     <button
                         v-else
@@ -211,7 +218,7 @@
                                 <td v-for="(resultado) in partidoData.resultados" :key="resultado.set" class="text-center border border-primary">
                                     {{ resultado.playerB }}
                                 </td>
-                                <td class="text-center font-semibold border border-primary">
+                                <td class="text-center font-semibold border border-primary" v-if="partidoData.resultado">
                                     {{ partidoData.resultado.split(':')[1] }}
                                 </td>
                             </tr>
@@ -245,7 +252,7 @@
             >
                 <EstablecerResultados
                     :partido="partidoData"
-                    @hide-modal="showModalResultadosPartido = false"
+                    @hide-modal="hideModalPartido"
                 />
                 <button
                     class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"

@@ -34,7 +34,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(["getUser", "isUserAuth"]),
+        ...mapGetters(["isUserAuth"]),
     },
 
     data() {

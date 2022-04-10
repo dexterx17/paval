@@ -28,7 +28,8 @@ export default {
                 hora: this.partido.torneo.hora,
                 ciudad: this.partido.torneo.ciudad,
                 lugar: this.partido.torneo.lugar,
-                resultados: []
+                resultados: [],
+                resultado: null
             }).then((torneo) => {
                 this.procesando = false;
                 console.log('torneo');

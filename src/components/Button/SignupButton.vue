@@ -27,6 +27,8 @@
 </template>
 
 <script>
+
+
 export default {
     methods: {
         // offcanvas mobile-menu

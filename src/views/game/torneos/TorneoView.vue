@@ -312,10 +312,6 @@ export default {
     <TorneoDetails v-if="torneoData" :match="torneoData" />
 
     <div class="container">
-        <Inscritos v-if="jugadoresInscritos" :jugadores-inscritos="jugadoresInscritos" />
-    </div>
-
-    <div class="container">
         <div class="my-16" v-for="grupo in gruposTorneo" :key="grupo.id">
             <div class="team-one">
                 <span
@@ -434,6 +430,10 @@ export default {
                 </section>
             </div>
         </div>
+    </div>
+
+    <div class="container">
+        <Inscritos v-if="jugadoresInscritos" :jugadores-inscritos="jugadoresInscritos" />
     </div>
 
     <Footer />

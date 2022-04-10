@@ -210,7 +210,6 @@ export default {
     /* max-height: 300px; */
     padding: 16px;
     overflow: auto;
-    background-color: #fff;
     border-radius: 4px;
 }
 .modal-close {
