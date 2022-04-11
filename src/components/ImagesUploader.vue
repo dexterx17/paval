@@ -7,25 +7,14 @@
       <div class="text-center p-2">
         <label for="avatar">
           <img v-if="imagen" :src="imagen" class="rounded-md w-32 h-32" />
-          <img
-            v-else
-            :src="files.length ? files[0].url : 'https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm'"
-            class="rounded-md"
-          />
+          <img v-else :src="files.length ? files[0].url : 'https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm'"
+            class="rounded-md" />
         </label>
       </div>
       <div class="text-center p-2">
-        <file-upload
-          extensions="gif,jpg,jpeg,png,webp"
-          accept="image/png, image/gif, image/jpeg, image/webp"
-          name="avatar"
-          class="btn btn-primary"
-          :drop="!edit"
-          v-model="files"
-          @input-filter="inputFilter"
-          @input-file="inputFile"
-          ref="upload"
-        >Actualizar {{ label }}</file-upload>
+        <file-upload extensions="gif,jpg,jpeg,png,webp" accept="image/png, image/gif, image/jpeg, image/webp"
+          name="avatar" class="btn btn-primary" :drop="!edit" v-model="files" @input-filter="inputFilter"
+          @input-file="inputFile" ref="upload">Subir {{ label }}</file-upload>
       </div>
     </div>
 
@@ -34,16 +23,10 @@
         <img ref="editImage" :src="files[0].url" />
       </div>
       <div class="text-center p-4">
-        <button
-          type="button"
-          class="mx-2 p-2 rounded-md border hover:text-yellow border-yellow"
-          @click.prevent="$refs.upload.clear"
-        >Cancelar</button>
-        <button
-          type="submit"
-          class="mx-2 p-2 bg-yellow text-black hover:text-white rounded-md border border-yellow"
-          @click.prevent="editSave"
-        >Guardar</button>
+        <button type="button" class="mx-2 p-2 rounded-md border hover:text-yellow border-yellow"
+          @click.prevent="$refs.upload.clear">Cancelar</button>
+        <button type="submit" class="mx-2 p-2 bg-yellow text-black hover:text-white rounded-md border border-yellow"
+          @click.prevent="editSave">Guardar</button>
       </div>
     </div>
   </div>
@@ -76,6 +59,7 @@ export default {
       files: [],
       edit: false,
       cropper: false,
+      procesando: false
     }
   },
   watch: {
@@ -115,6 +99,7 @@ export default {
         size: file.size,
         active: true,
       })
+      this.$emit('change-image', file)
     },
     alert(message) {
       alert(message)
@@ -129,9 +114,6 @@ export default {
       }
       if (!newFile && oldFile) {
         this.edit = false
-      }
-      if (newFile && oldFile) {
-        this.$emit('change-image', newFile.file)
       }
     },
     inputFilter(newFile, oldFile, prevent) {

@@ -10,10 +10,10 @@ export default {
     components: {
         ImagesUploader
     },
-    props:['torneo'],
-    setup(props){
+    props: ['torneo'],
+    setup(props, { emit }) {
         const store = useStore();
-        
+
         const changeImage = (image) => {
             console.log('image');
             console.log(image);
@@ -30,15 +30,15 @@ export default {
                             torneo_id: props.torneo.id,
                             imagenURL: downloadURL
                         })
-                        .then((response) => {
-                            if (response.id) {
-                                console.log('ok',response);
-                                alert(response.id);
-                            } else {
-                                alert('error creando club');
-                            }
+                            .then((response) => {
+                                if (response.id) {
+                                    console.log('ok', response);
+                                    emit('imagen-cargada', response);
+                                } else {
+                                    alert('error creando club');
+                                }
 
-                        });
+                            });
                     });
                 });
         }

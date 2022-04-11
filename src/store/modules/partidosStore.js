@@ -135,9 +135,18 @@ const actions = {
             console.log('setResultadosPartido');
             console.log(payload);
             //const refPartido = collection(db, "partidos", payload.partido_id);
+            
+            const refGrupo = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
 
-            const refPartido = doc(db, `partidos/${payload.partido_id}`);
+            const resultados = {};
+            resultados[payload.partido.id] = payload.partido.resultado;
+            updateDoc(refGrupo, {
+                resultados: resultados
+            }).then((value) => {
+                console.log('updateGrupo', value);
+            })
 
+            const refPartido = doc(db, `partidos/${payload.partido.id}`);
             console.log('refPartido');
             console.log(refPartido);
             
