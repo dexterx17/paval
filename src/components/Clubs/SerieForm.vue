@@ -93,9 +93,20 @@
                     />
                 </div>
             </div>
-            <div class="flex justify-around">
-                <button type="submit">Crear Serie</button>
-                <button @click="showForm = false" type="button">Cancelar</button>
+            <div v-if="procesandoForm" class="flex justify-center w-full">
+                <h2 class="text-primary">Procesando...</h2>
+            </div>
+            <div v-else class="flex justify-around">
+                <button
+                    style="background-image:url(/images/others/btn-signup.webp);"
+                    class="signup-btn transition-all"
+                    type="submit"
+                >Crear Serie</button>
+                <button
+                    class="signup-btn transition-all border-gray-200 border rounded-2xl"
+                    @click="showForm = false"
+                    type="button"
+                >Cancelar</button>
             </div>
         </form>
     </div>
@@ -132,12 +143,14 @@ export default {
         const route = useRoute();
 
         const showForm = ref(false);
+        const procesandoForm = ref(false);
         const serieModel = {
             club: route.params.id,
             nombre: "",
             max_integrantes: null,
             min_integrantes: null,
-            relevancia: null
+            relevancia: null,
+            jugadores:[]
         };
 
         const serieData = ref(serieModel);
@@ -167,9 +180,12 @@ export default {
         }
 
         const submit = () => {
+            procesandoForm.value = true;
             console.log('addSerie');
             console.log(store);
             store.dispatch('addSerie', serieData.value).then((response) => {
+                procesandoForm.value = false;
+                showForm.value = false;
                 console.log('response');
                 console.log(response);
             });
@@ -178,6 +194,7 @@ export default {
         return {
             serieData,
             showForm,
+            procesandoForm,
 
             initSerie,
             submit,

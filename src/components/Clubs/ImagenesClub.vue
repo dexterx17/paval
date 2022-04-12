@@ -10,7 +10,7 @@ export default {
     components: {
         ImagesUploader
     },
-    props: ['torneo'],
+    props: ['club'],
     setup(props, { emit }) {
         const store = useStore();
 
@@ -20,14 +20,14 @@ export default {
 
             const storage = getStorage();
             const imgName = `${Date.now()}`;
-            const storageRef = sRef(storage, `torneos/${props.torneo.id}/${imgName}`);
+            const storageRef = sRef(storage, `clubs/${props.club.id}/${imgName}`);
 
             uploadBytes(storageRef, image)
                 .then(function (snapshot) {
                     getDownloadURL(snapshot.ref).then((downloadURL) => {
-                        console.log('Imagen torneo at', downloadURL);
-                        store.dispatch('addImageTorneo', {
-                            torneo_id: props.torneo.id,
+                        console.log('Imagen club at', downloadURL);
+                        store.dispatch('addImageClub', {
+                            club_id: props.club.id,
                             imagenURL: downloadURL
                         })
                             .then((response) => {
@@ -53,6 +53,6 @@ export default {
 
 <template>
     <div>
-        <ImagesUploader @change-image="changeImage" :imagenes="[]" label="Imagenes Torneo" />
+        <ImagesUploader @change-image="changeImage" :imagenes="[]" label="Imagen Club" />
     </div>
 </template>

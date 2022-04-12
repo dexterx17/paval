@@ -42,16 +42,16 @@
         >
             <div
                 class="relative group before:empty-content before:absolute before:w-full before:h-full before:opacity-0 before:bg-black before:top-0 before:left-0 before:right-0 before:bottom-0 overflow-hidden hover:before:opacity-70 transition-all hover:before:transition-all before:border-4 before:border-white before:rounded-4xl before:border-opacity-20"
-                v-for="(games, index) in clubsData"
+                v-for="(club, index) in clubsData"
                 :key="index"
             >
                 <img
                     class="w-full rounded-4xl"
-                    :src="games.gameImage ?? '/images/others/popular-game-thumb1.webp'"
-                    :alt="games.nombre"
+                    :src="club.imagenes.length ? club.imagenes[0] : '/images/others/popular-game-thumb1.webp'"
+                    :alt="club.nombre"
                 />
                 <RouterLink
-                    :to="`/club/${games.id}`"
+                    :to="`/club/${club.id}`"
                     class="group primary-btn absolute-center opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all"
                     style="background-image:url(/images/others/btn-bg.webp)"
                 >
@@ -67,7 +67,6 @@
     </div>
 </template>
 <script>
-import gameHome from '@/data/games.json'
 import TitleSection from '@/components/Title/TitleSection.vue'
 
 import { computed } from 'vue';
@@ -79,7 +78,6 @@ export default {
     },
     data() {
         return {
-            gameHome,
             title: "Clubs",
             text: "Partners y Auspiciantes de nuestra plataforma"
         }

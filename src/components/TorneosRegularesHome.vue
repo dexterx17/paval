@@ -85,6 +85,20 @@
                     @click="loadMore"
                 >Other Features</button>
             </div>
+
+            <div
+                class="flex flex-col items-center justify-center mt-73"
+                v-if="matchesData.length == 0"
+            >
+                <p class="text-primary">
+                    No tenemos torneos registrados para esta semana
+                </p>
+                <RouterLink
+                    class="primary-btn"
+                    style="background-image:url(/images/others/btn-bg.webp);"
+                    to="/torneos"
+                >Ver todos los torneos</RouterLink>
+            </div>
         </div>
     </div>
     <!-- Upcoming Matches Section End  -->

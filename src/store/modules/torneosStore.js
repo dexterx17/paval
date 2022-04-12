@@ -13,6 +13,8 @@ import {
 } from "firebase/firestore";
 
 
+import { getStorage, ref as sRef, deleteObject } from "firebase/storage";
+
 const state = {
     torneos: [],
     torneo: null,
@@ -100,6 +102,7 @@ const actions = {
         }
     },
     async addImageTorneo({ commit }, payload) {
+        console.log('addImageTorneo');
         console.log(payload);
         try {
             const docRef = doc(db, "torneos", payload.torneo_id);
@@ -108,10 +111,42 @@ const actions = {
                 imagenes: arrayUnion(payload.imagenURL)
             }).then((docRes) => {
                 console.log("Imagen torneo with ID: ", docRes);
-                return docRes;
+                return docRef;
             })
             .catch((error) => {
                 console.log("error adding Imagen torneo");
+                console.log(error);
+            });
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
+    async removeImageTorneo({ commit }, payload) {
+        console.log('removeImageTorneo');
+        console.log(payload);
+        try {
+            const storage = getStorage();
+            console.log('storage', storage);
+            // Create a reference to the file to delete
+            console.log('imagenURL', payload.imagenURL);
+            var fileRef = sRef(storage, payload.imagenURL);
+            console.log('fileRef', fileRef);
+            
+            // Delete the file using the delete() method 
+            deleteObject(fileRef)
+                .catch(function (error) {
+                    // Some Error occurred
+                    console.log('error borrando file torneo');
+                    console.log(error);
+                });
+            
+            const docRef = doc(db, "torneos", payload.torneo_id);
+            console.log("Remove Imagen ", payload);
+            await updateDoc(docRef, {
+                imagenes: arrayRemove(payload.imagenURL)
+            })
+            .catch((error) => {
+                console.log("error removing Imagen from torneo array");
                 console.log(error);
             });
         } catch (e) {

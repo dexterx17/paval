@@ -27,6 +27,7 @@ export default {
     setup() {
         const store = useStore();
         const showForm = ref(false);
+        const procesandoForm = ref(false);
         const torneoModel = {
             club: null,
             serie: null,
@@ -85,10 +86,12 @@ export default {
 
 
         const submit = () => {
+            procesandoForm.value = true;
             console.log('addTorneo');
             console.log(store);
             var vm = this;
             store.dispatch('addTorneo', torneoData.value).then((response) => {
+                procesandoForm.value = false;
                 console.log('response');
                 console.log(response);
                 console.log(response.id);
@@ -104,6 +107,7 @@ export default {
             seriesOptions,
             clubsOptions,
             showForm,
+            procesandoForm,
 
             initTorneo,
             selectClub,
@@ -367,7 +371,10 @@ export default {
                     />
                 </div>
             </div>
-            <div class="flex justify-around">
+            <div v-if="procesandoForm" class="flex justify-center w-full">
+                <h2 class="text-primary">Procesando...</h2>
+            </div>
+            <div v-else class="flex justify-around">
                 <button
                     style="background-image:url(/images/others/btn-signup.webp);"
                     class="signup-btn transition-all"

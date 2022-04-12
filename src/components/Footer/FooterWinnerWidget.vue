@@ -3,8 +3,8 @@
         <FooterWidgetTitle :title="title" />
 
         <div class="grid grid-cols-3 sm:grid-cols-3 gap-3">
-            <RouterLink v-for="(match, index) in matches" :key="index" to="/player">
-                <img :src="`${match.gamingBg}`" :alt="match.gamingAlt" />
+            <RouterLink v-for="(match, index) in matches" :key="index" :to="match.url">
+                <img :class="match.class" :src="`${match.gamingBg}`" :alt="match.gamingAlt" />
             </RouterLink>
         </div>
     </div>
@@ -18,31 +18,43 @@ export default {
     },
     data() {
         return {
-            title: "Ganadores de Hoy",
+            title: "Auspiciantes",
             matches: [
                 {
-                    gamingBg: "/images/others/winners1.webp",
-                    gamingAlt: "Winner"
+                    gamingBg: "/images/others/winnerS.png",
+                    gamingAlt: "SANTANA estudio",
+                    class: 'w-24',
+                    url: '/'
                 },
                 {
-                    gamingBg: "/images/others/winners2.webp",
-                    gamingAlt: "Winner"
+                    gamingBg: "/images/others/paval.jpg",
+                    gamingAlt: "PAVAL Ping Pong Club",
+                    class: 'w-16 mx-auto pl-2',
+                    url: '/club/2fJ7kPIzfUlrZvVuZyo3'
                 },
                 {
                     gamingBg: "/images/others/winners3.webp",
-                    gamingAlt: "Winner"
+                    gamingAlt: "Winner",
+                    class: '',
+                    url: '/player'
                 },
                 {
                     gamingBg: "/images/others/winners4.webp",
-                    gamingAlt: "Winner"
+                    gamingAlt: "Winner",
+                    class: '',
+                    url: '/player'
                 },
                 {
                     gamingBg: "/images/others/winners5.webp",
-                    gamingAlt: "Winner"
+                    gamingAlt: "Winner",
+                    class: '',
+                    url: '/player'
                 },
                 {
                     gamingBg: "/images/others/winners6.webp",
-                    gamingAlt: "Winner"
+                    gamingAlt: "Winner",
+                    class: '',
+                    url: '/player'
                 }
             ]
         }

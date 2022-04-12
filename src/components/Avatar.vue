@@ -115,6 +115,7 @@ export default {
         size: file.size,
         active: true,
       })
+      this.$emit('change-image', file)
     },
     alert(message) {
       alert(message)
@@ -129,9 +130,6 @@ export default {
       }
       if (!newFile && oldFile) {
         this.edit = false
-      }
-      if (newFile && oldFile) {
-        this.$emit('change-image', newFile.file)
       }
     },
     inputFilter(newFile, oldFile, prevent) {

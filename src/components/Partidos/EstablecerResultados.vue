@@ -19,7 +19,7 @@ export default {
         submit() {
             this.procesando = true;
             this.setResultadosPartido({
-                partido_id: this.partido.id,
+                partido: this.partido,
                 resultados: this.resultados,
                 resultado: this.resultado
             }).then((torneo) => {
@@ -32,19 +32,19 @@ export default {
             })
         }
     },
-    computed:{
-        ganadosA:function(){
+    computed: {
+        ganadosA: function () {
             return this.resultados.filter((item) => {
                 return item.playerA > item.playerB;
             }).length
         },
-        ganadosB:function(){
+        ganadosB: function () {
             return this.resultados.filter((item) => {
                 return item.playerB > item.playerA;
             }).length
         },
-        resultado:function(){
-            return this.ganadosA+':'+this.ganadosB;
+        resultado: function () {
+            return this.ganadosA + ':' + this.ganadosB;
         },
     },
     data() {
@@ -61,7 +61,7 @@ export default {
         console.log(props.partido.modo_juego);
         let modoJuegos = props.partido.modo_juego.split('de');
 
-        console.log('modoJuegos',modoJuegos);
+        console.log('modoJuegos', modoJuegos);
 
         nPartidos.value = parseInt(modoJuegos[1]);
 
@@ -85,38 +85,25 @@ export default {
 </script>
 <template>
     <div>
-        <form
-            @submit.prevent="submit"
-            id="contact-form"
-            class="grid sm:gap-x-8 gap-x-4 grid-cols-2"
-        >
+        <form @submit.prevent="submit" id="contact-form" class="grid sm:gap-x-8 gap-x-4 grid-cols-2">
             <div class="col-span-2">
                 <!-- Team Varses Team Start -->
                 <div class="container mb-2">
-                    <div
-                        class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 max-w-lg mx-auto"
-                    >
+                    <div class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 max-w-lg mx-auto">
                         <div class="grid grid-cols-1 items-center">
                             <div class="flex justify-center items-center w-full px-0 lg:px-8">
                                 <div>
-                                    <img
-                                        class="w-24 h-24 rounded-2xl"
-                                        :src="partido.playerA ? (partido.playerA.avatar ??  '/images/blog/blog3.webp') : ''"
-                                        :alt="partido.playerA ? partido.playerA.nombre : ''"
-                                    />
+                                    <img class="w-24 h-24 rounded-2xl"
+                                        :src="partido.playerA ? (partido.playerA.avatar ?? '/images/blog/blog3.webp') : ''"
+                                        :alt="partido.playerA ? partido.playerA.nombre : ''" />
                                     <h4 class="text-center">{{ partido.playerA ? partido.playerA.nombre : '' }}</h4>
                                 </div>
-                                <img
-                                    class="w-16 h-16 lg:mx-9 mx-5"
-                                    src="/images/others/game-vs1.webp"
-                                    alt="Feature Icon"
-                                />
+                                <img class="w-16 h-16 lg:mx-9 mx-5" src="/images/others/game-vs1.webp"
+                                    alt="Feature Icon" />
                                 <div>
-                                    <img
-                                        class="w-24 h-24 rounded-2xl"
-                                        :src="partido.playerB ? ( partido.playerB.avatar ?? '/images/blog/blog3.webp') : ''"
-                                        :alt="partido.playerB ? partido.playerB.nombre : ''"
-                                    />
+                                    <img class="w-24 h-24 rounded-2xl"
+                                        :src="partido.playerB ? (partido.playerB.avatar ?? '/images/blog/blog3.webp') : ''"
+                                        :alt="partido.playerB ? partido.playerB.nombre : ''" />
                                     <h4 class="text-center">{{ partido.playerB ? partido.playerB.nombre : '' }}</h4>
                                 </div>
                             </div>
@@ -129,44 +116,29 @@ export default {
                 <div class="font-extrabold">
                     {{ ganadosA }}
                 </div>
-                <label
-                    class="block uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
-                    for="grid-club"
-                >Resultados</label>
+                <label class="block uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
+                    for="grid-club">Resultados</label>
                 <div>
                     {{ ganadosB }}
                 </div>
             </div>
 
-            <div v-for="resultado in resultados"
-                :key="resultado.set"
-                class="col-span-2 flex flex-wrap -mx-3"
-            >
+            <div v-for="resultado in resultados" :key="resultado.set" class="col-span-2 flex flex-wrap -mx-3">
                 <div class="w-1/2 px-3 mb-2 flex  items-center">
-                    <label
-                        class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
-                        for="grid-club"
-                    >SET {{ resultado.set }}</label>
+                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
+                        for="grid-club">SET {{ resultado.set }}</label>
                     <input
                         class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
-                        type="number"
-                        v-model="resultado.playerA"
-                        :placeholder="`Puntos (${partido.playerA.nombre})`"
-                        required
-                        />
+                        type="number" v-model="resultado.playerA" :placeholder="`Puntos (${partido.playerA.nombre})`"
+                        required />
                 </div>
                 <div class="w-1/2 px-3 mb-2 flex items-center">
-                    <label
-                        class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
-                        for="grid-club"
-                    >SET {{ resultado.set }}</label>
+                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
+                        for="grid-club">SET {{ resultado.set }}</label>
                     <input
                         class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
-                        type="number"
-                        v-model="resultado.playerB"
-                        :placeholder="`Puntos (${partido.playerB.nombre})`"
-                        required
-                    />
+                        type="number" v-model="resultado.playerB" :placeholder="`Puntos (${partido.playerB.nombre})`"
+                        required />
                 </div>
             </div>
             <div class="col-span-2 italic text-center text-xs">
@@ -177,19 +149,12 @@ export default {
                     <h2 class="text-primary">Procesando...</h2>
                 </div>
                 <div v-else class="form-btn-wrap flex justify-center w-full mt-4">
-                    <button
-                        type="submit"
-                        value="submit"
-                        name="submit"
+                    <button type="submit" value="submit" name="submit"
                         class="form-btn w-full group primary-btn opacity-100 transition-all"
-                        style="background-image:url(/images/others/btn-bg.webp); background-repeat: no-repeat; background-size: 300px 60px; background-position: center;"
-                    >
+                        style="background-image:url(/images/others/btn-bg.webp); background-repeat: no-repeat; background-size: 300px 60px; background-position: center;">
                         Actualizar resultados
-                        <img
-                            src="/images/icon/arrrow-icon.webp"
-                            alt="Arrow Icon"
-                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
-                        />
+                        <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
+                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
                     </button>
                     <p class="form-messege"></p>
                 </div>
@@ -204,6 +169,7 @@ export default {
     justify-content: center;
     align-items: center;
 }
+
 .modal-content {
     position: relative;
     width: 80% !important;
@@ -212,6 +178,7 @@ export default {
     overflow: auto;
     border-radius: 4px;
 }
+
 .modal-close {
     position: absolute;
     top: 0;
@@ -224,6 +191,7 @@ export default {
     margin: 8px 8px 0 0;
     cursor: pointer;
 }
+
 .modal-close::hover {
     color: gray;
 }

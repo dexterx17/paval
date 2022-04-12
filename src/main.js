@@ -18,6 +18,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 app.directive('observe-visibility', ObserveVisibility)
 
 
+
 app.use(router);
 app.use(store);
 

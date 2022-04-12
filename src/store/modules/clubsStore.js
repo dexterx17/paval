@@ -6,8 +6,13 @@ import {
     doc,
     getDoc,
     setDoc,
-    addDoc
+    updateDoc,
+    addDoc,
+    arrayUnion,
+    arrayRemove
 } from "firebase/firestore";
+
+import { getStorage, ref as sRef, deleteObject } from "firebase/storage";
 
 const state = {
     clubs: [],
@@ -64,6 +69,58 @@ const actions = {
             console.error("Error adding document: ", e);
         }
     },
+    async addImageClub({ commit }, payload) {
+        console.log('addImageClub');
+        console.log(payload);
+        try {
+            const docRef = doc(db, "clubs", payload.club_id);
+            
+            return await updateDoc(docRef, {
+                imagenes: arrayUnion(payload.imagenURL)
+            }).then((docRes) => {
+                console.log("Imagen club with ID: ", docRes);
+                return docRef;
+            })
+            .catch((error) => {
+                console.log("error adding Imagen club");
+                console.log(error);
+            });
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
+    async removeImageClub({ commit }, payload) {
+        console.log('removeImageClub');
+        console.log(payload);
+        try {
+            const storage = getStorage();
+            console.log('storage', storage);
+            // Create a reference to the file to delete
+            console.log('imagenURL', payload.imagenURL);
+            var fileRef = sRef(storage, payload.imagenURL);
+            console.log('fileRef', fileRef);
+            
+            // Delete the file using the delete() method 
+            deleteObject(fileRef)
+                .catch(function (error) {
+                    // Some Error occurred
+                    console.log('error borrando file torneo');
+                    console.log(error);
+                });
+            
+            const docRef = doc(db, "clubs", payload.club_id);
+            console.log("Remove Imagen ", payload);
+            await updateDoc(docRef, {
+                imagenes: arrayRemove(payload.imagenURL)
+            })
+            .catch((error) => {
+                console.log("error removing Imagen from torneo array");
+                console.log(error);
+            });
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
     async updateClub({ commit }, payload) {
         try {
           setDoc(doc(db, "clubs",payload.uid), payload)
@@ -84,9 +141,11 @@ const actions = {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                console.log("Document data:", docSnap.data());
-                commit('SET_TORNEO',docSnap.data());
-                return docSnap.data();
+                let club = docSnap.data();
+                club.id = docSnap.id;
+                console.log("Document data:", club);
+                commit('SET_TORNEO',club);
+                return club;
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
