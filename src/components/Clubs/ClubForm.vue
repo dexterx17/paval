@@ -92,8 +92,16 @@
                 </div>
             </div>
             <div class="flex justify-around">
-                <button type="submit">Crear Club</button>
-                <button @click="showForm = false" type="button">Cancelar</button>
+                <button
+                    style="background-image:url(/images/others/btn-signup.webp);"
+                    class="signup-btn transition-all"
+                    type="submit"
+                >Crear Club</button>
+                <button
+                    class="signup-btn transition-all border-gray-200 border rounded-2xl"
+                    @click="showForm = false"
+                    type="button"
+                >Cancelar</button>
             </div>
         </form>
     </div>
@@ -132,7 +140,11 @@ export default {
             ciudad: "Ambato",
             sede: "",
             representante: "",
-            imagenes: []
+            imagenes: [],
+            total_series:0,
+            total_miembros:0,
+            total_torneos:0,
+            total_partidos:0
         };
 
         const clubData = ref(clubModel);

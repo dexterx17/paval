@@ -5,7 +5,9 @@ import {
     getDocs,
     doc,
     getDoc,
-    addDoc
+    addDoc,
+    updateDoc,
+    increment 
 } from "firebase/firestore";
 
 
@@ -87,6 +89,11 @@ const actions = {
     async addSerie({ commit }, payload) {
         try {
             const docRef = doc(db, "clubs", payload.club);
+
+            await updateDoc(docRef, {
+                total_series: increment(1)
+            });
+
             const colRef = collection(docRef, "series")
 
             return await addDoc(colRef, payload)

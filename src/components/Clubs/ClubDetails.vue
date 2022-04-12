@@ -1,10 +1,10 @@
 <template>
-    <div class="container relative" v-if="clubData">
+    <div class="container relative" v-if="club">
         <!-- Team Varses Team Start -->
         <div class="container mb-12">
             <div class="flex justify-center items-center w-full p-0">
-                <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg border-4 border-light-blue-500" :src="clubData.logo"
-                    :alt="clubData.nombre" />
+                <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg border-4 border-light-blue-500" :src="club.logo"
+                    :alt="club.nombre" />
             </div>
         </div>
         <!-- Team Varses Team End -->
@@ -12,7 +12,7 @@
         <!-- <p class="date text-primary font-bold mb-3">03 January, 2021, 05:01:00 AM</p> -->
         <h2
             class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10">
-            {{ clubData.nombre }}</h2>
+            {{ club.nombre }}</h2>
         <div class="content-details">
             <div class="description mt-6">
                 <p class="leading-8">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
@@ -24,21 +24,21 @@
                     Ipsum.</p>
             </div>
 
-            <div class="gameslide my-8" v-if="clubData.imagenes.length > 0">
+            <div class="gameslide my-8" v-if="club.imagenes.length > 0">
                 <swiper class="swiper" :modules="swiperOption.modules" :pagination="{ clickable: true }"
                     :navigation="swiperOption.navigation" :options="swiperOption" @slideChange="onSlideChange">
-                    <swiper-slide v-for="(game, imageIndex) in gameslide" :key="imageIndex">
+                    <swiper-slide v-for="(game, imageIndex) in club.imagenes" :key="imageIndex">
                         <div class="relative">
-                            <img class="sm:h-full h-64 w-full object-cover" :src="`${game.gamingBg}`"
-                                :alt="clubData.nombre" />
+                            <img class="sm:h-full h-64 w-full object-cover" :src="`${game}`"
+                                :alt="club.nombre" />
                         </div>
                     </swiper-slide>
                 </swiper>
 
                 <!-- Testimonial Arrows -->
 
-                <div class="flex mt-10">
-                    <div>
+                <div class="flex  justify-between mt-4">
+                    <div class="flex">
                         <div
                             class="gameslide-button-prev swipper-arrow text-white md:w-68 w-55 md:h-55 h-11 bg-cover flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape transition-all z-50 mr-2">
                             <img class="w-4 h-6" src="/images/icon/navigation-arrow2.webp" alt />
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div>
-                        <Popper v-if="torneo.imagenes.length < 3" hover>
+                        <Popper v-if="club.imagenes.length < 3" hover>
                             <button @click="showImagesUploader = true"
                                 class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
                                 <img class="w-4 h-6" src="/images/icon/facebook-bg.webp" alt="Agregar Imagen Torneo" />
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <ImagenesTorneo v-if="showImagesUploader" :torneo="torneo" @imagen-cargada="imagenCargada" />
+            <ImagenesClub v-if="showImagesUploader" :club="club" @imagen-cargada="imagenCargada" />
 
             <div class="description mt-6">
                 <h3 class="text-2xl text-white uppercase font-bold mb-5">Description:</h3>
@@ -106,34 +106,25 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5 text-white">
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">FUNDACIÓN:</h4>
-                        <p class="text-gray-400">{{ clubData.fecha_constitucion }}</p>
+                        <p class="text-gray-400">{{ club.fecha_constitucion }}</p>
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">SERIES:</h4>
-                        <p class="text-gray-400">0</p>
-                    </div>
-                    <div class="additional_information_text">
-                        <h4 class="font-bold mb-5">MIEMBROS</h4>
-                        <p class="text-gray-400">80,000,000+</p>
+                        <p class="text-gray-400">{{ club.total_series }}</p>
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">TORNEOS:</h4>
-                        <p class="text-gray-400">0</p>
+                        <p class="text-gray-400">{{ club.total_torneos }}</p>
+                    </div>
+                    <div class="additional_information_text">
+                        <h4 class="font-bold mb-5">MIEMBROS</h4>
+                        <p class="text-gray-400">{{ club.total_miembros }}</p>
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">PARTIDOS:</h4>
-                        <p class="text-gray-400">0</p>
+                        <p class="text-gray-400">{{ club.total_partidos }}</p>
                     </div>
                 </div>
-            </div>
-            <div class="description mt-6">
-                <p class="leading-8">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                    Ipsum has been the industry's standard dummy text ever since the 1500 when an unknown printer took a
-                    galley of type and scrambled it to make a type specimen book. It has survived not only five
-                    centuries, but also the leap electro typesetting, remaining essentially unchanged. It was
-                    popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and
-                    more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
-                    Ipsum.</p>
             </div>
         </div>
     </div>
@@ -150,7 +141,7 @@ import { useRoute } from 'vue-router'
 import { useStore } from "vuex";
 import Popper from "vue3-popper";
 
-import ImagenesTorneo from "@/components/Torneos/ImagenesTorneo.vue";
+import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
 
 // Import Swiper styles
 import 'swiper/css/bundle';
@@ -163,10 +154,11 @@ export default {
         Pagination,
         Popper,
 
-        ImagenesTorneo
+        ImagenesClub
     },
+    props:['club'],
     methods: {
-        ...mapActions(["fetchClub"]),
+        ...mapActions(["fetchClub","removeImageClub"]),
         onSlideChange(slide) {
             console.log('slide');
             console.log(slide);
@@ -177,16 +169,16 @@ export default {
             this.showImagesUploader = false;
         },
         eliminarImagen() {
-            console.log(this.clubData.imagenes, this.activeImage);
-            let imgURL = this.clubData.imagenes[this.activeImage];
+            console.log(this.club.imagenes, this.activeImage);
+            let imgURL = this.club.imagenes[this.activeImage];
             this.procesando = true;
             this.removeImageClub({
-                clubData_id: this.clubData.id,
+                club_id: this.club.id,
                 imagenURL: imgURL
-            }).then((clubData) => {
+            }).then((club) => {
                 this.procesando = false;
-                console.log('clubData');
-                console.log(clubData);
+                console.log('club');
+                console.log(club);
             })
         }
     },
@@ -206,37 +198,12 @@ export default {
             procesando: false,
         }
     },
-    setup() {
-        const route = useRoute();
-        const store = useStore();
-        const clubData = ref(null);
-        const showModal = ref(false);
+    setup(props) {
         const showImagesUploader = ref(false);
 
-        const loadClubData = (clubId) => {
-            store.dispatch('fetchClub', clubId).then((value) => {
-                console.log('value');
-                console.log(value);
-                clubData.value = value;
-                showImagesUploader.value = clubData.value.imagenes.length == 0;
-            });
-        }
-
-        loadClubData(route.params.id);
-
-
-        // fetch the user information when params change
-        watch(
-            () => route.params.id,
-            async newId => {
-                console.log('newId', newId);
-                loadClubData(newId);
-            }
-        )
+        showImagesUploader.value = props.club.imagenes.length == 0;
 
         return {
-            clubData,
-            showModal,
             showImagesUploader
         }
     }
