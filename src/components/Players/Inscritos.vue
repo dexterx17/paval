@@ -9,6 +9,17 @@
                 <swiper-slide v-for="(team, index) in jugadoresInscritos" :key="index">
                     <div class="rounded-50">
                         <div class>
+                            <div v-if="showDeleteButton(team.id)" class="text-sm absolute p-1 right-0 top-0 bg-red-500 rounded-tr-lg">
+                                <Popper
+                                    hover>
+                                    <button @click="salirDeTorneo(team.id)" >
+                                        X
+                                    </button>
+                                    <template #content>
+                                        <div>Retirar inscripción</div>
+                                    </template>
+                                </Popper>
+                            </div>
                             <img
                                 class="rounded-2xl"
                                 :src="team.avatar ?? '/images/blog/blog3.webp'"
@@ -31,7 +42,10 @@
 // import Swiper core and required modules
 import { Navigation, Pagination } from 'swiper';
 
-import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import Popper from "vue3-popper";
+import { mapGetters, mapActions } from "vuex";
+
 
 // Import Swiper styles
 import 'swiper/css/bundle';
@@ -40,13 +54,34 @@ export default {
     props: {
         jugadoresInscritos: {
             type: Object
-        }
+        },
+        torneo: {
+            type: Object
+        },
     },
     components: {
         Swiper,
         SwiperSlide,
         Navigation,
-        Pagination
+        Pagination,
+        Popper
+    },
+    computed:{
+        ...mapGetters({
+            user: 'getUser'
+        })
+    },
+    methods:{
+        ...mapActions(["quitarDeTorneo"]),
+        salirDeTorneo(userId){
+            this.quitarDeTorneo({
+                torneo_id: this.torneo.id,
+                jugador_id: userId
+            })
+        },
+        showDeleteButton(userId){
+            return this.user ? this.user.uid == userId : false;
+        }
     },
     data() {
         return {
@@ -79,35 +114,6 @@ export default {
                     }
                 },
             },
-            teamplayers: [
-                {
-                    teamImage: "/images/others/players1.webp"
-                },
-                {
-                    teamImage: "/images/others/players2.webp"
-                },
-                {
-                    teamImage: "/images/others/players3.webp"
-                },
-                {
-                    teamImage: "/images/others/players4.webp"
-                },
-                {
-                    teamImage: "/images/others/players5.webp"
-                },
-                {
-                    teamImage: "/images/others/players6.webp"
-                },
-                {
-                    teamImage: "/images/others/players3.webp"
-                },
-                {
-                    teamImage: "/images/others/players1.webp"
-                },
-                {
-                    teamImage: "/images/others/players2.webp"
-                },
-            ]
         }
     }
 }

@@ -223,6 +223,13 @@ export default {
                         class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
                 </button>
             </div>
+            <div v-else>
+                <div class="flex flex-col align-content-center content-center">
+                    <RouterLink to="/login">
+                        <h3 class="text-center">Regístrate para poder inscribirte</h3>
+                    </RouterLink>
+                </div>
+            </div>
         </div>
         <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
             v-model="showModal" :width="1000" :height="700" :adaptive="true">
@@ -335,8 +342,8 @@ export default {
         </div>
     </div>
 
-    <div class="container">
-        <Inscritos v-if="jugadoresInscritos" :jugadores-inscritos="jugadoresInscritos" />
+    <div class="container" v-if="torneoData">
+        <Inscritos v-if="jugadoresInscritos" :torneo="torneoData" :jugadores-inscritos="jugadoresInscritos" />
     </div>
 
     <Footer />

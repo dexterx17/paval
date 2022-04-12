@@ -48,6 +48,22 @@ export default {
     data() {
         return {
             gruposOptions: [1, 2, 3, 4, 5],
+            gruposOptions: [{
+                id: 1,
+                label: '1 Grupo (3 a 7 jugadores)'
+             },{
+                 id: 2,
+                 label: '2 Grupos (6 a 10 jugadores)'
+             },{
+                 id: 3,
+                 label: '3 Grupos (9 a 15 jugadores)'
+             },{
+                 id: 4,
+                 label: '4 Grupos (12 a 20 jugadores)'
+             },{
+                 id: 5,
+                 label: '5 Grupos (18 a 26 jugadores)'
+            }],
             // grupos:[],
             modosJuego: [
                 {
@@ -84,6 +100,7 @@ export default {
         ])
 
         const selectTotalGrupos = (total) => {
+            console.log('Total Grupos', total);
             grupos.value = [];
             for (let index = 1; index <= total; index++) {
                 grupos.value.push({
@@ -164,8 +181,11 @@ export default {
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         :options="gruposOptions"
                         v-model="nGrupos"
+                        value="id"
+                        label="label"
                         :clearable="false"
                         :modelValue="nGrupos"
+                        @reduce="val => val.id"
                         @update:modelValue="selectTotalGrupos"
                     ></v-select>
                 </div>
