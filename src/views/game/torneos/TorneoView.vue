@@ -8,6 +8,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Footer from "@/components/Footer.vue";
 import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
+import InscribirAmigos from "@/components/Torneos/InscribirAmigos.vue";
 import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
 import CrearPartidoTorneo from "@/components/Partidos/CrearPartidoTorneo.vue";
 
@@ -27,6 +28,7 @@ export default {
         ModalsContainer,
         CountTo,
         InscribirseTorneo,
+        InscribirAmigos,
         ConfigurarTorneo,
         CrearPartidoTorneo,
         Inscritos
@@ -58,6 +60,7 @@ export default {
         const showModal = ref(false);
         const showModalConfigurarTorneo = ref(false);
         const showModalCrearPartido = ref(false);
+        const showModalInscribirAmigos = ref(false);
 
         const newPartidoData = ref({
             playerA: null,
@@ -140,6 +143,7 @@ export default {
             showModal,
             showModalConfigurarTorneo,
             showModalCrearPartido,
+            showModalInscribirAmigos,
             user,
             newPartidoData,
 
@@ -197,6 +201,13 @@ export default {
                 </div>
             </div>
             <div v-if="user" class="flex flex-col justify-end mt-16 md:mt-0">
+                <button v-if="!torneoData.modo_juego && !torneoData.n_grupos" @click="showModalInscribirAmigos = true"
+                    class="group primary-btn opacity-100 transition-all"
+                    style="background-image:url(/images/others/btn-bg.webp)">
+                    Inscribir Amigos
+                    <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
+                        class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
+                </button>
                 <div v-if="torneoData.inscritos.includes(user.uid)"
                     class="flex flex-col align-content-center content-center">
                     <h3>Ya estas inscrito en este torneo</h3>
@@ -237,6 +248,13 @@ export default {
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModal = false"></button>
+        </vue-final-modal>
+        <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+            v-model="showModalInscribirAmigos" :width="1000" :height="700" :adaptive="true">
+            <InscribirAmigos :torneo="torneoData" @hide-modal="hideModalInscripcion" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="showModalInscribirAmigos = false"></button>
         </vue-final-modal>
         <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
             v-model="showModalConfigurarTorneo" :width="1000" :height="700" :adaptive="true">

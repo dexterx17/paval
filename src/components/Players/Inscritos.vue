@@ -32,6 +32,11 @@
                     </div>
                 </swiper-slide>
             </swiper>
+            <div v-if="jugadoresInscritos.length==0">
+                <p class="p-2 text-primary">
+                    No tenemos jugadores inscritos en este torneo
+                </p>
+            </div>
         </div>
     </div>
     <!-- Team Number Section End -->

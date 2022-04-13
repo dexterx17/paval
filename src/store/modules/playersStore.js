@@ -4,6 +4,8 @@ import {
   getFirestore,
   collection,
   onSnapshot,
+  query,
+  where,
   doc,
   getDocs,
   getDoc,
@@ -50,6 +52,28 @@ const actions = {
       });
       commit("SET_PLAYERS", players);
     }
+  },
+  async fetchPlayersOptions({ commit }, payload) {
+    console.log("loadPlayersOptions");    
+    const q = query(collection(db, "players"), where("uid", "not-in", payload.idsInscritos));
+
+    const queryPlayersSnapshot = await getDocs(q);
+    
+      console.log(queryPlayersSnapshot);
+      let players = [];
+      return doSnapShot(queryPlayersSnapshot);
+
+      function doSnapShot(queryPlayersSnapshot) {
+        console.log("doSnapShot");
+        console.log(queryPlayersSnapshot.docs);
+        queryPlayersSnapshot.docs.forEach((doc) => {
+          let p = doc.data();
+          console.log(`${doc.id} => ${doc.data()}`);
+          p.id = doc.id;
+          players.push(p);
+        });
+        return players;
+      }
   },
   async loadProfile({ commit }, payload) {
     try {
