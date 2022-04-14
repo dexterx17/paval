@@ -8,6 +8,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Footer from "@/components/Footer.vue";
 import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
+import InscribirAmigos from "@/components/Torneos/InscribirAmigos.vue";
 import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
 import CrearPartidoTorneo from "@/components/Partidos/CrearPartidoTorneo.vue";
 
@@ -27,6 +28,7 @@ export default {
         ModalsContainer,
         CountTo,
         InscribirseTorneo,
+        InscribirAmigos,
         ConfigurarTorneo,
         CrearPartidoTorneo,
         Inscritos
@@ -58,6 +60,7 @@ export default {
         const showModal = ref(false);
         const showModalConfigurarTorneo = ref(false);
         const showModalCrearPartido = ref(false);
+        const showModalInscribirAmigos = ref(false);
 
         const newPartidoData = ref({
             playerA: null,
@@ -111,6 +114,7 @@ export default {
 
         const hideModalInscripcion = () => {
             showModal.value = false;
+            showModalInscribirAmigos.value = false;
             loadTorneoData();
             loadInscritos();
         }
@@ -120,6 +124,14 @@ export default {
             showModalConfigurarTorneo.value = false;
             loadTorneoData();
             loadGruposData();
+        }
+
+        const resultadosPartido = (grupo, partidoKey) => {
+            let index = grupo.jugados.indexOf(partidoKey);
+
+            let partidoId = grupo.partidos[index];
+
+            return grupo.resultados[partidoId] ?? null;
         }
 
         // fetch the user information when params change
@@ -140,11 +152,13 @@ export default {
             showModal,
             showModalConfigurarTorneo,
             showModalCrearPartido,
+            showModalInscribirAmigos,
             user,
             newPartidoData,
 
             hideModalConfigurar,
             hideModalInscripcion,
+            resultadosPartido,
             crearPartido
         }
     }
@@ -197,6 +211,13 @@ export default {
                 </div>
             </div>
             <div v-if="user" class="flex flex-col justify-end mt-16 md:mt-0">
+                <button v-if="!torneoData.modo_juego && !torneoData.n_grupos" @click="showModalInscribirAmigos = true"
+                    class="group primary-btn opacity-100 transition-all"
+                    style="background-image:url(/images/others/btn-bg.webp)">
+                    Inscribir Amigos
+                    <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
+                        class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
+                </button>
                 <div v-if="torneoData.inscritos.includes(user.uid)"
                     class="flex flex-col align-content-center content-center">
                     <h3>Ya estas inscrito en este torneo</h3>
@@ -223,6 +244,13 @@ export default {
                         class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
                 </button>
             </div>
+            <div v-else>
+                <div class="flex flex-col align-content-center content-center">
+                    <RouterLink to="/login">
+                        <h3 class="text-center">Regístrate para poder inscribirte</h3>
+                    </RouterLink>
+                </div>
+            </div>
         </div>
         <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
             v-model="showModal" :width="1000" :height="700" :adaptive="true">
@@ -230,6 +258,13 @@ export default {
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                 @click="showModal = false"></button>
+        </vue-final-modal>
+        <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+            v-model="showModalInscribirAmigos" :width="1000" :height="700" :adaptive="true">
+            <InscribirAmigos :torneo="torneoData" @hide-modal="hideModalInscripcion" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="showModalInscribirAmigos = false"></button>
         </vue-final-modal>
         <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
             v-model="showModalConfigurarTorneo" :width="1000" :height="700" :adaptive="true">
@@ -299,10 +334,19 @@ export default {
                                     <div v-else>
                                         <div v-if="grupo.jugados.includes(ply.id + '_' + play.id)">
                                             <RouterLink
-                                                :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }"
-                                                class="flex flex-col">
-                                                <span>P1</span>
-                                                <span>P2</span>
+                                                :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }">   
+                                                <div class="flex flex-col" v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
+                                                    <span>
+                                                        {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
+                                                    </span>
+                                                    <span>
+                                                        {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
+                                                    </span>
+                                                </div>
+                                                <div v-else>
+                                                    <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
+                                                    alt="Ir a Partido" />
+                                                </div>
                                             </RouterLink>
                                         </div>
                                         <button v-else @click="crearPartido(grupo, ply, play)" type="button" class="p-1"
@@ -335,8 +379,8 @@ export default {
         </div>
     </div>
 
-    <div class="container">
-        <Inscritos v-if="jugadoresInscritos" :jugadores-inscritos="jugadoresInscritos" />
+    <div class="container" v-if="torneoData">
+        <Inscritos v-if="jugadoresInscritos" :torneo="torneoData" :jugadores-inscritos="jugadoresInscritos" />
     </div>
 
     <Footer />

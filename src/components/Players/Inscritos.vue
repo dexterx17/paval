@@ -5,10 +5,25 @@
         <div class="team-one">
             <span class="text-primary text-lg uppercase font-semibold mb-4 block">Team - 01</span>
             <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Jugadores Inscritos</h2>
-            <swiper class="swiper" :options="swiperOption">
+            <swiper class="swiper"
+                :modules="swiperOption.modules"
+                :pagination="{ clickable: true }"
+                navigation
+                :options="swiperOption">
                 <swiper-slide v-for="(team, index) in jugadoresInscritos" :key="index">
                     <div class="rounded-50">
                         <div class>
+                            <div v-if="showDeleteButton(team.id)" class="text-sm absolute p-1 right-0 top-0 bg-red-500 rounded-tr-lg">
+                                <Popper
+                                    hover>
+                                    <button @click="salirDeTorneo(team.id)" >
+                                        X
+                                    </button>
+                                    <template #content>
+                                        <div>Retirar inscripción</div>
+                                    </template>
+                                </Popper>
+                            </div>
                             <img
                                 class="rounded-2xl"
                                 :src="team.avatar ?? '/images/blog/blog3.webp'"
@@ -21,6 +36,11 @@
                     </div>
                 </swiper-slide>
             </swiper>
+            <div v-if="jugadoresInscritos.length==0">
+                <p class="p-2 text-primary">
+                    No tenemos jugadores inscritos en este torneo
+                </p>
+            </div>
         </div>
     </div>
     <!-- Team Number Section End -->
@@ -31,7 +51,10 @@
 // import Swiper core and required modules
 import { Navigation, Pagination } from 'swiper';
 
-import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import Popper from "vue3-popper";
+import { mapGetters, mapActions } from "vuex";
+
 
 // Import Swiper styles
 import 'swiper/css/bundle';
@@ -40,17 +63,37 @@ export default {
     props: {
         jugadoresInscritos: {
             type: Object
-        }
+        },
+        torneo: {
+            type: Object
+        },
     },
     components: {
         Swiper,
         SwiperSlide,
-        Navigation,
-        Pagination
+        Popper
+    },
+    computed:{
+        ...mapGetters({
+            user: 'getUser'
+        })
+    },
+    methods:{
+        ...mapActions(["quitarDeTorneo"]),
+        salirDeTorneo(userId){
+            this.quitarDeTorneo({
+                torneo_id: this.torneo.id,
+                jugador_id: userId
+            })
+        },
+        showDeleteButton(userId){
+            return this.user ? this.user.uid == userId : false;
+        }
     },
     data() {
         return {
             swiperOption: {
+                modules: [Navigation, Pagination],
                 slidesPerView: 6,
                 spaceBetween: 30,
                 loop: true,
@@ -79,35 +122,6 @@ export default {
                     }
                 },
             },
-            teamplayers: [
-                {
-                    teamImage: "/images/others/players1.webp"
-                },
-                {
-                    teamImage: "/images/others/players2.webp"
-                },
-                {
-                    teamImage: "/images/others/players3.webp"
-                },
-                {
-                    teamImage: "/images/others/players4.webp"
-                },
-                {
-                    teamImage: "/images/others/players5.webp"
-                },
-                {
-                    teamImage: "/images/others/players6.webp"
-                },
-                {
-                    teamImage: "/images/others/players3.webp"
-                },
-                {
-                    teamImage: "/images/others/players1.webp"
-                },
-                {
-                    teamImage: "/images/others/players2.webp"
-                },
-            ]
         }
     }
 }

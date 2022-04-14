@@ -115,3 +115,16 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.swiper-slide {
+    display: flex;
+    height: 200px !important;
+    width: 200px !important;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    font-size: 24px;
+    font-weight: 700;
+}
+</style>

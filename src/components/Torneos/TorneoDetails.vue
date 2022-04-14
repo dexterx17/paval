@@ -35,7 +35,7 @@
                     <swiper-slide v-for="(game, imageIndex) in torneo.imagenes" :key="imageIndex">
                         <div class="relative">
                             <img class="sm:h-full h-64 max-h-[450px] w-full rounded-md object-contain" :src="`${game}`"
-                                :alt="clubData.nombre" />
+                                :alt="torneo.nombre" />
                         </div>
                     </swiper-slide>
                 </swiper>
@@ -77,8 +77,9 @@
                 </div>
             </div>
 
-
-            <ImagenesTorneo v-if="showImagesUploader" :torneo="torneo" @imagen-cargada="imagenCargada" />
+            <div v-if="user">
+                <ImagenesTorneo v-if="showImagesUploader" :torneo="torneo" @imagen-cargada="imagenCargada" />
+            </div>
 
         </div>
 
@@ -101,6 +102,11 @@ export default {
         ImagenesTorneo
     },
     props: ["torneo"],
+    computed:{
+        ...mapGetters({
+            user: 'getUser'
+        })
+    },
     data() {
         return {
             swiperOption: {

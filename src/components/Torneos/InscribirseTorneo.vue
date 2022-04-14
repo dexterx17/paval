@@ -75,8 +75,8 @@ export default {
                 </address>
             </div>
             <div class="single-fild col-span-2">
-                <div v-if="procesando">
-                    <h3>Procesando...</h3>
+                <div v-if="procesando" class="flex justify-center w-full">
+                    <h3 class="text-primary">Procesando...</h3>
                 </div>
                 <div v-else class="form-btn-wrap flex justify-center w-full mt-4">
                     <button

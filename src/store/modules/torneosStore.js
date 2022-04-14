@@ -6,10 +6,13 @@ import {
     doc,
     getDoc,
     addDoc,
+    setDoc,
     updateDoc,
+    deleteDoc,
     serverTimestamp,
     arrayUnion,
-    arrayRemove
+    arrayRemove,
+    increment
 } from "firebase/firestore";
 
 
@@ -61,6 +64,19 @@ const actions = {
     },
     async addTorneo({ commit }, payload) {
         try {
+            //si es un torneo organizado por un club
+            if (payload.club) {
+                const torneoRef = doc(db, "clubs", payload.club.id);
+                console.log('torneoRef',torneoRef)
+                //incrementamos en uno el total de torneos del club
+                await updateDoc(torneoRef, {
+                    total_torneos: increment(1)
+                });
+
+
+            }
+
+
             return addDoc(collection(db, "torneos"), payload)
                 .then((docRef) => {
                     console.log("Torneo with ID: ", docRef);
@@ -78,23 +94,47 @@ const actions = {
         console.log(payload);
         try {
             const docRef = doc(db, "torneos", payload.torneo.id);
-            const colRef = collection(docRef, "jugadores");
             
             payload.jugador.timestamp = serverTimestamp();
             
             await updateDoc(docRef, {
                 inscritos: arrayUnion(payload.jugador.jugador_id)
             });     
+
+            const jugadorSubColRef = doc(docRef, "jugadores",payload.jugador.jugador_id);
             
-            return await addDoc(colRef, payload.jugador)
+            return await setDoc(jugadorSubColRef, payload.jugador)
             .then((docRes) => {
                 console.log("Inscrito with ID: ", payload.jugador.jugador_id);
 
-
-                return docRes;
+                return jugadorSubColRef;
             })
             .catch((error) => {
                 console.log("error adding Inscrito");
+                console.log(error);
+            });
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
+    async quitarDeTorneo({ commit }, payload) {
+        console.log('quitarDeTorneo',payload);
+        try {
+            
+            const torneoRef = doc(db, "torneos", payload.torneo_id);            
+            console.log('torneoRef',torneoRef);
+            await updateDoc(torneoRef, {
+                inscritos: arrayRemove(payload.jugador_id)
+            });     
+
+            const jugadorSubColRef = doc(torneoRef, "jugadores", payload.jugador_id);
+            return await deleteDoc(jugadorSubColRef)
+            .then((docRes) => {
+                console.log("Inscrito with ID removido: ", payload.jugador_id);
+                return docRes;
+            })
+            .catch((error) => {
+                console.log("error removing Inscrito");
                 console.log(error);
             });
         } catch (e) {

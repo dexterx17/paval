@@ -7,6 +7,7 @@ import {
     getDoc,
     addDoc,
     updateDoc,
+    runTransaction,
     arrayUnion
 } from "firebase/firestore";
 
@@ -135,16 +136,30 @@ const actions = {
             console.log('setResultadosPartido');
             console.log(payload);
             //const refPartido = collection(db, "partidos", payload.partido_id);
-            
-            const refGrupo = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
 
-            const resultados = {};
-            resultados[payload.partido.id] = payload.partido.resultado;
-            updateDoc(refGrupo, {
-                resultados: resultados
-            }).then((value) => {
-                console.log('updateGrupo', value);
-            })
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const refGrupo = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
+
+                    const sfDoc = await transaction.get(refGrupo);
+                    if (!sfDoc.exists()) {
+                        throw "Document does not exist!";
+                    }
+      
+                    const resultados = sfDoc.data().resultados;
+                    resultados[payload.partido.id] = payload.resultado;
+
+                    transaction.update(refGrupo, {
+                        resultados: resultados
+                    });
+              
+                });
+                console.log("Transaction successfully committed!");
+            } catch (e) {
+                console.log("Transaction failed: ", e);
+            }
+              
+            
 
             const refPartido = doc(db, `partidos/${payload.partido.id}`);
             console.log('refPartido');
