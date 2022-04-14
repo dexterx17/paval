@@ -11,9 +11,7 @@ export default {
         Popper
     },
     data() {
-        return {
-            procesando: false
-        }
+        return { }
     },
     props: ["torneo"],
     methods: {
@@ -28,17 +26,20 @@ export default {
             console.log('nombre', user.value.player.nombre)
             console.log('avatar', user.value.player.avatar)
             this.procesando = true;
-            this.inscribirEnTorneo({
-                torneo: this.torneo,
-                jugadores: this.jugadores,
-            }).then((inscrito) => {
-                this.procesando = false;
-                console.log('inscrito');
-                console.log(inscrito);
-                if (inscrito.id) {
-                    this.$emit('hide-modal')
-                }
-            })
+
+            this.jugadores.forEach((player) => {
+                this.inscribirEnTorneo({
+                    torneo: this.torneo,
+                    jugador: {
+                        jugador_id: player.uid,
+                        nombre: player.nombre,
+                        avatar: player.avatar
+                    },
+                })
+            });
+            this.procesando = false;
+            this.$emit('hide-modal')
+            
         }
     },
     setup(props){
@@ -46,6 +47,7 @@ export default {
         const jugadores = ref([]);
         const store = useStore();
         const player = ref(null);
+        const procesando = ref(false);
 
         const fetchClientesOptions = function(){
             // console.log('search',search);
@@ -71,19 +73,13 @@ export default {
         fetchClientesOptions();
 
         const addPlayer = (player) => {
-            jugadores.value.push({
-                    jugador_id: player.uid,
-                    nombre: player.nombre,
-                    avatar: player.avatar
-                })
+            jugadores.value.push(player);
             let index = clientesOptions.value.indexOf(player);
             clientesOptions.value.splice(index,1);
         }
 
         const removePlayer =(player) =>{
-
             clientesOptions.value.push(player);
-
             let index = jugadores.value.indexOf(player);
             jugadores.value.splice(index,1);
         }
@@ -93,6 +89,7 @@ export default {
             clientesOptions,
             jugadores,
             player,
+            procesando,
 
             addPlayer,
             removePlayer

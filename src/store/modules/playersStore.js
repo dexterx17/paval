@@ -54,8 +54,13 @@ const actions = {
     }
   },
   async fetchPlayersOptions({ commit }, payload) {
-    console.log("loadPlayersOptions");    
-    const q = query(collection(db, "players"), where("uid", "not-in", payload.idsInscritos));
+    console.log("loadPlayersOptions"); 
+    let q;
+    if(payload.idsInscritos.length > 0){
+      q = query(collection(db, "players"), where("uid", "not-in", payload.idsInscritos));
+    }else{
+      q = query(collection(db, "players"));
+    }
 
     const queryPlayersSnapshot = await getDocs(q);
     

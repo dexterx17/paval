@@ -159,7 +159,7 @@
             >{{ partidoData.playerA.nombre }} <small>vs</small> {{ partidoData.playerB.nombre }} </h2>
             <div class="content-details">
                 <div class="description mt-6">
-                    <p class="leading-8">...</p>
+                    <!-- <p class="leading-8">...</p> -->
 
                     <!-- <RouterLink :to="{ name: 'torneo', params: { id: partidoData.torneo_id } }">
                         <h3 class="text-2xl text-primary uppercase font-bold mb-5">
@@ -167,6 +167,11 @@
                         </h3>
                     </RouterLink> -->
                 </div>
+
+                
+                <blockquote class="py-2 mb-5">
+                    <p class="font-bold text-center text-yellow italic lg:text-3xl text-xl">{{ partidoData.playerA.nombre }} Ganador</p>
+                </blockquote>
 
 
                 <div class="additional-information-area bg-secondary-100 px-9 py-9 rounded-2xl mb-9">
@@ -226,13 +231,9 @@
                     </table>
                 </div>
 
-                <blockquote class="py-2 mb-5">
-                    <p class="font-bold text-center text-yellow italic lg:text-3xl text-xl">{{ partidoData.playerA.nombre }} Ganador</p>
-                </blockquote>
-
                 <div class="description mt-6">
                     <RouterLink :to="{ name: 'torneo', params: { id: partidoData.torneo_id } }">
-                        <h3 class="text-2xl text-primary uppercase font-bold mb-5">
+                        <h3 class="text-2xl text-primary hover:text-white uppercase font-bold mb-5">
                             Regresar a Torneo
                         </h3>
                     </RouterLink>

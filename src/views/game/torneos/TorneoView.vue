@@ -114,6 +114,7 @@ export default {
 
         const hideModalInscripcion = () => {
             showModal.value = false;
+            showModalInscribirAmigos.value = false;
             loadTorneoData();
             loadInscritos();
         }
@@ -123,6 +124,14 @@ export default {
             showModalConfigurarTorneo.value = false;
             loadTorneoData();
             loadGruposData();
+        }
+
+        const resultadosPartido = (grupo, partidoKey) => {
+            let index = grupo.jugados.indexOf(partidoKey);
+
+            let partidoId = grupo.partidos[index];
+
+            return grupo.resultados[partidoId] ?? null;
         }
 
         // fetch the user information when params change
@@ -149,6 +158,7 @@ export default {
 
             hideModalConfigurar,
             hideModalInscripcion,
+            resultadosPartido,
             crearPartido
         }
     }
@@ -324,10 +334,19 @@ export default {
                                     <div v-else>
                                         <div v-if="grupo.jugados.includes(ply.id + '_' + play.id)">
                                             <RouterLink
-                                                :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }"
-                                                class="flex flex-col">
-                                                <span>P1</span>
-                                                <span>P2</span>
+                                                :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }">   
+                                                <div class="flex flex-col" v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
+                                                    <span>
+                                                        {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
+                                                    </span>
+                                                    <span>
+                                                        {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
+                                                    </span>
+                                                </div>
+                                                <div v-else>
+                                                    <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
+                                                    alt="Ir a Partido" />
+                                                </div>
                                             </RouterLink>
                                         </div>
                                         <button v-else @click="crearPartido(grupo, ply, play)" type="button" class="p-1"

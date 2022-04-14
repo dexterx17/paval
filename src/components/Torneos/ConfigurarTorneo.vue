@@ -16,15 +16,6 @@ export default {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
-        asignarJugadores() {
-            let grupo = 0;
-            console.log('this.inscritos');
-            console.log(this.inscritos);
-            for (let index = 0; index < this.inscritos.length; index++) {
-                const inscrito = this.inscritos[index];
-                this.grupos[grupo].jugadores.push(inscrito);
-            }
-        },
         submit() {
             this.procesando = true;
             this.configurarTorneo({
@@ -85,9 +76,13 @@ export default {
             ]
         }
     },
-    setup() {
+    setup(props) {
         const modoJuego = ref('2de3');
         const nGrupos = ref(1);
+        const nGrupoOption = ref({
+                id: 1,
+                label: '1 Grupo (3 a 7 jugadores)'
+            });
         const procesando = ref(false);
 
         const grupos = ref([
@@ -99,10 +94,11 @@ export default {
             }
         ])
 
-        const selectTotalGrupos = (total) => {
-            console.log('Total Grupos', total);
+        const selectTotalGrupos = (option) => {
+            nGrupos.value = option.id;
+            console.log('Total Grupos', option);
             grupos.value = [];
-            for (let index = 1; index <= total; index++) {
+            for (let index = 1; index <= option.id; index++) {
                 grupos.value.push({
                     grupo: (index),
                     jugadores: [],
@@ -112,13 +108,38 @@ export default {
             }
         }
 
+        const asignarJugadores = () => {
+            selectTotalGrupos(nGrupoOption.value);
+            let grupo = 0;
+            console.log('this.inscritos');
+            console.log(props.inscritos);
+            console.log(grupos.value);
+            for (let index = 0; index < props.inscritos.length; index++) {
+                const inscrito = props.inscritos[index];
+                console.log(grupos.value);
+                grupos.value[grupo].jugadores.push(inscrito);
+                console.log('grupo',grupo);
+                console.log('totalGrupos',nGrupos.value);
+
+                if(grupo < (nGrupos.value-1) ){
+                    console.log('cambiar de grupo');
+                    grupo++;
+                }else if( grupo == (nGrupos.value-1) ){
+                    console.log('reiniciar Grupo');
+                    grupo = 0;
+                }
+            }
+        };
+
         return {
             modoJuego,
             nGrupos,
+            nGrupoOption,
             grupos,
             procesando,
 
-            selectTotalGrupos
+            selectTotalGrupos,
+            asignarJugadores
         }
     }
 
@@ -180,33 +201,40 @@ export default {
                     <v-select
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         :options="gruposOptions"
-                        v-model="nGrupos"
+                        v-model="nGrupoOption"
                         value="id"
                         label="label"
                         :clearable="false"
-                        :modelValue="nGrupos"
+                        :modelValue="nGrupoOption"
                         @reduce="val => val.id"
                         @update:modelValue="selectTotalGrupos"
                     ></v-select>
                 </div>
             </div>
             <div class="col-span-2">
-                <button type="button" @click="asignarJugadores">Asignar jugadores</button>
                 <div class="flex justify-around">
                     <div v-for="grp in grupos" :key="grp.id" class="border border-white rounded-md">
                         <h2 class="text-center bg-primary rounded-t-md">Grupo {{ grp.grupo }}</h2>
-                        <ul class="px-1">
-                            <li v-for="ply in grp.jugadores" :key="ply" class="flex my-1">
-                                <img
-                                    class="w-8 h-8 rounded-xl"
-                                    :src="ply.avatar ?? '/images/blog/blog3.webp'"
-                                    :alt="ply.nombre"
-                                />
-                                <div class="flex flex-col pl-1">
-                                    <span class>{{ ply.nombre }}</span>
-                                    <small
-                                        class="text-xs text-primary"
-                                    ># {{ (torneo.inscritos.indexOf(ply.jugador_id) + 1) }}</small>
+                        <ul>
+                            <li v-for="ply,index in grp.jugadores" :key="ply"
+                                class="flex justify-between my-1 border-b border-dashed">
+                                <div class="flex items-center px-1">
+                                    <img
+                                        class="w-8 h-8 rounded-xl"
+                                        :src="ply.avatar ?? '/images/blog/blog3.webp'"
+                                        :alt="ply.nombre"
+                                    />
+                                    <div class="flex flex-col pl-1">
+                                        <span class>{{ ply.nombre }}</span>
+                                        <small
+                                            class="text-xs text-primary"
+                                        ># {{ (torneo.inscritos.indexOf(ply.jugador_id) + 1) }}</small>
+                                    </div>
+                                </div>
+                                <div class="bg-white text-primary font-bold px-1 flex items-center ">
+                                    <span>
+                                        {{ (index+1) }}
+                                    </span>
                                 </div>
                             </li>
                         </ul>
@@ -219,10 +247,16 @@ export default {
                 </div>
                 <div v-else class="form-btn-wrap flex justify-center w-full mt-4">
                     <button
+                        class="p-2 transition-all hover:text-primary hover:border-primary border-gray-200 border rounded-2xl"
+                        type="button"
+                        @click="asignarJugadores">
+                        Asignar jugadores
+                    </button>
+                    <button
                         type="submit"
                         value="submit"
                         name="submit"
-                        class="form-btn group primary-btn opacity-100 transition-all"
+                        class="ml-2 form-btn group primary-btn opacity-100 transition-all"
                         style="background-image:url(/images/others/btn-bg.webp)"
                     >
                         Iniciar Torneo
@@ -247,7 +281,7 @@ export default {
 }
 .modal-content {
     position: relative;
-    width: 50%;
+    width: 80% !important;
     /* max-height: 300px; */
     padding: 16px;
     overflow: auto;

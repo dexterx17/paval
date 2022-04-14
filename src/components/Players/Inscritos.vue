@@ -5,7 +5,11 @@
         <div class="team-one">
             <span class="text-primary text-lg uppercase font-semibold mb-4 block">Team - 01</span>
             <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Jugadores Inscritos</h2>
-            <swiper class="swiper" :options="swiperOption">
+            <swiper class="swiper"
+                :modules="swiperOption.modules"
+                :pagination="{ clickable: true }"
+                navigation
+                :options="swiperOption">
                 <swiper-slide v-for="(team, index) in jugadoresInscritos" :key="index">
                     <div class="rounded-50">
                         <div class>
@@ -67,8 +71,6 @@ export default {
     components: {
         Swiper,
         SwiperSlide,
-        Navigation,
-        Pagination,
         Popper
     },
     computed:{
@@ -91,6 +93,7 @@ export default {
     data() {
         return {
             swiperOption: {
+                modules: [Navigation, Pagination],
                 slidesPerView: 6,
                 spaceBetween: 30,
                 loop: true,
