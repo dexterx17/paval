@@ -5,9 +5,12 @@ import { computed, ref } from 'vue';
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
 
+import { VueDraggableNext } from 'vue-draggable-next'
+
 export default {
     components: {
-        vSelect
+        vSelect,
+        draggable : VueDraggableNext
     },
     props: ["torneo", 'inscritos'],
     methods: {
@@ -213,31 +216,41 @@ export default {
             </div>
             <div class="col-span-2">
                 <div class="flex justify-around">
-                    <div v-for="grp in grupos" :key="grp.id" class="border border-white rounded-md">
+                    <div v-for="grp, grpIndex in grupos" :key="grpIndex" class="border border-white rounded-md">
                         <h2 class="text-center bg-primary rounded-t-md">Grupo {{ grp.grupo }}</h2>
-                        <ul>
-                            <li v-for="ply,index in grp.jugadores" :key="ply"
-                                class="flex justify-between my-1 border-b border-dashed">
-                                <div class="flex items-center px-1">
-                                    <img
-                                        class="w-8 h-8 rounded-xl"
-                                        :src="ply.avatar ?? '/images/blog/blog3.webp'"
-                                        :alt="ply.nombre"
-                                    />
-                                    <div class="flex flex-col pl-1">
-                                        <span class>{{ ply.nombre }}</span>
-                                        <small
-                                            class="text-xs text-primary"
-                                        ># {{ (torneo.inscritos.indexOf(ply.jugador_id) + 1) }}</small>
-                                    </div>
-                                </div>
-                                <div class="bg-white text-primary font-bold px-1 flex items-center ">
-                                    <span>
-                                        {{ (index+1) }}
-                                    </span>
-                                </div>
-                            </li>
-                        </ul>
+                         <draggable
+                                :id="'grupo'+grpIndex"                                
+                                v-model="grp.jugadores"
+                                class="list-group"
+                                tag="ul"
+                                group="one"
+                            >
+                            <transition-group>
+                                <li v-for="ply,index in grp.jugadores" :key="ply"
+                                    class="flex justify-between my-1 border-b border-dashed">
+                                        <div class="flex items-center px-1">
+                                            <img
+                                                class="w-8 h-8 rounded-xl"
+                                                :src="ply.avatar ?? '/images/blog/blog3.webp'"
+                                                :alt="ply.nombre"
+                                            />
+                                            <div class="flex flex-col pl-1">
+                                                <span class>{{ ply.nombre }}</span>
+                                                <small
+                                                    class="text-xs text-primary"
+                                                ># {{ (torneo.inscritos.indexOf(ply.jugador_id) + 1) }}</small>
+                                            </div>
+                                        </div>
+                                        <div class="bg-white text-primary font-bold px-0 flex items-center ">
+                                            <span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                </li>
+                            </transition-group>
+                        </draggable>
                     </div>
                 </div>
             </div>

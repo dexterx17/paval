@@ -16,7 +16,11 @@ export default {
     PlayerForm
   },
   methods: {
-    ...mapActions(["loadProfile"]),
+    ...mapActions(["loadProfile","signOutAction"]),
+    logout() {
+        this.signOutAction();
+        this.$router.replace({ name: "home" });
+    }
   },
   data() {
     return {
@@ -163,6 +167,7 @@ export default {
         </div>-->
 
         <PlayerForm v-if="playerData" :player="playerData" />
+        <button @click="logout">Cerrar sesión</button>
       </div>
     </div>
   </div>
