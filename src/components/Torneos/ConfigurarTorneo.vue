@@ -93,7 +93,8 @@ export default {
                 grupo: 1,
                 jugadores: [],
                 partidos: [],
-                jugados: []
+                jugados: [],
+                resultados:{}
             }
         ])
 
@@ -106,7 +107,8 @@ export default {
                     grupo: (index),
                     jugadores: [],
                     partidos: [],
-                    jugados:[]
+                    jugados:[],
+                    resultados:{}
                 });
             }
         }

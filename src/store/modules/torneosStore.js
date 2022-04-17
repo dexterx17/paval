@@ -12,6 +12,8 @@ import {
     serverTimestamp,
     arrayUnion,
     arrayRemove,
+    orderBy,
+    query,
     increment
 } from "firebase/firestore";
 
@@ -278,8 +280,11 @@ const actions = {
         try {
             console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
             const docRef = doc(db, "torneos", payload);
-            const querySnapshot = await getDocs(collection(docRef, "grupos"));
             
+            const q = query(collection(docRef, "grupos"), orderBy("grupo"));
+            
+            const querySnapshot = await getDocs(q);
+            console.log('querySnapshot',querySnapshot);
             let grupos = [];
 
             return doSnapShot(querySnapshot);
@@ -287,6 +292,7 @@ const actions = {
             //commit("SET_TORNEOS_LISTENER", query);
     
             function doSnapShot(querySnapshot) {
+                console.log('querySnapshot.docs',querySnapshot.docs);
                 querySnapshot.docs.forEach((doc) => {
                     let p = doc.data();
                     console.log(`${doc.id} => ${doc.data()}`);

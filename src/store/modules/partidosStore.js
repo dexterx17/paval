@@ -145,6 +145,8 @@ const actions = {
                     if (!sfDoc.exists()) {
                         throw "Document does not exist!";
                     }
+
+                    console.log('sfDoc',sfDoc.data());
       
                     const resultados = sfDoc.data().resultados;
                     resultados[payload.partido.id] = payload.resultado;

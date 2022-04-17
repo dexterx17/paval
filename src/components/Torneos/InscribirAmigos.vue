@@ -193,7 +193,7 @@ export default {
                                         </template>
                                     </Popper>
                                 </div>
-                                <img class="w-16 h-16 lg:w-24 lg:h-24" :src="ply.avatar" :alt="ply.nombre">
+                                <img class="w-16 h-16 lg:w-24 lg:h-24" :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre">
                                 <h3 class="text-center">{{ ply.nombre }}</h3>
                             </div>
                         </li> 

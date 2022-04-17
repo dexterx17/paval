@@ -167,7 +167,7 @@ export default {
         </div>-->
 
         <PlayerForm v-if="playerData" :player="playerData" />
-        <button @click="logout">Cerrar sesión</button>
+        <button class="hover:text-primary underline italic" @click="logout">Cerrar sesión</button>
       </div>
     </div>
   </div>
