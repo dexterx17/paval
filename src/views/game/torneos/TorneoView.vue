@@ -17,6 +17,7 @@ import Inscritos from '@/components/Players/Inscritos.vue';
 import { useRoute } from 'vue-router'
 
 import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
+import Popper from "vue3-popper";
 
 
 export default {
@@ -31,7 +32,8 @@ export default {
         InscribirAmigos,
         ConfigurarTorneo,
         CrearPartidoTorneo,
-        Inscritos
+        Inscritos,
+        Popper
     },
     data() {
         return {
@@ -43,9 +45,19 @@ export default {
     },
     methods: {
         ...mapActions(["fetchTorneo"]),
-        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric', timeZone: "America/Guayaquil" }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
+        },
+        totalPartidosGrupo(jugadores){
+            let total = 1;
+            console.log('jugadores');
+            console.log(jugadores);
+            for (let index = 0; index < jugadores.length; index++) {
+                const element = jugadores[index];
+                total += index;
+            }
+            return total;
         }
     },
     computed: {
@@ -252,27 +264,29 @@ export default {
                 </div>
             </div>
         </div>
-        <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
-            v-model="showModal" :width="1000" :height="700" :adaptive="true">
-            <InscribirseTorneo :torneo="torneoData" @hide-modal="hideModalInscripcion" />
-            <button
-                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
-                @click="showModal = false"></button>
-        </vue-final-modal>
-        <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
-            v-model="showModalInscribirAmigos" :width="1000" :height="700" :adaptive="true">
-            <InscribirAmigos :torneo="torneoData" @hide-modal="hideModalInscripcion" />
-            <button
-                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
-                @click="showModalInscribirAmigos = false"></button>
-        </vue-final-modal>
-        <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
-            v-model="showModalConfigurarTorneo" :width="1000" :height="700" :adaptive="true">
-            <ConfigurarTorneo :torneo="torneoData" :inscritos="jugadoresInscritos" @hide-modal="hideModalConfigurar" />
-            <button
-                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
-                @click="showModalConfigurarTorneo = false"></button>
-        </vue-final-modal>
+        <div v-if="!torneoData.modo_juego && !torneoData.n_grupos">
+            <vue-final-modal  class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+                v-model="showModal" :width="1000" :height="700" :adaptive="true">
+                <InscribirseTorneo :torneo="torneoData" @hide-modal="hideModalInscripcion" />
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModal = false"></button>
+            </vue-final-modal>
+            <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+                v-model="showModalInscribirAmigos" :width="1000" :height="700" :adaptive="true">
+                <InscribirAmigos :torneo="torneoData" @hide-modal="hideModalInscripcion" />
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModalInscribirAmigos = false"></button>
+            </vue-final-modal>
+            <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+                v-model="showModalConfigurarTorneo" :width="1000" :height="700" :adaptive="true">
+                <ConfigurarTorneo :torneo="torneoData" :inscritos="jugadoresInscritos" @hide-modal="hideModalConfigurar" />
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModalConfigurarTorneo = false"></button>
+            </vue-final-modal>
+        </div>
     </div>
     <!-- Match Counterup End -->
 
@@ -290,29 +304,23 @@ export default {
                                 <th>
                                     <div class="flex flex-col italic text-primary">
                                         <span>{{
-                                            (grupo.jugadores.length * grupo.jugadores.length) -
-                                                grupo.jugadores.length
+                                            totalPartidosGrupo(grupo.jugadores)
                                         }}</span>
                                         <span>Partidos</span>
                                     </div>
                                 </th>
-                                <th v-for="ply in grupo.jugadores" :key="ply.id" class="border p-1">
+                                <td v-for="ply in grupo.jugadores" :key="ply.id" class="border p-1">
                                     <div class="flex flex-col align-middle">
                                         <img class="w-8 h-8 rounded-xl mx-auto"
-                                            :src="ply.avatar ?? '/images/blog/blog3.webp'" :alt="ply.nombre" />
+                                            :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
                                         <div>
                                             <span class>{{ ply.nombre }}</span>
                                         </div>
                                     </div>
-                                </th>
-                                <th class="border px-1">Puntos</th>
-                                <th class="border px-1">Sets</th>
-                                <th class="border px-1">Puesto</th>
-                                <th class="border px-1">Llave</th>
-                                <th class="border px-1">
-                                    Puesto
-                                    <br />Final
-                                </th>
+                                </td>
+                                <th class="border px-1 bg-black">Puntos</th>
+                                <th class="border px-1 bg-black">Sets</th>
+                                <th class="border px-1 bg-black">Puesto</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -320,7 +328,7 @@ export default {
                                 <td>
                                     <div class="flex flex-col align-middle pl-1">
                                         <img class="w-8 h-8 rounded-xl mx-auto"
-                                            :src="ply.avatar ?? '/images/blog/blog3.webp'" :alt="ply.nombre" />
+                                            :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
                                         <div class="text-center">
                                             <span class="text-center">{{ ply.nombre }}</span>
                                         </div>
@@ -333,34 +341,133 @@ export default {
                                     </div>
                                     <div v-else>
                                         <div v-if="grupo.jugados.includes(ply.id + '_' + play.id)">
-                                            <RouterLink
-                                                :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }">   
-                                                <div class="flex flex-col" v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
-                                                    <span>
-                                                        {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
-                                                    </span>
-                                                    <span>
-                                                        {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
-                                                    </span>
-                                                </div>
-                                                <div v-else>
-                                                    <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
-                                                    alt="Ir a Partido" />
-                                                </div>
-                                            </RouterLink>
+                                            <Popper hover>
+                                                <RouterLink
+                                                    class="hover:text-primary"
+                                                    :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }">   
+                                                    <div v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
+                                                        <div class="flex flex-col" v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
+                                                            <span>
+                                                                {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
+                                                            </span>
+                                                            <span>
+                                                                {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div v-else>
+                                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
+                                                        alt="Ir a Partido" />
+                                                    </div>
+                                                </RouterLink>
+                                                <template #content>
+                                                    <div class="p-0">
+                                                        <h2 class="uppercase">Resultados</h2>
+                                                        <div class="flex justify-between items-stretch items-center border rounded-t-md">
+                                                            <div class="flex items-center align-middle p-1">
+                                                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                                                    :src="play.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="play.nombre" />
+                                                                <div class="text-center pl-2">
+                                                                    <span class="text-center">{{ play.nombre }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="border border-primary flex items-center p-1 font-bold">
+                                                                <span>
+                                                                    {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex justify-between items-stretch items-center border rounded-b-md">
+                                                            <div class="flex items-center align-middle p-1">
+                                                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                                                    :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
+                                                                <div class="text-center pl-2">
+                                                                    <span class="text-center">{{ ply.nombre }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="border border-primary flex items-center p-1 font-bold">
+                                                                <span>
+                                                                    {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </Popper>
                                         </div>
-                                        <button v-else @click="crearPartido(grupo, ply, play)" type="button" class="p-1"
-                                            title="Registrar Partido">
-                                            <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn.webp"
-                                                alt="Registrar Partido" />
-                                        </button>
+                                        <div v-else-if="grupo.jugados.includes(play.id + '_' + ply.id)">
+                                            <Popper hover>
+                                                <RouterLink
+                                                    class="hover:text-primary"
+                                                    :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(play.id + '_' + ply.id)] } }">   
+                                                    <div v-if="resultadosPartido(grupo, play.id + '_' + ply.id)">
+                                                        <div class="flex flex-col" v-if="resultadosPartido(grupo, play.id + '_' + ply.id)">
+                                                            <span>
+                                                                {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[0] }}
+                                                            </span>
+                                                            <span>
+                                                                {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[1] }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div v-else>
+                                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
+                                                        alt="Ir a Partido" />
+                                                    </div>
+                                                </RouterLink>
+                                                <template #content>
+                                                    <div class="p-0">
+                                                        <h2 class="uppercase">Resultados</h2>
+                                                        <div class="flex justify-between items-stretch items-center border rounded-t-md">
+                                                            <div class="flex items-center align-middle p-1">
+                                                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                                                    :src="play.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="play.nombre" />
+                                                                <div class="text-center pl-2">
+                                                                    <span class="text-center">{{ play.nombre }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="border border-primary flex items-center p-1 font-bold">
+                                                                <span>
+                                                                    {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[0] }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex justify-between items-stretch items-center border rounded-b-md">
+                                                            <div class="flex items-center align-middle p-1">
+                                                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                                                    :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
+                                                                <div class="text-center pl-2">
+                                                                    <span class="text-center">{{ ply.nombre }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="border border-primary flex items-center p-1 font-bold">
+                                                                <span>
+                                                                    {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[1] }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </Popper>
+                                        </div>
+                                        <div v-else class="p-1">
+                                            <Popper hover>
+                                                <button @click="crearPartido(grupo, ply, play)"
+                                                    type="button" 
+                                                    >
+                                                    <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn.webp"
+                                                        alt="Registrar Partido" />
+                                                </button>
+                                                <template #content>
+                                                    Registrar Partido
+                                                </template>
+                                            </Popper>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
+                                <td class="border text-center bg-black">{{ ply.puntos }}</td>
+                                <td class="border text-center bg-black">{{ ply.sets }}</td>
+                                <td class="border text-center bg-black">{{ ply.posicion }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -381,6 +488,14 @@ export default {
 
     <div class="container" v-if="torneoData">
         <Inscritos v-if="jugadoresInscritos" :torneo="torneoData" :jugadores-inscritos="jugadoresInscritos" />
+
+        <div class="description mt-6">
+            <RouterLink :to="{ name: 'torneos' }">
+                <h3 class="text-2xl text-primary hover:text-white uppercase font-bold mb-5">
+                    Regresar a Torneos
+                </h3>
+            </RouterLink>
+        </div>
     </div>
 
     <Footer />

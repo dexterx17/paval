@@ -87,6 +87,7 @@ export default {
             })
         },
         showDeleteButton(userId){
+            return !this.torneo.modo_juego && !this.torneo.n_grupos;
             return this.user ? this.user.uid == userId : false;
         }
     },

@@ -33,7 +33,10 @@ export default {
                     jugador: {
                         jugador_id: player.uid,
                         nombre: player.nombre,
-                        avatar: player.avatar
+                        avatar: player.avatar,
+                        puntos: 0,
+                        sets: 0,
+                        posicion: 0
                     },
                 })
             });
@@ -158,7 +161,7 @@ export default {
                             </div>
                         </template>
                         <template #option="option">
-                            <div class="flex items-center bg-purple-100 rounded-md my-1">
+                            <div class="flex items-center bg-purple-100 rounded-md my-1 hover:text-primary">
                                 <img
                                     class="w-12 h-12"
                                     :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
@@ -193,7 +196,7 @@ export default {
                                         </template>
                                     </Popper>
                                 </div>
-                                <img class="w-16 h-16 lg:w-24 lg:h-24" :src="ply.avatar" :alt="ply.nombre">
+                                <img class="w-16 h-16 lg:w-24 lg:h-24" :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre">
                                 <h3 class="text-center">{{ ply.nombre }}</h3>
                             </div>
                         </li> 

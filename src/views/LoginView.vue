@@ -41,7 +41,7 @@ export default {
 				console.log('response');
 				console.log(response);
 				if (response.user) {
-					this.$router.replace({ name: "dashboard" });
+					this.$router.replace({ name: "profile" });
 				}
 			});
 		}

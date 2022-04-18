@@ -164,6 +164,7 @@ export default {
                         type="text"
                         placeholder="Ej: Ranking Interno Categoria C"
                         v-model="torneoData.nombre"
+                        required
                     />
                 </div>
             </div>

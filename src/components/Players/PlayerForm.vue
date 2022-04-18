@@ -71,9 +71,7 @@ export default {
         .then((response) => {
           console.log("response");
           console.log(response);
-          if (response.id) {
-            showForm.value = false;
-          }
+          showForm.value = false;
         });
     };
 
