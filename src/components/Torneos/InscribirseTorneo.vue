@@ -25,7 +25,10 @@ export default {
                 jugador: {
                     jugador_id: user.value.uid,
                     nombre: user.value.player.nombre,
-                    avatar: user.value.player.avatar
+                    avatar: user.value.player.avatar,
+                    puntos: 0,
+                    sets: 0,
+                    posicion: 0
                 },
             }).then((inscrito) => {
                 this.procesando = false;

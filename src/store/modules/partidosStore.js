@@ -151,9 +151,58 @@ const actions = {
                     const resultados = sfDoc.data().resultados;
                     resultados[payload.partido.id] = payload.resultado;
 
-                    transaction.update(refGrupo, {
-                        resultados: resultados
+                    let puntajes = payload.resultado.split(':');
+                    let puntosA = puntajes[0];
+                    let puntosB = puntajes[1];
+
+                    let idGanador = false;
+                    let puntosGanador = 0;
+                    let idPerdedor = false;
+                    let puntosPerdedor = 0;
+
+
+                    
+                    if(puntosA > puntosB){
+                        console.log('ganadorA');
+                        idGanador = payload.partido.playerA.id;
+                        idPerdedor = payload.partido.playerB.id;
+
+                        puntosGanador = parseInt(puntosA);
+                        puntosPerdedor = parseInt(puntosB);
+                    }else{
+                        console.log('ganadorB');
+                        idGanador = payload.partido.playerB.id;
+                        idPerdedor = payload.partido.playerA.id;
+
+                        puntosGanador = parseInt(puntosB);
+                        puntosPerdedor = parseInt(puntosA);
+                    }                    
+
+                    const jugadores = sfDoc.data().jugadores;
+                    console.log('jugadores sfDoc',jugadores);
+                    let players = jugadores.map(j=>{
+                        console.log('j',j);
+                        if(j.id == idGanador){
+                            j.puntos = j.puntos + 2;
+                            j.sets = j.sets + ( puntosGanador - puntosPerdedor);
+                            console.log('Puntos Ganador: ' + j.puntos);
+                        }
+                        if(j.id == idPerdedor){
+                            j.puntos = j.puntos + 1;
+                            j.sets = j.sets + (  puntosPerdedor - puntosGanador );
+                            console.log('Puntos Perdedor: ' + j.puntos);
+                        }
+                        return j;
                     });
+                    console.log('jugadoresConPuntos',players);
+                    console.log('resultados',resultados);
+
+                    transaction.update(refGrupo, {
+                        resultados: resultados,
+                        jugadores: players
+                    });
+
+
               
                 });
                 console.log("Transaction successfully committed!");

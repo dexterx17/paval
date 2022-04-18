@@ -45,9 +45,19 @@ export default {
     },
     methods: {
         ...mapActions(["fetchTorneo"]),
-        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric', timeZone: "America/Guayaquil" }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
+        },
+        totalPartidosGrupo(jugadores){
+            let total = 1;
+            console.log('jugadores');
+            console.log(jugadores);
+            for (let index = 0; index < jugadores.length; index++) {
+                const element = jugadores[index];
+                total += index;
+            }
+            return total;
         }
     },
     computed: {
@@ -294,8 +304,7 @@ export default {
                                 <th>
                                     <div class="flex flex-col italic text-primary">
                                         <span>{{
-                                            (grupo.jugadores.length * grupo.jugadores.length) -
-                                                grupo.jugadores.length
+                                            totalPartidosGrupo(grupo.jugadores)
                                         }}</span>
                                         <span>Partidos</span>
                                     </div>
@@ -309,14 +318,9 @@ export default {
                                         </div>
                                     </div>
                                 </td>
-                                <th class="border px-1">Puntos</th>
-                                <th class="border px-1">Sets</th>
-                                <th class="border px-1">Puesto</th>
-                                <th class="border px-1">Llave</th>
-                                <th class="border px-1">
-                                    Puesto
-                                    <br />Final
-                                </th>
+                                <th class="border px-1 bg-black">Puntos</th>
+                                <th class="border px-1 bg-black">Sets</th>
+                                <th class="border px-1 bg-black">Puesto</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -446,18 +450,24 @@ export default {
                                                 </template>
                                             </Popper>
                                         </div>
-                                        <button v-else @click="crearPartido(grupo, ply, play)" type="button" class="p-1"
-                                            title="Registrar Partido">
-                                            <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn.webp"
-                                                alt="Registrar Partido" />
-                                        </button>
+                                        <div v-else class="p-1">
+                                            <Popper hover>
+                                                <button @click="crearPartido(grupo, ply, play)"
+                                                    type="button" 
+                                                    >
+                                                    <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn.webp"
+                                                        alt="Registrar Partido" />
+                                                </button>
+                                                <template #content>
+                                                    Registrar Partido
+                                                </template>
+                                            </Popper>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
-                                <td class="border text-center">0</td>
+                                <td class="border text-center bg-black">{{ ply.puntos }}</td>
+                                <td class="border text-center bg-black">{{ ply.sets }}</td>
+                                <td class="border text-center bg-black">{{ ply.posicion }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -478,6 +488,14 @@ export default {
 
     <div class="container" v-if="torneoData">
         <Inscritos v-if="jugadoresInscritos" :torneo="torneoData" :jugadores-inscritos="jugadoresInscritos" />
+
+        <div class="description mt-6">
+            <RouterLink :to="{ name: 'torneos' }">
+                <h3 class="text-2xl text-primary hover:text-white uppercase font-bold mb-5">
+                    Regresar a Torneos
+                </h3>
+            </RouterLink>
+        </div>
     </div>
 
     <Footer />

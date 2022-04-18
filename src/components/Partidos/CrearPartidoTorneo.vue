@@ -93,7 +93,7 @@ export default {
                                 <div>
                                     <img
                                         class="w-24 h-24 rounded-2xl"
-                                        :src="partido.playerA ? (partido.playerA.avatar ??  '/images/blog/blog3.webp') : ''"
+                                        :src="partido.playerA ? (partido.playerA.avatar ??  '/images/others/upcoming-game-thumb3.webp') : ''"
                                         :alt="partido.playerA ? partido.playerA.nombre : ''"
                                     />
                                     <h4 class="text-center">{{ partido.playerA ? partido.playerA.nombre : '' }}</h4>
@@ -106,7 +106,7 @@ export default {
                                 <div>
                                     <img
                                         class="w-24 h-24 rounded-2xl"
-                                        :src="partido.playerB ? ( partido.playerB.avatar ?? '/images/blog/blog3.webp') : ''"
+                                        :src="partido.playerB ? ( partido.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp') : ''"
                                         :alt="partido.playerB ? partido.playerB.nombre : ''"
                                     />
                                     <h4 class="text-center">{{ partido.playerB ? partido.playerB.nombre : '' }}</h4>
