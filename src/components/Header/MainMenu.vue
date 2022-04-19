@@ -24,7 +24,17 @@
                         class="text-white uppercase font-bold font-exo relative"
                     >Clubs</RouterLink>
                 </li>
+
                 <li
+                    class="relative mr-14 z-10 before:bg-nav-shape before:empty-content before:absolute before:w-23.5 before:h-11 before:z-n1 before:top-1/2 before:left-1/2 before:transform before:-translate-x-2/4 before:-translate-y-2/4 before:transition-all before:opacity-0 hover:before:opacity-100"
+                >
+                    <RouterLink
+                        to="/about"
+                        class="text-white uppercase font-bold font-exo relative"
+                    >About</RouterLink>
+                </li>
+                
+                <!-- <li
                     class="relative mr-14 group z-10 before:bg-nav-shape before:empty-content before:absolute before:w-23.5 before:h-11 before:z-n1 before:top-1/2 before:left-1/2 before:transform before:-translate-x-2/4 before:-translate-y-2/4 before:transition-all before:opacity-0 hover:before:opacity-100"
                 >
                     <RouterLink to="/" class="text-white uppercase font-bold font-exo relative">Blog</RouterLink>
@@ -38,12 +48,12 @@
                             >Blog Without Sidebar Page</RouterLink>
                         </li>
                     </ul>
-                </li>
+                </li> -->
                 <li
                     class="relative mr-14 z-10 before:bg-nav-shape before:empty-content before:absolute before:w-23.5 before:h-11 before:z-n1 before:top-1/2 before:left-1/2 before:transform before:-translate-x-2/4 before:-translate-y-2/4 before:transition-all before:opacity-0 hover:before:opacity-100"
                 >
                     <RouterLink
-                        to="/contact"
+                        to="/contactos"
                         class="text-white uppercase font-bold font-exo relative"
                     >Contact</RouterLink>
                 </li>

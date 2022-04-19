@@ -25,20 +25,20 @@
                 <p>Queremos facilitar la organización de tus torneos de Ping Pong, en nuestra plataforma puedes:</p>
                 <div class="pl-8">
                     <ul class="list-disc">
-                        <li>Registrar Clubs de Ping Pong</li>
+                        <li>Encontrar y Registrar Clubs de Ping Pong</li>
                         <li>Unirte a un Club</li>
                         <li>Crear Torneos</li>
                         <li>Inscribirte en Torneos</li>
                         <li>Generar los grupos y partidos automaticamente</li>
-                        <li>Registrar los resultados de tus partido</li>
+                        <li>Registrar los resultados de tus partidos</li>
                         <li>Subir imágenes de tus torneos</li>
-                        <li>Historial de partidos, torneos, rivales</li>
+                        <li>Historial de partidos, torneos y rivales</li>
                         <li>Ranking en categorías</li>
                     </ul>
                 </div>
             </div>
             <div class="about_btn">
-                <RouterLink to="/contact" class="group primary-btn opacity-100 transition-all" style="background-image:url(/images/others/btn-bg.webp)">
+                <RouterLink to="/login" class="group primary-btn opacity-100 transition-all" style="background-image:url(/images/others/btn-bg.webp)">
                     {{btnName}}
                     <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon" class="ml-3 w-5 h-5 group-hover:ml-4 transition-all">
                 </RouterLink>  

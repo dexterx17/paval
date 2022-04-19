@@ -97,6 +97,16 @@ const router = createRouter({
       },
       component: () => import("../views/game/players/PlayerProfile.vue"),
     },
+    {
+      path: "/contactos",
+      name: "contactos",
+      component: () => import("../views/ContactView.vue"),
+    },
+    {
+      path: "/:catchAll(.*)",
+      name: "error-404",
+      component: () => import("../views/ErrorView.vue"),
+    },
   ],
 });
 

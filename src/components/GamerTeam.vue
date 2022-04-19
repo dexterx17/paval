@@ -31,26 +31,26 @@
         },
         data() {
             return {
-                title: "Meet Gamer Team",
-                text: "When unknown printer took type and scrambled it to make type specimen book centuries",
+                title: "Conoce al Equipo de Desarrollo",
+                text: "Queremos ofrecerte la mejor plataforma para que registres todos tus partidos de Ping Pong",
                 services: [
                     {
                         imgSrc: "/images/others/team1.webp",
-                        alt: "Service Image",
-                        name: "Tasia Mancuso",
-                        subtitle: "SEO & Founder",
+                        alt: "Jaime Santana",
+                        name: "Jaime Santana",
+                        subtitle: "Desarrollador",
                     },
                     {
                         imgSrc: "/images/others/team2.webp",
-                        alt: "Service Image",
-                        name: "Rosaline Emmons",
-                        subtitle: "Team Leader",
+                        alt: "Nataly Armas",
+                        name: "Nataly Armas",
+                        subtitle: "QA & Tester",
                     },
                     {
                         imgSrc: "/images/others/team3.webp",
-                        alt: "Service Image",
-                        name: "Willbarn Beharn",
-                        subtitle: "Team Member"
+                        alt: "...",
+                        name: "...",
+                        subtitle: "Diseñador Gráfico"
                     }
                 ]
             }

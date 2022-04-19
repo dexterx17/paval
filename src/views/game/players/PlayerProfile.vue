@@ -153,7 +153,7 @@ export default {
 
         <!-- <div class="about_btn">
           <RouterLink
-            to="/contact"
+            to="/contactos"
             class="group primary-btn opacity-100 transition-all"
             style="background-image:url(/images/others/btn-bg.webp)"
           >
