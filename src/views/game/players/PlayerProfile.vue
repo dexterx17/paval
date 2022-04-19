@@ -7,12 +7,15 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Avatar from "@/components/Avatar.vue";
 import Footer from "@/components/Footer.vue";
 import PlayerForm from "@/components/Players/PlayerForm.vue";
+import PlayerCounters from "@/components/Players/PlayerCounters.vue";
+
 
 export default {
   components: {
     Breadcrumb,
     Avatar,
     Footer,
+    PlayerCounters,
     PlayerForm
   },
   methods: {
@@ -171,6 +174,8 @@ export default {
       </div>
     </div>
   </div>
+
+  <PlayerCounters />
 
   <Footer />
 </template>

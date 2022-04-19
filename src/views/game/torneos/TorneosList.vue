@@ -1,6 +1,7 @@
 <script>
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
+import TorneosBlocks from "@/components/Torneos/TorneosBlocks.vue";
 import TorneosRegularesHome from "@/components/TorneosRegularesHome.vue";
 import TorneoForm from "@/components/Torneos/TorneoForm.vue";
 import Footer from "@/components/Footer.vue";
@@ -11,7 +12,8 @@ export default {
         Breadcrumb,
         TorneosRegularesHome,
         Footer,
-        TorneoForm
+        TorneoForm,
+        TorneosBlocks
     },
     data() {
         return {
@@ -32,6 +34,7 @@ export default {
 <template>
     <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 
+    <!-- <TorneosBlocks /> -->
     <TorneosRegularesHome />
 
     <TorneoForm :paddingTop="paddingTop" />
