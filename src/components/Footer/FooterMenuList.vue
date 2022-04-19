@@ -30,11 +30,11 @@ export default {
                     className: "Copywriting"
                 },
                 {
-                    pageLink: "/contact",
+                    pageLink: "/contactos",
                     className: "Social Media"
                 },
                 {
-                    pageLink: "/contact",
+                    pageLink: "/contactos",
                     className: "Interactive Media"
                 },
                 {

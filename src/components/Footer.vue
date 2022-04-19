@@ -91,12 +91,12 @@ export default {
             links: [
                 {
                     contentBefore: "",
-                    pageLink: "/contact",
+                    pageLink: "/contactos",
                     linkName: "Terms & Condition"
                 },
                 {
                     contentBefore: "||",
-                    pageLink: "/contact",
+                    pageLink: "/contactos",
                     linkName: "Privacy Policy"
                 }
             ]

@@ -17,9 +17,7 @@
                             class="md:col-start-1 md:col-end-7 flex flex-col md:justify-start md:items-start justify-center items-center text-center mr-5"
                         >
                             <p class="sm:text-base text-sm font-medium">
-                                <span
-                                    class="capitalize"
-                                >{{ formatDate(match.fecha, { weekday: "long" }) }},</span>
+                                
                                 {{ formatDate(match.fecha) }}
                                 <span
                                     class="text-primary font-bold"
@@ -108,6 +106,8 @@
 import CoolLightBox from 'vue-cool-lightbox'
 import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import moment from 'moment';
+
+
 import matchesData from '@/data/matches.json'
 import TitleSection from '@/components/Title/TitleSection.vue';
 import { computed } from 'vue';
@@ -160,10 +160,17 @@ export default {
         loadMore() {
             this.currentPage += 1
         },
-        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
-            if (!value) return value
-            return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
-        }
+        formatDate(date, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+            console.log('formateDate', date, String(date));
+            if (date) {
+                moment.locale('es');
+                return moment(date, "YYYY-MM-DD hh:mm").format('dddd, Do MMMM YYYY')
+            }
+        },
+        // formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+        //     if (!value) return value
+        //     return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
+        // }
     },
     setup() {
         const store = useStore();
