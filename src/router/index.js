@@ -42,7 +42,7 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
       },
-      component: () => import("../views/game/partidos/PartidosView.vue"),
+      component: () => import("../views/game/partidos/PartidosList.vue"),
     },
     {
       path: "/partido/:id",

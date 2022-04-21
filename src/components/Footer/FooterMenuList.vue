@@ -27,23 +27,23 @@ export default {
             links: [
                 {
                     pageLink: "/about",
-                    className: "Copywriting"
+                    className: "Acerca de"
                 },
                 {
                     pageLink: "/contactos",
-                    className: "Social Media"
+                    className: "Contactos"
                 },
                 {
-                    pageLink: "/contactos",
-                    className: "Interactive Media"
+                    pageLink: "/clubs",
+                    className: "Clubs"
                 },
                 {
-                    pageLink: "/about",
-                    className: "Motion Design"
+                    pageLink: "/torneos",
+                    className: "Torneos"
                 },
                 {
-                    pageLink: "/content",
-                    className: "Illustration"
+                    pageLink: "/partidos",
+                    className: "Partidos"
                 }
             ]
         }
