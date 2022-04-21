@@ -2,6 +2,8 @@ import { db } from '../../plugins/firebase';
 
 import {
     collection,
+    query,
+    limit,
     getDocs,
     doc,
     getDoc,
@@ -30,7 +32,10 @@ const actions = {
         console.log("loadPartidos");
         //const db = getFirestore();
         console.log(db);
-        const querySnapshot = await getDocs(collection(db, "partidos"));
+
+        let q = query(collection(db, "partidos"), limit(5));
+        
+        const querySnapshot = await getDocs(q);
 
         console.log(querySnapshot);
 
@@ -46,7 +51,7 @@ const actions = {
             console.log(querySnapshot.docs);
             querySnapshot.docs.forEach((doc) => {
                 let p = doc.data();
-                console.log(`${doc.id} => ${doc.data()}`);
+                //console.log(`${doc.id} => ${doc.data()}`);
                 p.id = doc.id;
                 partidos.push(p);
             });
