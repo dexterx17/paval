@@ -3,7 +3,7 @@
         <FooterWidgetTitle :title="title" />
 
         <div class="grid grid-cols-3 sm:grid-cols-3 gap-3">
-            <RouterLink v-for="(match, index) in matches" :key="index" :to="match.url">
+            <RouterLink v-for="(match, index) in matches" :key="index" :to="match.url" class="flex justify-center">
                 <img :class="match.class" :src="`${match.gamingBg}`" :alt="match.gamingAlt" />
             </RouterLink>
         </div>
@@ -21,7 +21,7 @@ export default {
             title: "Auspiciantes",
             matches: [
                 {
-                    gamingBg: "/images/others/winnerS.png",
+                    gamingBg: "/images/others/logo_simple_color.png",
                     gamingAlt: "SANTANA estudio",
                     class: 'w-24',
                     url: '/'

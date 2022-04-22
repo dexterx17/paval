@@ -11,8 +11,8 @@
                 <h1
                     class="text-white font-metal uppercase font-normal 2xl:text-7.5xl xl:text-8xl lg:text-5.5xl md:text-7xl text-5xl tracking-wide xl:mb-10 lg:mb-8 mb-5 text-shadow"
                 >
-                    Ping Pong
-                    <br />Ranking
+                    Ping Pong 
+                    <br />Para Todos
                 </h1>
                 <p
                     class="text-white font-semibold font-exo lg:mb-10 md:mb-6 text-base lg:text-2xl mb-5"

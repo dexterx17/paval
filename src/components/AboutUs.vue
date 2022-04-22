@@ -18,14 +18,14 @@
         </div>
         <div class="w-full lg:w-1/2">
             <div class="about_title lg:mb-6 mb-4">
-                <h5 class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16">Acerca de Ping Pong Rank</h5>
+                <h5 class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16">Acerca de Tenis de Mesa Rank</h5>
                 <h2 class="text-white font-exo font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"> Registra tus partidos y sube en el ranking. </h2>
             </div>
             <div class="about_desc mb-10">
-                <p>Queremos facilitar la organización de tus torneos de Ping Pong, en nuestra plataforma puedes:</p>
+                <p>Queremos facilitar la organización de tus torneos de Tenis de Mesa, en nuestra plataforma puedes:</p>
                 <div class="pl-8">
                     <ul class="list-disc">
-                        <li>Encontrar y Registrar Clubs de Ping Pong</li>
+                        <li>Encontrar y Registrar Clubs de Tenis de Mesa</li>
                         <li>Unirte a un Club</li>
                         <li>Crear Torneos</li>
                         <li>Inscribirte en Torneos</li>
@@ -56,7 +56,7 @@ export default {
     },
     data(){
         return {
-            btnName: "Play Now",
+            btnName: "Jugar Ahora",
             items: [
                 {
                     src: "https://www.youtube.com/watch?v=eS9Qm4AOOBY"
