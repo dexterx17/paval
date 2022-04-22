@@ -81,7 +81,7 @@
                     class="primary-btn"
                     style="background-image:url(/images/others/btn-bg.webp);"
                     @click="loadMore"
-                >Other Features</button>
+                >Más Torneos</button>
             </div>
 
             <div

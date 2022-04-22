@@ -27,7 +27,7 @@
                     <RouterLink
                         class="text-base font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"
                         to="/about"
-                    >About</RouterLink>
+                    >Nosotros</RouterLink>
                 </li>
                 <!-- <li class="menu-item-has-children relative block">
                     <RouterLink
@@ -48,7 +48,7 @@
                     <RouterLink
                         class="text-base font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"
                         to="/contactos"
-                    >Contact Us</RouterLink>
+                    >Contactos</RouterLink>
                 </li>
             </ul>
         </nav>

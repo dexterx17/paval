@@ -31,7 +31,7 @@
                     <RouterLink
                         to="/about"
                         class="text-white uppercase font-bold font-exo relative"
-                    >About</RouterLink>
+                    >Nosotros</RouterLink>
                 </li>
                 
                 <!-- <li
@@ -55,7 +55,7 @@
                     <RouterLink
                         to="/contactos"
                         class="text-white uppercase font-bold font-exo relative"
-                    >Contact</RouterLink>
+                    >Contactos</RouterLink>
                 </li>
             </ul>
         </nav>

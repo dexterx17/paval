@@ -2,12 +2,12 @@
     <div class="flex flex-col mr-12 xl:mr-100">
         <!-- Footer Logo Start -->
         <RouterLink to="/" class="mb-10">
-            <img src="/images/logo.webp" alt="Ping Pong Rank" />
+            <img src="/images/logo.webp" alt="Tenis de Mesa Rank" />
         </RouterLink>
         <!-- Footer Logo End -->
 
         <!-- Text Start -->
-        <p>Queremos que más personas se reunan para prácticar, compartir y competir en el Ping Pong.</p>
+        <p>Queremos que más personas se reunan para prácticar, compartir y competir en el Tenis de Mesa.</p>
         <!-- Text End -->
 
         <!-- Social Icon List Start -->
