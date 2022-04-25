@@ -50,14 +50,7 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         totalPartidosGrupo(jugadores){
-            let total = 1;
-            console.log('jugadores');
-            console.log(jugadores);
-            for (let index = 0; index < jugadores.length; index++) {
-                const element = jugadores[index];
-                total += index;
-            }
-            return total;
+            return (jugadores.length * jugadores.length)/2;
         }
     },
     computed: {
@@ -138,6 +131,12 @@ export default {
             loadGruposData();
         }
 
+        const hideModalRegistrarPartido = () => {
+            showModal.value = false;
+            showModalCrearPartido.value = false;
+            loadGruposData();
+        }
+
         const resultadosPartido = (grupo, partidoKey) => {
             let index = grupo.jugados.indexOf(partidoKey);
 
@@ -170,6 +169,7 @@ export default {
 
             hideModalConfigurar,
             hideModalInscripcion,
+            hideModalRegistrarPartido,
             resultadosPartido,
             crearPartido
         }
@@ -476,7 +476,7 @@ export default {
                         content-class="modal-content" v-model="showModalCrearPartido" :width="1000" :height="700"
                         :adaptive="true">
                         <CrearPartidoTorneo v-if="torneoData" :partido="newPartidoData"
-                            @hide-modal="showModalCrearPartido = false" />
+                            @hide-modal="hideModalRegistrarPartido" />
                         <button
                             class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                             @click="showModalCrearPartido = false"></button>

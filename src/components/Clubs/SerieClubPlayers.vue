@@ -2,7 +2,8 @@
     <!-- Team Number Section Start -->
     <div class="my-8">
         <div class="team-one mt-8" v-for="serie in seriesData" :key="serie.id">
-            <span class="text-primary text-lg uppercase font-semibold mb-4 block">Serie {{ serie.nombre }}</span>
+            <span class="text-primary text-lg uppercase font-semibold mb-4 block">{{ serie.max_integrantes }} Jugadores</span>
+            <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Serie {{ serie.nombre }}</h2>
             <swiper class="swiper" :options="swiperOption">
                 <swiper-slide v-for="(team, index) in teamplayers" :key="index">
                     <div class="rounded-50">

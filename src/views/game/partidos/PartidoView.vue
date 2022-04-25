@@ -72,10 +72,25 @@
                 loadPartidoData();
             }
 
+            const ganador = computed(() => {
+                let puntajes = partidoData.value.resultado.split(':');
+                let puntosA = puntajes[0];
+                let puntosB = puntajes[1];
+                
+                if(puntosA > puntosB){
+                    console.log('ganadorA');
+                    return partidoData.value.playerA;
+                }else{
+                    console.log('ganadorB');
+                    return partidoData.value.playerB;
+                }        
+            });
+
             return {
                 partidoData,
                 nPartidos,
                 showModalResultadosPartido,
+                ganador,
                 hideModalPartido
             }
         }
@@ -170,7 +185,7 @@
 
                 
                 <blockquote class="py-2 mb-5">
-                    <p class="font-bold text-center text-yellow italic lg:text-3xl text-xl">{{ partidoData.playerA.nombre }} Ganador</p>
+                    <p class="font-bold text-center text-yellow italic lg:text-3xl text-xl">{{ ganador.nombre }} Ganador</p>
                 </blockquote>
 
 

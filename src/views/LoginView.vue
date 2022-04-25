@@ -17,6 +17,7 @@ export default {
 				password: "",
 				recordarme: false
 			},
+			isProcessing: false,
 			error: null,
 			navOpen: false,
 			BreadcrumbTitle: "Ingresar",
@@ -37,10 +38,12 @@ export default {
 		...mapActions(["signInAction"]),
 		submit() {
 			console.log('submit');
+			this.isProcessing = true;
 			this.signInAction({ email: this.form.email, password: this.form.password }).then((response) => {
 				console.log('response');
 				console.log(response);
 				if (response.user) {
+					this.isProcessing = false;
 					this.$router.replace({ name: "profile" });
 				}
 			});
@@ -98,7 +101,7 @@ export default {
 										v-model="form.password"
 										class="px-6 h-14 mb-6 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
 										placeholder="Contraseña"
-										style="transition: all 0.15s ease 0s"
+										required
 									/>
 									<div class="absolute right-0 mr-3 mt-4">
 										<button @click="showPassword = !showPassword" type="button">
@@ -158,7 +161,10 @@ export default {
 										</a>
 							</div>-->
 							<div v-if="getError" class="text-red-800 text-center">{{ getError }}</div>
-							<div class="single-fild col-span-2">
+							<div v-if="isProcessing" class="flex justify-center w-full">
+								<h2 class="text-primary">Procesando...</h2>
+							</div>
+							<div v-else class="single-fild col-span-2">
 								<div class="form-btn-wrap flex justify-center w-full mt-4">
 									<button
 										type="submit"
