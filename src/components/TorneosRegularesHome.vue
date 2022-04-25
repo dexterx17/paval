@@ -34,17 +34,16 @@
                         <div
                             class="md:col-start-7 md:col-end-9 lg:mr-12 mr-5 md:my-auto my-8 flex flex-col items-center text-center"
                         >
-                            <a
-                                @click="index = imageIndex"
+                            <RouterLink
+                                :to="`/torneo/${match.id}`"
                                 class="lg:w-120 lg:h-120 w-88 h-88 bg-primary rounded-full block relative"
-                                href="#/"
                             >
                                 <img
                                     class="max-w-full h-auto w-auto absolute-center"
                                     :src="`/images/others/play-btn2.webp`"
                                     :alt="match.playAlt"
                                 />
-                            </a>
+                            </RouterLink>
                             <br />
                             <span class="text-warning">Galería</span>
                         </div>

@@ -114,26 +114,67 @@ const actions = {
         try {
             console.log('addPartidoTorneo');
             console.log(payload);
-            const colPartidos = collection(db, "partidos");
+            return await runTransaction(db, async (transaction) => {
 
-            let partido = await addDoc(colPartidos, payload);
+                const colPartidos = collection(db, "partidos");
+                
+                // agregamos partido
+                let partido = await addDoc(colPartidos, payload.partido);
+                console.log('partido',partido);
+                let partido_key = payload.partido.playerA.id+'_'+payload.partido.playerB.id;
+                console.log('partido_key',partido_key);
+                
+                // referencia a torneo
+                const torneoRef = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
+                // actualizamos torneo
+                await updateDoc(torneoRef, {
+                    partidos: arrayUnion(partido.id),
+                    jugados: arrayUnion(partido_key)
+                });
 
-            let partido_key = payload.playerA.id+'_'+payload.playerB.id;
 
-            const torneoRef = doc(db, `torneos/${payload.torneo_id}/grupos/${payload.grupo_id}`);
-            console.log('torneoRef');
-            console.log(torneoRef);
-            
-            await updateDoc(torneoRef, {
-                partidos: arrayUnion(partido.id),
-                jugados: arrayUnion(partido_key)
-            });  
-            
-            console.log(partido);
-            return partido;
+                const refGrupo = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
+                const sfGrupo = await transaction.get(refGrupo);
+                if (!sfGrupo.exists()) {
+                    throw "Grupo does not exist!";
+                }
 
+                console.log('sfGrupo',sfGrupo.data());
+  
+                const resultados = sfGrupo.data().resultados;
+                resultados[partido.id] = payload.partido.resultado;
+
+                const jugadores = sfGrupo.data().jugadores;
+                console.log('jugadores sfGrupo',jugadores);
+                let players = jugadores.map(j=>{
+                    console.log('j',j);
+                    if(j.id == payload.data.idGanador){
+                        j.puntos = j.puntos + 2;
+                        j.sets = j.sets + ( payload.data.puntosGanador - payload.data.puntosPerdedor);
+                        console.log('Puntos Ganador: ' + j.puntos);
+                    }
+                    if(j.id == payload.data.idPerdedor){
+                        j.puntos = j.puntos + 1;
+                        j.sets = j.sets + (  payload.data.puntosPerdedor - payload.data.puntosGanador );
+                        console.log('Puntos Perdedor: ' + j.puntos);
+                    }
+                    return j;
+                });
+                console.log('jugadoresConPuntos',players);
+                console.log('resultados',resultados);
+
+                transaction.update(refGrupo, {
+                    resultados: resultados,
+                    jugadores: players
+                });
+                
+                console.log('partido return');
+                console.log(partido);
+                return partido;
+            });
+            console.log("Partido registrado correctamente!");
         } catch (e) {
-            console.error("Error adding document: ", e);
+            console.error("Error adding partido: ", e);
         }
     },
     async setResultadosPartido({ commit }, payload) {
@@ -146,14 +187,14 @@ const actions = {
                 await runTransaction(db, async (transaction) => {
                     const refGrupo = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
 
-                    const sfDoc = await transaction.get(refGrupo);
-                    if (!sfDoc.exists()) {
+                    const sfGrupo = await transaction.get(refGrupo);
+                    if (!sfGrupo.exists()) {
                         throw "Document does not exist!";
                     }
 
-                    console.log('sfDoc',sfDoc.data());
+                    console.log('sfGrupo',sfGrupo.data());
       
-                    const resultados = sfDoc.data().resultados;
+                    const resultados = sfGrupo.data().resultados;
                     resultados[payload.partido.id] = payload.resultado;
 
                     let puntajes = payload.resultado.split(':');
@@ -183,8 +224,8 @@ const actions = {
                         puntosPerdedor = parseInt(puntosA);
                     }                    
 
-                    const jugadores = sfDoc.data().jugadores;
-                    console.log('jugadores sfDoc',jugadores);
+                    const jugadores = sfGrupo.data().jugadores;
+                    console.log('jugadores sfGrupo',jugadores);
                     let players = jugadores.map(j=>{
                         console.log('j',j);
                         if(j.id == idGanador){

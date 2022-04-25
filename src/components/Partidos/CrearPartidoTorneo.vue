@@ -16,29 +16,58 @@ export default {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
+        modoJuego: function(modo){
+            //return modo;
+            return this.modosJuego.find(item => item.id == modo).label;
+        },
         submit() {
             this.procesando = true;
             this.addPartidoTorneo({
-                torneo_id: this.partido.torneo.id,
-                grupo_id: this.partido.grupo.id,
-                playerA: this.partido.playerA,
-                playerB: this.partido.playerB,
-                modo_juego: this.modoJuego,
-                fecha: this.partido.torneo.fecha,
-                hora: this.partido.torneo.hora,
-                ciudad: this.partido.torneo.ciudad,
-                lugar: this.partido.torneo.lugar,
-                resultados: [],
-                resultado: null
-            }).then((torneo) => {
+                partido:{
+                    torneo_id: this.partido.torneo.id,
+                    grupo_id: this.partido.grupo.id,
+                    playerA: this.partido.playerA,
+                    playerB: this.partido.playerB,
+                    modo_juego: this.partido.torneo.modo_juego,
+                    fecha: this.partido.torneo.fecha,
+                    hora: this.partido.torneo.hora,
+                    ciudad: this.partido.torneo.ciudad,
+                    lugar: this.partido.torneo.lugar,
+                    resultados: [],
+                    resultado: this.resultadoFinal
+                },
+                data:{
+                    idGanador: this.idGanador,
+                    puntosGanador: this.puntosGanador,
+                    idPerdedor: this.idPerdedor,
+                    puntosPerdedor: this.puntosPerdedor,
+                }
+            }).then((partidoResponse) => {
                 this.procesando = false;
-                console.log('torneo');
-                console.log(torneo);
-                if (torneo.id) {
+                console.log('partidoResponse');
+                console.log(partidoResponse);
+                if (partidoResponse.id) {
                     this.$emit('hide-modal')
-                    this.$router.replace({ name: "partido", params:{ id: torneo.id } });
+                    this.$router.replace({ name: "partido", params:{ id: partidoResponse.id } });
                 }
             })
+        }
+    },
+    computed:{
+        resultadoFinal: function(){
+            return this.resultadoA + ':' + this.resultadoB;
+        },
+        idGanador: function(){
+            return this.resultadoA > this.resultadoB ? this.partido.playerA.id : this.partido.playerB.id;
+        },
+        idPerdedor: function(){
+            return this.resultadoA > this.resultadoB ? this.partido.playerB.id : this.partido.playerA.id;
+        },
+        puntosGanador: function(){
+            return this.resultadoA > this.resultadoB ? this.resultadoA : this.resultadoB;
+        },
+        puntosPerdedor: function(){
+            return this.resultadoA > this.resultadoB ? this.resultadoB : this.resultadoA;
         }
     },
     data() {
@@ -64,12 +93,14 @@ export default {
         }
     },
     setup() {
-        const modoJuego = ref('3de5');
         const procesando = ref(false);
+        const resultadoA = ref(null);
+        const resultadoB = ref(null);
 
         return {
-            modoJuego,
-            procesando
+            procesando,
+            resultadoA,
+            resultadoB
         }
     }
 
@@ -90,9 +121,9 @@ export default {
                     >
                         <div class="grid grid-cols-1 items-center">
                             <div class="flex justify-center items-center w-full px-0 lg:px-8">
-                                <div>
+                                <div class="text-center">
                                     <img
-                                        class="w-24 h-24 rounded-2xl"
+                                        class="w-16 h-16 rounded-2xl"
                                         :src="partido.playerA ? (partido.playerA.avatar ??  '/images/others/upcoming-game-thumb3.webp') : ''"
                                         :alt="partido.playerA ? partido.playerA.nombre : ''"
                                     />
@@ -103,9 +134,9 @@ export default {
                                     src="/images/others/game-vs1.webp"
                                     alt="Feature Icon"
                                 />
-                                <div>
+                                <div class="text-center">
                                     <img
-                                        class="w-24 h-24 rounded-2xl"
+                                        class="w-16 h-16 rounded-2xl"
                                         :src="partido.playerB ? ( partido.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp') : ''"
                                         :alt="partido.playerB ? partido.playerB.nombre : ''"
                                     />
@@ -117,7 +148,7 @@ export default {
                 </div>
                 <!-- Team Varses Team End -->
             </div>
-            <div class="col-span-2 flex flex-wrap -mx-3 mb-2">
+            <!-- <div class="col-span-2 flex flex-wrap -mx-3 mb-2">
                 <div class="w-full px-3 mb-2">
                     <label
                         class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
@@ -134,6 +165,31 @@ export default {
                         :clearable="false"
                     ></v-select>
                 </div>
+            </div> -->
+            <div class="col-span-2 flex flex-wrap">
+                <div class="w-full px-3 mb-2 text-center">
+                    <label
+                        class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
+                    >{{ modoJuego(partido.torneo.modo_juego) }}</label>
+                </div>
+            </div>
+            <div class="col-span-2 flex flex-wrap -mx-3">
+                <div class="w-1/2 px-3 mb-2 flex  items-center">
+                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
+                        for="grid-club">SETS</label>
+                    <input
+                        class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
+                        type="number" v-model="resultadoA" :placeholder="`Puntos (${partido.playerA ? partido.playerA.nombre : ''})`"
+                        required />
+                </div>
+                <div class="w-1/2 px-3 mb-2 flex items-center">
+                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
+                        for="grid-club">SETS</label>
+                    <input
+                        class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
+                        type="number" v-model="resultadoB" :placeholder="`Puntos (${partido.playerB ? partido.playerB.nombre : ''})`"
+                        required />
+                </div>
             </div>
             <div class="single-fild col-span-2">
                 <div v-if="procesando" class="flex justify-center w-full">
@@ -147,7 +203,7 @@ export default {
                         class="form-btn group primary-btn opacity-100 transition-all"
                         style="background-image:url(/images/others/btn-bg.webp)"
                     >
-                        Iniciar Partido
+                        Registrar Partido
                         <img
                             src="/images/icon/arrrow-icon.webp"
                             alt="Arrow Icon"
