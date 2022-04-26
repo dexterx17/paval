@@ -88,15 +88,7 @@ export default {
             });
         const procesando = ref(false);
 
-        const grupos = ref([
-            {
-                grupo: 1,
-                jugadores: [],
-                partidos: [],
-                jugados: [],
-                resultados:{}
-            }
-        ])
+        const grupos = ref([])
 
         const selectTotalGrupos = (option) => {
             nGrupos.value = option.id;
@@ -268,6 +260,7 @@ export default {
                         Asignar jugadores
                     </button>
                     <button
+                        v-if="grupos.length > 0"
                         type="submit"
                         value="submit"
                         name="submit"

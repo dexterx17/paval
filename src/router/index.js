@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior() {
-      return { x: 0, y: 0 };
+      return { left: 0, top: 100 };
   },
   routes: [
     {
