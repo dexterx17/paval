@@ -143,6 +143,7 @@ export default {
                         label="nombre"                        
                         @update:modelValue="addPlayer"
                         :modelValue="player"
+                        placeholder="Buscar jugadores"
                     >
                         <template #selected-option="option">
                             <div class="flex border-b border-purple">

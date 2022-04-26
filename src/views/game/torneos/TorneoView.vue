@@ -118,23 +118,28 @@ export default {
         }
 
         const hideModalInscripcion = () => {
-            showModal.value = false;
             showModalInscribirAmigos.value = false;
             loadTorneoData();
             loadInscritos();
         }
 
         const hideModalConfigurar = () => {
-            showModal.value = false;
             showModalConfigurarTorneo.value = false;
             loadTorneoData();
             loadGruposData();
         }
 
-        const hideModalRegistrarPartido = () => {
-            showModal.value = false;
+        const hideModalRegistrarPartido = () => {            
             showModalCrearPartido.value = false;
-            loadGruposData();
+             console.log('vfm.openedModals');
+             console.log($vfm.modals);
+
+            //loadGruposData();
+        }
+
+        const cerrarTodos = () => {
+            console.log('cerrarA');
+            $vfm.hideAll();
         }
 
         const resultadosPartido = (grupo, partidoKey) => {
@@ -170,6 +175,7 @@ export default {
             hideModalConfigurar,
             hideModalInscripcion,
             hideModalRegistrarPartido,
+            cerrarTodos,
             resultadosPartido,
             crearPartido
         }
@@ -210,9 +216,10 @@ export default {
                         <span class="absolute right-0 top-0 transform rotate-12 bg-secondary-80 h-28 w-0.5"></span>
                     </div>
                     <div class="mr-6 pr-6 lg:mr-20 lg:pr-20 relative pt-4">
-                        <p class="uppercase md:text-lg text-sm font-semibold text-primary">Ranking Avg:</p>
-                        <count-to class="text-white text-4xl lg:text-5xl font-bold" :startVal="0" :endVal="16"
-                            :duration="3000" :autoplay="true"></count-to>
+                        <p class="uppercase md:text-lg text-sm font-semibold text-primary">Modo Juego:</p>
+                        <!-- <count-to class="text-white text-4xl lg:text-5xl font-bold" :startVal="0" :endVal="16"
+                            :duration="3000" :autoplay="true"></count-to> -->
+                        <span class="text-white text-4xl lg:text-5xl font-bold">{{ torneoData.modo_juego ?? '-' }}</span>
                         <span class="absolute right-0 top-0 transform rotate-12 bg-secondary-80 h-28 w-0.5"></span>
                     </div>
                     <div class="mr-6 pr-6 lg:mr-16 lg:pr-16 relative pt-4">
@@ -265,21 +272,21 @@ export default {
             </div>
         </div>
         <div v-if="!torneoData.modo_juego && !torneoData.n_grupos">
-            <vue-final-modal  class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+            <vue-final-modal  class="bg-transparent" name="modal-inscribirse" classes="modal-container " content-class="modal-content"
                 v-model="showModal" :width="1000" :height="700" :adaptive="true">
                 <InscribirseTorneo :torneo="torneoData" @hide-modal="hideModalInscripcion" />
                 <button
                     class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                     @click="showModal = false"></button>
             </vue-final-modal>
-            <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+            <vue-final-modal class="bg-transparent" name="modal-inscribir-amigos" classes="modal-container " content-class="modal-content"
                 v-model="showModalInscribirAmigos" :width="1000" :height="700" :adaptive="true">
                 <InscribirAmigos :torneo="torneoData" @hide-modal="hideModalInscripcion" />
                 <button
                     class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                     @click="showModalInscribirAmigos = false"></button>
             </vue-final-modal>
-            <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container " content-class="modal-content"
+            <vue-final-modal class="bg-transparent" name="modal-configurar-torneo" classes="modal-container " content-class="modal-content"
                 v-model="showModalConfigurarTorneo" :width="1000" :height="700" :adaptive="true">
                 <ConfigurarTorneo :torneo="torneoData" :inscritos="jugadoresInscritos" @hide-modal="hideModalConfigurar" />
                 <button
@@ -472,14 +479,16 @@ export default {
                         </tbody>
                     </table>
 
-                    <vue-final-modal class="bg-transparent" name="my-modal" classes="modal-container "
-                        content-class="modal-content" v-model="showModalCrearPartido" :width="1000" :height="700"
+                    <vue-final-modal class="bg-transparent" name="modal-crear-partido" classes="modal-container "
+                        content-class="modal-content" v-model="showModalCrearPartido" 
+                        @closed="cerrarTodos"
+                        :esc-to-close="true"
                         :adaptive="true">
                         <CrearPartidoTorneo v-if="torneoData" :partido="newPartidoData"
                             @hide-modal="hideModalRegistrarPartido" />
                         <button
                             class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
-                            @click="showModalCrearPartido = false"></button>
+                            @click="hideModalRegistrarPartido"></button>
                     </vue-final-modal>
                 </section>
             </div>

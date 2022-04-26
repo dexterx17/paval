@@ -143,29 +143,67 @@ const actions = {
   
                 const resultados = sfGrupo.data().resultados;
                 resultados[partido.id] = payload.partido.resultado;
+                console.log('resultados',resultados);
 
                 const jugadores = sfGrupo.data().jugadores;
                 console.log('jugadores sfGrupo',jugadores);
+                
                 let players = jugadores.map(j=>{
-                    console.log('j',j);
                     if(j.id == payload.data.idGanador){
                         j.puntos = j.puntos + 2;
                         j.sets = j.sets + ( payload.data.puntosGanador - payload.data.puntosPerdedor);
-                        console.log('Puntos Ganador: ' + j.puntos);
                     }
                     if(j.id == payload.data.idPerdedor){
                         j.puntos = j.puntos + 1;
                         j.sets = j.sets + (  payload.data.puntosPerdedor - payload.data.puntosGanador );
-                        console.log('Puntos Perdedor: ' + j.puntos);
                     }
                     return j;
                 });
+
                 console.log('jugadoresConPuntos',players);
-                console.log('resultados',resultados);
+                
+                let puntos_players = jugadores.filter(j=>j.puntos>0).map(j => j.puntos);
+                let sets_players = jugadores.filter(j=>j.puntos>0).map(j => j.sets);
+
+                console.log('Puntos',puntos_players);
+                console.log('Sets',sets_players);
+                
+                puntos_players = puntos_players.sort().reverse();
+                console.log('Puntos Ordenados',puntos_players);
+                
+                sets_players = sets_players.sort().reverse();
+                console.log('Sets Ordenados',sets_players);
+
+                let players_posiciones = jugadores.map(j=>{
+                    console.log('j',j);
+
+                    //posicion con puntos
+                    let posicion = puntos_players.indexOf(j.puntos);
+                    
+                    let puntos_iguales = puntos_players.reduce((a, v) => (v === j.puntos ? a + 1 : a), 0);
+                    console.log('puntos_iguales: ',puntos_iguales);
+                    //si hay otro usuario con puntos iguales
+                    if(puntos_iguales > 1){
+                        //excluir sets de jugadores con mayor posicion
+                        //posicion con sets
+                        let posicion_set = sets_players.indexOf(j.sets);
+                        //j.posicion = (posicion==-1 ? 0 : posicion )+ (posicion_set+1);
+                        j.posicion = (posicion_set+1);
+                    }else{
+                        j.posicion = (posicion+1);
+                    }
+
+                    
+                    console.log('Posicion: ' + j.posicion);
+                    return j;
+                });
+
+                console.log('jugadoresConPosiciones',players_posiciones);
+                
 
                 transaction.update(refGrupo, {
                     resultados: resultados,
-                    jugadores: players
+                    jugadores: players_posiciones
                 });
                 
                 console.log('partido return');

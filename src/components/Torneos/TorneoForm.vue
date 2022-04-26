@@ -18,12 +18,6 @@ export default {
             btnName: "Nuevo Torneo"
         }
     },
-    methods: {
-        ...mapActions(["loadTorneos"]),
-        selClub(club) {
-            alert(club)
-        }
-    },
     setup() {
         const store = useStore();
         const showForm = ref(false);
@@ -89,7 +83,6 @@ export default {
             procesandoForm.value = true;
             console.log('addTorneo');
             console.log(store);
-            var vm = this;
             store.dispatch('addTorneo', torneoData.value).then((response) => {
                 procesandoForm.value = false;
                 console.log('response');
@@ -97,7 +90,7 @@ export default {
                 console.log(response.id);
                 if (response.id) {
                     showForm.value = false;
-                    vm.loadTorneos()
+                    this.$router.replace({ name: "torneo", params:{ id: response.id } });
                 }
             });
         }

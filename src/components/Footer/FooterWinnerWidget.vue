@@ -30,7 +30,7 @@ export default {
                     gamingBg: "/images/others/paval.jpg",
                     gamingAlt: "PAVAL Ping Pong Club",
                     class: 'w-16 mx-auto pl-2',
-                    url: '/club/2fJ7kPIzfUlrZvVuZyo3'
+                    url: '/club/oL8oMhB6NMnkwzSnwIPq'
                 },
                 {
                     gamingBg: "/images/others/winners3.webp",
