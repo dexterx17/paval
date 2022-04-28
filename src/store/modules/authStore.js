@@ -99,7 +99,11 @@ const state = {
           source: 'web',
           created_at: Date(),
           nombre: payload.nombre ?? payload.user.displayName,
-          avatar: payload.user.photoURL ?? null
+          avatar: payload.user.photoURL ?? null,
+          total_torneos:0,
+          total_partidos: 0,
+          total_victorias: 0,
+          total_derrotas: 0,
         }).then((docRef)=>{
           console.log("Document written with ID: ", docRef);
         }).catch((error)=>{
