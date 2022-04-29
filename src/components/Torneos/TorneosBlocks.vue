@@ -30,6 +30,98 @@
                 </div>
             </div>
         </div>
+<!-- 
+        <div class>
+
+            <div
+                v-for="(match, imageIndex) in items"
+                :key="imageIndex"
+                class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 mb-7.5 last:mb-0"
+            >
+                <div class="grid md:grid-cols-12 grid-cols-1 items-center">
+                    <div
+                        class="md:col-start-1 md:col-end-7 flex flex-col md:justify-start md:items-start justify-center items-center text-center mr-5"
+                    >
+                        <p class="sm:text-base text-sm font-medium">
+                            
+                            {{ formatDate(match.fecha) }}
+                            <span
+                                class="text-primary font-bold"
+                            >{{ match.hora }}</span>
+                        </p>
+                        <RouterLink
+                            :to="`/torneo/${match.id}`"
+                            class="transition-all text-2xl lg:text-4xl font-bold uppercase font-exo text-white mb-4 hover:text-primary"
+                        >{{ match.nombre }}</RouterLink>
+                        <span
+                            class="text-primary font-normal text-sm font-exo"
+                        >{{ match.inscritos.length }} jugadores inscritos</span>
+                    </div>
+                    <div
+                        class="md:col-start-7 md:col-end-9 lg:mr-12 mr-5 md:my-auto my-8 flex flex-col items-center text-center"
+                    >
+                        <RouterLink
+                            :to="`/torneo/${match.id}`"
+                            class="lg:w-120 lg:h-120 w-88 h-88 bg-primary rounded-full block relative"
+                        >
+                            <img
+                                class="max-w-full h-auto w-auto absolute-center"
+                                :src="`/images/others/play-btn2.webp`"
+                                :alt="match.playAlt"
+                            />
+                        </RouterLink>
+                        <br />
+                        <span class="text-warning">Galería</span>
+                    </div>
+                    <div
+                        class="md:col-end-13 flex md:justify-end justify-center items-center w-full px-20 sm:px-0 sm:w-auto"
+                    >
+                        <img
+                            class="lg:mr-9 mr-5 w-24 h-24 rounded-lg"
+                            :src="match.club ? match.club.logo : '/images/others/upcoming-game-thumb3.webp'"
+                            :alt="match.club ? match.club.nombre : 'No Club'"
+                            :title="match.club ? match.club.nombre : 'No Club'"
+                        />
+
+                        <img
+                            class="w-24 h-24"
+                            :src="match.serie ? match.serie.logo : '/images/others/seriei.png'"
+                            :alt="match.serie ? match.serie.nombre : 'No Serie'"
+                            :title="match.serie ? match.serie.nombre : 'No Serie'"
+                        />
+                    </div>
+                </div>
+            </div>
+            <li
+                v-for="(match, imageIndex) in dateTime"
+                :key="imageIndex"
+            >{{ formatDate(match.date) }}</li>
+        </div>
+
+        <div
+            class="flex justify-center mt-73"
+            v-if="currentPage * maxPerPage < matchesData.length"
+        >
+            <button
+                class="primary-btn"
+                style="background-image:url(/images/others/btn-bg.webp);"
+                @click="loadMore"
+            >Más Torneos</button>
+        </div>
+
+        <div
+            class="flex flex-col items-center justify-center mt-73"
+            v-if="matchesData.length == 0"
+        >
+            <p class="text-primary">
+                No tenemos torneos registrados para esta semana
+            </p>
+            <RouterLink
+                class="primary-btn"
+                style="background-image:url(/images/others/btn-bg.webp);"
+                to="/torneos"
+            >Ver todos los torneos</RouterLink>
+        </div> -->
 
         
 

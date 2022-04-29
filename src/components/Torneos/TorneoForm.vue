@@ -1,6 +1,7 @@
 <script>
 import { useStore, mapActions } from "vuex";
 import { computed, ref } from "vue";
+import { useRouter } from 'vue-router';
 
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
@@ -20,6 +21,8 @@ export default {
     },
     setup() {
         const store = useStore();
+        const router = useRouter();
+        
         const showForm = ref(false);
         const procesandoForm = ref(false);
         const torneoModel = {
@@ -90,7 +93,7 @@ export default {
                 console.log(response.id);
                 if (response.id) {
                     showForm.value = false;
-                    this.$router.replace({ name: "torneo", params:{ id: response.id } });
+                    router.replace({ name: "torneo", params:{ id: response.id } });
                 }
             });
         }

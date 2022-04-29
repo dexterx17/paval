@@ -117,6 +117,11 @@ export default {
             showModalCrearPartido.value = true;
         }
 
+        const handleNewImageUploaded = () => {
+            loadTorneoData();
+        }
+
+
         const hideModalInscripcion = () => {
             showModalInscribirAmigos.value = false;
             loadTorneoData();
@@ -177,7 +182,9 @@ export default {
             hideModalRegistrarPartido,
             cerrarTodos,
             resultadosPartido,
-            crearPartido
+            crearPartido,
+
+            handleNewImageUploaded
         }
     }
 }
@@ -297,7 +304,7 @@ export default {
     </div>
     <!-- Match Counterup End -->
 
-    <TorneoDetails v-if="torneoData" :torneo="torneoData" />
+    <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
     <div class="container">
         <div class="my-16" v-for="grupo in gruposTorneo" :key="grupo.id">

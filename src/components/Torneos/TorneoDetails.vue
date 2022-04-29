@@ -92,7 +92,8 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import { mapGetters, mapActions } from "vuex";
 import ImagenesTorneo from "@/components/Torneos/ImagenesTorneo.vue";
 import Popper from "vue3-popper";
-
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 export default {
     components: {
         Swiper,
@@ -138,22 +139,40 @@ export default {
         },
         imagenCargada(response) {
             this.showImagesUploader = false;
+            this.$emit('imagen-cargada');
         },
         eliminarImagen() {
+            
             console.log(this.torneo.imagenes, this.activeImage);
-            let imgURL = this.torneo.imagenes[this.activeImage];
-            this.procesando = true;
-            this.removeImageTorneo({
-                torneo_id: this.torneo.id,
-                imagenURL: imgURL
-            }).then((torneo) => {
-                this.procesando = false;
-                console.log('torneo');
-                console.log(torneo);
 
-                // if (torneo.id) {
-                // this.$emit('hide-modal')
-                // }
+            Swal.fire({
+                title: 'Estás seguro?',
+                text: "Quieres borrar esta imagen?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, borrarla!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let imgURL = this.torneo.imagenes[this.activeImage];
+                    this.procesando = true;
+                    this.removeImageTorneo({
+                        torneo_id: this.torneo.id,
+                        imagenURL: imgURL
+                    }).then((torneo) => {
+                        this.procesando = false;
+                        console.log('torneo');
+                        console.log(torneo);
+                        Swal.fire(
+                            'Borrada!',
+                            'La imagen ha sido borrada.',
+                            'success'
+                        )
+                        this.$emit('imagen-cargada', torneo);
+                    })
+                }
             })
         }
     },

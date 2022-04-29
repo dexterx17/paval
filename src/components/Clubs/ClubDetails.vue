@@ -15,13 +15,7 @@
             {{ club.nombre }}</h2>
         <div class="content-details">
             <div class="description mt-6">
-                <p class="leading-8">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                    Ipsum has been the industry's standard dummy text ever since the 1500 when an unknown printer took a
-                    galley of type and scrambled it to make a type specimen book. It has survived not only five
-                    centuries, but also the leap electro typesetting, remaining essentially unchanged. It was
-                    popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and
-                    more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
-                    Ipsum.</p>
+                <p class="leading-8">{{ club.historia }}</p>
             </div>
 
             <div class="gameslide my-8" v-if="club.imagenes.length > 0">
@@ -75,31 +69,35 @@
             <ImagenesClub v-if="showImagesUploader" :club="club" @imagen-cargada="imagenCargada" />
 
             <div class="description mt-6">
-                <h3 class="text-2xl text-white uppercase font-bold mb-5">Description:</h3>
-                <p class="leading-8">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                    Ipsum has been the industry's standard dummy text ever since the 1500 when an unknown printer took a
-                    galley of type and scrambled it to make a type specimen book. It has survived not only five
-                    centuries, but also the leap electro typesetting, remaining essentially unchanged. It was
-                    popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and
-                    more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
-                    Ipsum.</p>
+                <h3 class="text-2xl text-white uppercase font-bold mb-5">Calendario Interno:</h3>
+                <p class="leading-8">Es el calendario del torneo interno permanente, práctica y
+entrenamiento del Club de Tenis de Mesa PAVAL. El calendario puede ser cambiado en cualquier momento del
+año dependiendo de las necesidades del club y de los jugadores. El torneo interno del club se jugará en dos fechas por semana, una fecha para torneo por equipos y otra para individuales por categorías:</p>
             </div>
+            
+            <blockquote class="py-5 mb-5">
+                <p class="font-bold text-yellow italic lg:text-3xl text-xl">
+                    <ul class="font-bold text-yellow italic lg:text-3xl text-xl">
+                        <li>Lunes: 19h30 CATEGORÍA B </li>
+                        <li>Martes: 19H00 CATEGORIA C</li>
+                        <li>Jueves: 19h00 CATEGORÍA A</li>
+                        <li>Sábado: 14h00 TODAS LAS CATEGORÍAS</li>
+                    </ul>
+                </p>
+            </blockquote>
+
             <div class="description mt-6">
-                <h3 class="text-2xl text-primary uppercase font-bold mb-5">Whats New!</h3>
-                <p class="leading-8">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                    Ipsum has been the industry's standard dummy text ever since the 1500 when an unknown printer took a
-                    galley of type and scrambled it to make a type specimen book. It has survived not only five
-                    centuries, but also the leap electro typesetting, remaining essentially unchanged. It was
-                    popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and
-                    more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
-                    Ipsum.</p>
+                <h3 class="text-2xl text-primary uppercase font-bold mb-5">El torneo interno podrá suspenderse por</h3>
+                <p class="leading-8">
+                    <ol>
+                        <li>1. Participaciones externas con otros clubes</li>
+                        <li>2. Por no disponibilidad de mesas</li>
+                        <li>3. Por no completar el mínimo de jugadores requerido.</li>
+                        <li>4. Ó por resolución de Directorio, lo cual será comunicado en el grupo del whatsapp con la debida antelación.</li>
+                    </ol>
+                </p>
             </div>
 
-            <blockquote class="py-5 mb-5">
-                <p class="font-bold text-yellow italic lg:text-3xl text-xl">Lorem Ipsum is simply dummy text of the
-                    printing and typesetting industry has been the industry's standard dummy text ever since the 1500
-                    printer took galley of type scrambled it to make a type specimen book.</p>
-            </blockquote>
 
             <div class="additional-information-area bg-secondary-100 px-9 py-9 rounded-2xl mb-9">
                 <h3 class="text-2xl text-white uppercase font-bold mb-6">Additional Information:</h3>
@@ -142,6 +140,8 @@ import { useStore } from "vuex";
 import Popper from "vue3-popper";
 
 import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 // Import Swiper styles
 import 'swiper/css/bundle';
@@ -170,15 +170,34 @@ export default {
         },
         eliminarImagen() {
             console.log(this.club.imagenes, this.activeImage);
-            let imgURL = this.club.imagenes[this.activeImage];
-            this.procesando = true;
-            this.removeImageClub({
-                club_id: this.club.id,
-                imagenURL: imgURL
-            }).then((club) => {
-                this.procesando = false;
-                console.log('club');
-                console.log(club);
+            Swal.fire({
+                title: 'Estás seguro?',
+                text: "Quieres borrar esta imagen?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, borrarla!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let imgURL = this.club.imagenes[this.activeImage];
+                    this.procesando = true;
+                    this.removeImageClub({
+                        club_id: this.club.id,
+                        imagenURL: imgURL
+                    }).then((club) => {
+                        this.procesando = false;
+                        console.log('club');
+                        console.log(club);
+                        Swal.fire(
+                            'Borrada!',
+                            'La imagen ha sido borrada.',
+                            'success'
+                        )
+                        this.$emit('imagen-cargada', club);
+                    })
+                }
             })
         }
     },
