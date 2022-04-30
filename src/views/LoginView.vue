@@ -31,9 +31,6 @@ export default {
 			showPassword
 		};
 	},
-	computed: {
-		...mapGetters(['getError'])
-	},
 	methods: {
 		...mapActions(["signInAction"]),
 		submit() {
@@ -43,9 +40,19 @@ export default {
 				console.log('response');
 				console.log(response);
 				if (response.user) {
-					this.isProcessing = false;
 					this.$router.replace({ name: "profile" });
+				}else{
+					switch(response.code){
+						case 'auth/user-not-found':
+							this.error = 'El email ingresado no esta registrado!';
+							break;
+						default:
+							this.error = response.message;
+					}
+					console.log('code: ',response.code);
+					console.log('message: ',response.message);
 				}
+				this.isProcessing = false;
 			});
 		}
 	},
@@ -160,7 +167,7 @@ export default {
 											<small>Olvidaste tu Contraseña?</small>
 										</a>
 							</div>-->
-							<div v-if="getError" class="text-red-800 text-center">{{ getError }}</div>
+							<div v-if="error" class="text-red-800 text-center font-bold">{{ error }}</div>
 							<div v-if="isProcessing" class="flex justify-center w-full">
 								<h2 class="text-primary">Procesando...</h2>
 							</div>

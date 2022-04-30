@@ -18,23 +18,25 @@ import { useRoute } from 'vue-router'
 
 import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
 import Popper from "vue3-popper";
+import BloqueResultadoGrupo from "@/components/Partidos/BloqueResultadoGrupo.vue";
 
 
 export default {
     components: {
-        Breadcrumb,
-        TorneoDetails,
-        Footer,
-        VueFinalModal,
-        ModalsContainer,
-        CountTo,
-        InscribirseTorneo,
-        InscribirAmigos,
-        ConfigurarTorneo,
-        CrearPartidoTorneo,
-        Inscritos,
-        Popper
-    },
+    Breadcrumb,
+    TorneoDetails,
+    Footer,
+    VueFinalModal,
+    ModalsContainer,
+    CountTo,
+    InscribirseTorneo,
+    InscribirAmigos,
+    ConfigurarTorneo,
+    CrearPartidoTorneo,
+    Inscritos,
+    Popper,
+    BloqueResultadoGrupo
+},
     data() {
         return {
             BreadcrumbTitle: "Detalles Torneo",
@@ -355,114 +357,18 @@ export default {
                                     </div>
                                     <div v-else>
                                         <div v-if="grupo.jugados.includes(ply.id + '_' + play.id)">
-                                            <Popper hover>
-                                                <RouterLink
-                                                    class="hover:text-primary"
-                                                    :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }">   
-                                                    <div v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
-                                                        <div class="flex flex-col" v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
-                                                            </span>
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div v-else>
-                                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
-                                                        alt="Ir a Partido" />
-                                                    </div>
-                                                </RouterLink>
-                                                <template #content>
-                                                    <div class="p-0">
-                                                        <h2 class="uppercase">Resultados</h2>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-t-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="play.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="play.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ play.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-b-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ ply.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                            </Popper>
+                                            <!-- {{ply}}
+                                            <hr>
+                                            {{play}}
+                                            <hr> -->
+                                            <BloqueResultadoGrupo :player-a="ply" :player-b="play" :grupo="grupo" />
+                                            
                                         </div>
                                         <div v-else-if="grupo.jugados.includes(play.id + '_' + ply.id)">
-                                            <Popper hover>
-                                                <RouterLink
-                                                    class="hover:text-primary"
-                                                    :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(play.id + '_' + ply.id)] } }">   
-                                                    <div v-if="resultadosPartido(grupo, play.id + '_' + ply.id)">
-                                                        <div class="flex flex-col" v-if="resultadosPartido(grupo, play.id + '_' + ply.id)">
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[0] }}
-                                                            </span>
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[1] }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div v-else>
-                                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
-                                                        alt="Ir a Partido" />
-                                                    </div>
-                                                </RouterLink>
-                                                <template #content>
-                                                    <div class="p-0">
-                                                        <h2 class="uppercase">Resultados</h2>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-t-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="play.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="play.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ play.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[0] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-b-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ ply.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[1] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                            </Popper>
+                                            <!-- {{ply}}
+                                            <hr>
+                                            {{play}} -->
+                                            <BloqueResultadoGrupo :player-a="play" :player-b="ply" :grupo="grupo" />
                                         </div>
                                         <div v-else class="p-1">
                                             <Popper hover>

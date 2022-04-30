@@ -48,7 +48,7 @@ export default {
                 console.log(partidoResponse);
                 if (partidoResponse.id) {
                     this.$emit('hide-modal')
-                    this.$router.replace({ name: "partido", params:{ id: partidoResponse.id } });
+                    //this.$router.replace({ name: "partido", params:{ id: partidoResponse.id } });
                 }
             })
         }

@@ -187,6 +187,7 @@ export default {
                         label="label"
                         v-model="modoJuego"
                         :modelValue="modoJuego"
+                        :reduce="val => val.id"
                         :clearable="false"
                     ></v-select>
                 </div>

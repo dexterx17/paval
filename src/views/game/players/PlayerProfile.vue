@@ -58,8 +58,10 @@ export default {
         console.log(curr, old)
 
         console.log(curr);
-        console.log(curr.uid);
-        loadInfoPlayer(curr);
+        if(curr){
+          console.log(curr.uid);
+          loadInfoPlayer(curr);
+        }
       }
     )
 

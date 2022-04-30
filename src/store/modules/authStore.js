@@ -93,7 +93,7 @@ const state = {
           commit("setError", error.message);
         });
     },
-    initPlayer({ commit }, payload) {
+    async initPlayer({ commit }, payload) {
       try {
         setDoc(doc(db, "players",payload.user.uid), {
           source: 'web',
