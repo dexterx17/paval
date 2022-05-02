@@ -105,36 +105,6 @@ const actions = {
             return torneos;
         }
     },
-    async loadLastTorneos({ commit }, payload) {
-        console.log("loadTorneos");
-        //const db = getFirestore();
-        console.log(db);
-        const querySnapshot = await getDocs(collection(db, "torneos"));
-
-        console.log('querySnapshot');
-        console.log(querySnapshot);
-
-        let torneos = [];
-        
-        return doSnapShot(querySnapshot);
-        
-        //commit("SET_TORNEOS_LISTENER", query);
-        
-
-        function doSnapShot(querySnapshot) {
-            console.log("doSnapShot");
-            console.log(querySnapshot);
-            console.log(querySnapshot.docs);
-            querySnapshot.docs.forEach((doc) => {
-                let p = doc.data();
-                console.log(`${doc.id} => ${doc.data()}`);
-                p.id = doc.id;
-                torneos.push(p);
-            });
-            commit("SET_TORNEOS", torneos);
-            return torneos;
-        }
-    },
     async addTorneo({ commit }, payload) {
         try {
             //si es un torneo organizado por un club

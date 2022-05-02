@@ -2,9 +2,19 @@
 import { mapGetters, mapActions } from "vuex";
 import { computed } from "vue";
 import { useStore } from "vuex";
+
+import Breadcrumb from "@/components/Breadcrumb.vue";
+import Footer from "@/components/Footer.vue";
+
 export default {
+  components:{
+    Breadcrumb,
+    Footer
+  },
   data() {
     return {
+      BreadcrumbTitle: "Jugadores",
+      BreadcrumbSubTitle: "Listado",
       players: [],
     };
   },
@@ -35,28 +45,54 @@ export default {
 </script>
 
 <template>
-  <div>
-    <header>
-      <h3>Players List</h3>
-    </header>
-    <section>
-      <ul v-if="players">
-        <li
-          v-for="player in players"
-          :key="player.id"
-          class="flex my-2 border border-gray-300 rounded-md"
-        >
-          <img
-            src="https://via.placeholder.com/42/42/player.png"
-            :alt="player.nombre"
-          />
-          <div class="flex flex-col pl-2">
-            <h5>{{ player.nombre }}</h5>
-            <h5>{{ player.nacionalidad }}</h5>
+
+  <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
+
+  <!-- Blog Post Section Start -->
+  <div class="container">
+      
+      <div  v-if="players" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div class="relative group w-300 sm:w-full mx-auto" v-for="(player, index) in players" :key="index">
+              <div class="w-full rounded-4xl overflow-hidden relative">
+                  <img :src="player.avatar ?? '/images/player/list/player-1.webp'" :alt="player.nombre">
+                  <RouterLink :to="`/player/${player.id}`" class="w-full h-full absolute left-0 top-0 bg-gray-900 rounded-5xl opacity-0 group-hover:opacity-70 border-4 border-gray-400 rounded-4xl"></RouterLink>
+                  <ul class="social-link absolute left-0 text-center bottom-0 group-hover:bottom-8 w-full space-x-2 opacity-0 group-hover:opacity-100 transition-all z-20 text-white">
+                      <li class="text-center inline-block">
+                          <a href="https://www.twitch.tv" class="w-12 h-10 flex items-center justify-center transition-all bg-cover text-white hover:bg-arrow-shape bg-arrow-hover-shape z-50">
+                              <i class="icofont-twitch"></i>
+                          </a>
+                      </li>
+                      <li class="text-center inline-block">
+                          <a href="https://www.facebook.com" class="w-12 h-10 flex items-center justify-center transition-all bg-cover text-white hover:bg-arrow-shape bg-arrow-hover-shape z-50">
+                              <i class="icofont-facebook"></i>
+                          </a>
+                      </li>
+                      <li class="text-center inline-block">
+                          <a href="https://www.youtube.com" class="w-12 h-10 flex items-center justify-center transition-all bg-cover text-white hover:bg-arrow-shape bg-arrow-hover-shape z-50">
+                              <i class="icofont-youtube-play"></i>
+                          </a>
+                      </li>
+                      <li class="text-center inline-block">
+                          <a href="https://www.twitter.com" class="w-12 h-10 flex items-center justify-center transition-all bg-cover text-white hover:bg-arrow-shape bg-arrow-hover-shape z-50">
+                              <i class="icofont-twitter"></i>
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+              <div class="flex flex-col justify-center items-center mt-8 bg-team-shape bg-cover h-24 sm:h-20 md:h-28 lg:h-24 xl:h-32 2xl:h-32 group-hover:bg-team-hover-shape hover:transition-all">
+                  <h3 class="text-white font-bold text-lg md:text-2xl uppercase mb-2 xl:mb-4 leading-tight">
+                      <RouterLink :to="`/player/${player.id}`">{{player.nombre}}</RouterLink>
+                  </h3>
+                  <span class="text-white text-sm group-hover:text-white transition-all">{{player.ciudad}}</span>
+              </div>
           </div>
-        </li>
-      </ul>
+      </div>
+
       <p v-else>Aún no hay jugadores registrados.</p>
-    </section>
+
   </div>
+  <!-- Blog Post Section End -->
+
+  <Footer />
+  
 </template>

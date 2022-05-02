@@ -7,18 +7,23 @@ import { useRoute } from 'vue-router';
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import Footer from "@/components/Footer.vue";
 import PlayerCounters from "@/components/Players/PlayerCounters.vue";
-
+import RetarJugador from "@/components/Players/RetarJugador.vue";
+import { $vfm, VueFinalModal } from 'vue-final-modal'
 
 export default {
   components: {
     Breadcrumb,
     Footer,
     PlayerCounters,
+    RetarJugador,
+
+    VueFinalModal
   },
   data() {
     return {
       BreadcrumbTitle: "Perfil",
       BreadcrumbSubTitle: "Perfil",
+      showModalRetar: false
     };
   },
   setup() {
@@ -118,8 +123,15 @@ export default {
         </div>
 
         <div class="about_btn">
-          <RouterLink
-            to="/contactos"
+          <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
+              v-model="showModalRetar" :width="1000" :height="700" :adaptive="true">
+              <RetarJugador :player="playerData" />
+              <button
+                  class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                  @click="showModalRetar = false"></button>
+          </vue-final-modal>
+          <button
+            @click="showModalRetar = true"
             class="group primary-btn opacity-100 transition-all"
             style="background-image:url(/images/others/btn-bg.webp)"
           >
@@ -129,8 +141,10 @@ export default {
               alt="Arrow Icon"
               class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
             />
-          </RouterLink>
+          </button>
         </div>
+
+        
       </div>
     </div>
   </div>

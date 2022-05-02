@@ -73,7 +73,7 @@ const actions = {
         console.log(queryPlayersSnapshot.docs);
         queryPlayersSnapshot.docs.forEach((doc) => {
           let p = doc.data();
-          console.log(`${doc.id} => ${doc.data()}`);
+          console.log(`Player: ${doc.id} => ${doc.data()}`);
           p.id = doc.id;
           players.push(p);
         });
