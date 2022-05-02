@@ -122,14 +122,14 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const auth = getAuth();
-  const currentUser = auth.currentUser;
-  console.log('currentUser');
-  console.log(currentUser);
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  console.log('requiresAuth',requiresAuth);
-  console.log('!currentUser',(!currentUser));
-  console.log('to',to);
+  // const auth = getAuth();
+  // const currentUser = auth.currentUser;
+  // console.log('currentUser');
+  // console.log(currentUser);
+  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  // console.log('requiresAuth',requiresAuth);
+  // console.log('!currentUser',(!currentUser));
+  // console.log('to',to);
   
   //if (requiresAuth && !currentUser) next('login');
   // else if (!requiresAuth && currentUser) next('dashboard');

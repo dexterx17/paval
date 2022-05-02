@@ -1,7 +1,7 @@
 <script setup>
 import HeroBanner from "@/components/HeroBanner.vue";
 import GamingWorld from "@/components/GamingWorld.vue";
-import TorneosRegularesHome from "@/components/TorneosRegularesHome.vue";
+import UltimosTorneos from "@/components/Torneos/UltimosTorneos.vue";
 import CounterUp from "@/components/CounterUp.vue";
 import Footer from "@/components/Footer.vue";
 
@@ -12,7 +12,7 @@ import Footer from "@/components/Footer.vue";
 
   <GamingWorld />
 
-  <TorneosRegularesHome />
+  <UltimosTorneos />
 
   <CounterUp />
 
