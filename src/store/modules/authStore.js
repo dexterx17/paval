@@ -36,7 +36,7 @@ const state = {
       const auth = getAuth();
       console.log('authAction');
       onAuthStateChanged(auth, user => {
-        console.log('onAuthStateChanged',user);
+        //console.log('onAuthStateChanged',user);
         if(user){
           dispatch('loadProfile',user.uid).then((player)=>{
             console.log('loadPlayerLoggedUser',player);

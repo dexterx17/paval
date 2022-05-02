@@ -34,7 +34,7 @@
         <div class>
 
             <div
-                v-for="(match, imageIndex) in items"
+                v-for="(match, imageIndex) in matchesData"
                 :key="imageIndex"
                 class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 mb-7.5 last:mb-0"
             >
@@ -92,21 +92,26 @@
                     </div>
                 </div>
             </div>
-            <li
-                v-for="(match, imageIndex) in dateTime"
+            <!-- <li
+                v-for="(match, imageIndex) in matchesData"
                 :key="imageIndex"
-            >{{ formatDate(match.date) }}</li>
+            >{{ formatDate(match.fecha) }}</li> -->
         </div>
 
         <div
             class="flex justify-center mt-73"
-            v-if="currentPage * maxPerPage < matchesData.length"
+            v-if="showReadMore"
         >
-            <button
-                class="primary-btn"
-                style="background-image:url(/images/others/btn-bg.webp);"
-                @click="loadMore"
-            >Más Torneos</button>
+            <div class="flex flex-col justify-center items-center">
+                <small class="text-center text-primary py-2">
+                    Mostrando {{ totalResults }} torneos...
+                </small>
+                <button
+                    class="primary-btn"
+                    style="background-image:url(/images/others/btn-bg.webp);"
+                    @click="loadMore"
+                >Más Torneos</button>
+            </div>
         </div>
 
         <div
@@ -116,11 +121,11 @@
             <p class="text-primary">
                 No tenemos torneos registrados para esta semana
             </p>
-            <RouterLink
+            <!-- <RouterLink
                 class="primary-btn"
                 style="background-image:url(/images/others/btn-bg.webp);"
                 to="/torneos"
-            >Ver todos los torneos</RouterLink>
+            >Ver todos los torneos</RouterLink> -->
         </div>
 
         
@@ -129,6 +134,7 @@
 </template>
 <script>
 import TitleSection from '@/components/Title/TitleSection.vue'
+import moment from 'moment';
 
 import { computed } from 'vue';
 import { mapActions, useStore } from "vuex";
@@ -140,11 +146,38 @@ export default {
     data() {
         return {
             title: "Torneos",
-            text: "Listado de torneos ordenados cronológicamente"
+            text: "Listado de torneos ordenados cronológicamente",
+            index: null,
+            maxPerPage: 3,
+            showReadMore: true,
+            procesandoShowMore: false
         }
     },
     methods: {
         ...mapActions(["loadTorneos"]),
+        loadMore() {
+            let lastTorneo = this.matchesData[this.matchesData.length-1];
+            console.log('%cTorneosBlocks.vue line:160 lastTorneo', 'color: #007acc;', lastTorneo);
+            let resultados = this.loadTorneos({
+                limit: this.maxPerPage,
+                lastTorneo: lastTorneo
+            });
+            console.log('%cTorneosBlocks.vue line:165 resultados', 'color: #007acc;', resultados);
+            console.log('%cTorneosBlocks.vue line:165 resultados.value', 'color: #007acc;', resultados.value);
+            console.log('%cTorneosBlocks.vue line:165 resultados.length', 'color: #007acc;', resultados.length);
+        },
+        formatDate(date, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+            if (date) {
+                //console.log('formateDate', date, String(date));
+                moment.locale('es');
+                return moment(date, "YYYY-MM-DD hh:mm").format('dddd, Do MMMM YYYY')
+            }
+        },
+    },
+    computed: {
+        totalResults() {
+            return Object.keys(this.matchesData).length
+        },
     },
     setup() {
         const store = useStore();
@@ -158,7 +191,9 @@ export default {
         };
     },
     mounted() {
-        this.loadTorneos();
+        this.loadTorneos({
+            limit: this.maxPerPage
+        });
     },
 }
 </script>

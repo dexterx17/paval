@@ -14,13 +14,16 @@ import {
     arrayRemove,
     orderBy,
     query,
-    increment
+    limit,
+    increment,
+    startAfter
 } from "firebase/firestore";
 
 
 import { getStorage, ref as sRef, deleteObject } from "firebase/storage";
 
 const state = {
+    ultimosTorneos:[],
     torneos: [],
     torneo: null,
     torneosError: null,
@@ -30,48 +33,57 @@ const state = {
 const getters = {
     getTorneos(state) {
         return state.torneos;
+    },
+    getUltimosTorneos(state) {
+        return state.ultimosTorneos;
     }
 };
 
 const actions = {
     async loadTorneos({ commit }, payload) {
         console.log("loadTorneos");
-        //const db = getFirestore();
-        console.log(db);
-        const querySnapshot = await getDocs(collection(db, "torneos"));
+        let q;
+        if(payload.lastTorneo){
+            const docRef = doc(db, "torneos", payload.lastTorneo.id);
+            const docSnap = await getDoc(docRef);
+            q = query(collection(db, "torneos"),
+                      orderBy('fecha', "desc"),
+                      startAfter(docSnap),
+                      limit(payload.limit)
+                    )
+        }else{
+            commit("SET_TORNEOS", []);
+            q = query(collection(db, "torneos"),
+                      orderBy('fecha', "desc"),
+                      limit(payload.limit)
+                    )
+        }
 
-        console.log('querySnapshot');
-        console.log(querySnapshot);
-
+        const querySnapshot = await getDocs(q);
         let torneos = [];
         
         return doSnapShot(querySnapshot);
         
         //commit("SET_TORNEOS_LISTENER", query);
-        
 
         function doSnapShot(querySnapshot) {
-            console.log("doSnapShot");
-            console.log(querySnapshot);
+            console.log("doSnapShotTorneos");
             console.log(querySnapshot.docs);
             querySnapshot.docs.forEach((doc) => {
                 let p = doc.data();
-                console.log(`${doc.id} => ${doc.data()}`);
+                console.log(`Torneo: ${doc.id} => ${doc.data()}`);
                 p.id = doc.id;
                 torneos.push(p);
+                commit("ADD_TORNEO", p);
             });
-            commit("SET_TORNEOS", torneos);
+            //commit("SET_TORNEOS", torneos);
             return torneos;
         }
     },
     async loadLastTorneos({ commit }, payload) {
-        console.log("loadTorneos");
-        //const db = getFirestore();
-        console.log(db);
-        const querySnapshot = await getDocs(collection(db, "torneos"));
+        const q = query(collection(db, "torneos"), orderBy('fecha', "desc"), limit(3))
 
-        console.log('querySnapshot');
-        console.log(querySnapshot);
+        const querySnapshot = await getDocs(q);
 
         let torneos = [];
         
@@ -81,16 +93,15 @@ const actions = {
         
 
         function doSnapShot(querySnapshot) {
-            console.log("doSnapShot");
-            console.log(querySnapshot);
+            console.log("doSnapShotLastTorneos");
             console.log(querySnapshot.docs);
             querySnapshot.docs.forEach((doc) => {
                 let p = doc.data();
-                console.log(`${doc.id} => ${doc.data()}`);
+                console.log(`Torneo: ${doc.id} => ${doc.data()}`);
                 p.id = doc.id;
                 torneos.push(p);
             });
-            commit("SET_TORNEOS", torneos);
+            commit("SET_ULTIMOS_TORNEOS", torneos);
             return torneos;
         }
     },
@@ -349,6 +360,10 @@ const mutations = {
     SET_TORNEOS(state, payload) {
         console.log("setTorneos", payload);
         state.torneos = payload;
+    },
+    SET_ULTIMOS_TORNEOS(state, payload) {
+        console.log("setUltimosTorneos", payload);
+        state.ultimosTorneos = payload;
     },
     SET_TORNEO(state, payload) {
         console.log("setTorneo", payload);
