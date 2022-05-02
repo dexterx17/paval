@@ -127,9 +127,6 @@
                 to="/torneos"
             >Ver todos los torneos</RouterLink> -->
         </div>
-
-        
-
     </div>
 </template>
 <script>

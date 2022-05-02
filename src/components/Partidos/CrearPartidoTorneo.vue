@@ -17,8 +17,10 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         modoJuego: function(modo){
-            //return modo;
-            return this.modosJuego.find(item => item.id == modo).label;
+            if(modo)
+                return this.modosJuego.find(item => item.id == modo).label;
+            else
+                return "";
         },
         submit() {
             this.procesando = true;

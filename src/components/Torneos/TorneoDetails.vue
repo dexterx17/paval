@@ -77,7 +77,7 @@
                 </div>
             </div>
 
-            <div v-if="user">
+            <div v-if="user && torneo.modo_juego && torneo.n_grupos">
                 <ImagenesTorneo v-if="showImagesUploader" :torneo="torneo" @imagen-cargada="imagenCargada" />
             </div>
 

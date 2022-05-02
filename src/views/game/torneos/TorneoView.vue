@@ -16,7 +16,7 @@ import Inscritos from '@/components/Players/Inscritos.vue';
 
 import { useRoute } from 'vue-router'
 
-import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
+import { $vfm, VueFinalModal } from 'vue-final-modal'
 import Popper from "vue3-popper";
 import BloqueResultadoGrupo from "@/components/Partidos/BloqueResultadoGrupo.vue";
 

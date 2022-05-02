@@ -24,18 +24,23 @@
                                     </template>
                                 </Popper>
                             </div>
-                            <img
-                                class="rounded-2xl"
-                                :src="team.avatar ?? '/images/blog/blog3.webp'"
-                                :alt="team.nombre"
-                            />
-                            <h3
-                                class="absolute w-full text-center text-white bg-gray-800 bg-opacity-90 bottom-0"
-                            >
+                            <Popper hover>
                                 <RouterLink :to="{ name: 'player', params:{ id: team.id } }">
-                                    {{ team.nombre }}
+                                    <img
+                                        class="rounded-2xl"
+                                        :src="team.avatar ?? '/images/blog/blog3.webp'"
+                                        :alt="team.nombre"
+                                    />
+                                    <h3
+                                        class="absolute w-full text-center text-white bg-gray-800 bg-opacity-90 bottom-0"
+                                    >
+                                            {{ team.nombre }}
+                                    </h3>
                                 </RouterLink>
-                            </h3>
+                                <template #content>
+                                    <div>Ir a perfil</div>
+                                </template>
+                            </Popper>
                         </div>
                     </div>
                 </swiper-slide>
