@@ -35,7 +35,7 @@ export default {
     <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 
     <!-- <TorneosBlocks /> -->
-    <TorneosRegularesHome />
+    <TorneosBlocks />
 
     <TorneoForm :paddingTop="paddingTop" />
 

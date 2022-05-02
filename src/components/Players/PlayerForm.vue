@@ -30,6 +30,7 @@ export default {
     const store = useStore();
     const playerData = ref(null);
     const showForm = ref(false);
+    const isProcessing = ref(false);
 
     console.log("store");
     console.log(store);
@@ -67,8 +68,10 @@ export default {
     const submit = () => {
       console.log("updateProfile");
       console.log(playerData.value);
+      isProcessing.value = true;
       store.dispatch("updateProfile", playerData.value)
         .then((response) => {
+          isProcessing.value = false;
           console.log("response");
           console.log(response);
           showForm.value = false;
@@ -210,7 +213,14 @@ export default {
             placeholder="Ej: Ambato"
             v-model="playerData.ciudad"
             required
+            list="ciudades"
           />
+          <datalist id="ciudades">
+              <option value="Ambato"/>
+              <option value="Quito"/>
+              <option value="Baños"/>
+              <option value="Puyo"/>
+          </datalist>
         </div>
       </div>
       <div class="flex flex-wrap -mx-3 mb-6">
@@ -228,7 +238,10 @@ export default {
           />
         </div>
       </div>
-      <div class="flex justify-around">
+      <div v-if="procesandoForm" class="flex justify-center w-full">
+          <h2 class="text-primary">Procesando...</h2>
+      </div>
+      <div v-else class="flex justify-around">
         <button
           style="background-image:url(/images/others/btn-signup.webp);"
           class="signup-btn transition-all"

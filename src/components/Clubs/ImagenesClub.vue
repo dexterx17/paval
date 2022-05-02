@@ -4,7 +4,8 @@ import { mapGetters, mapActions, useStore } from "vuex";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import ImagesUploader from "@/components/ImagesUploader.vue";
-
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 export default {
     components: {
@@ -33,6 +34,11 @@ export default {
                             .then((response) => {
                                 if (response.id) {
                                     console.log('ok', response);
+                                    Swal.fire(
+                                        'Imagen cargada!',
+                                        'La imagen ha sido subida correctamente.',
+                                        'success'
+                                    )
                                     emit('imagen-cargada', response);
                                 } else {
                                     alert('error creando club');

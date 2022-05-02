@@ -31,31 +31,32 @@ export default {
     components: {
         CountTo
     },
+    props: ['player'],
     data() {
         return {
             commentsVisible: true,
             counter: [
                 {
                     startVal: 0,
-                    endVal: 8697,
+                    endVal: this.player.total_torneos,
                     className: "text-yellow",
                     text: "Torneos"
                 },
                 {
                     startVal: 0,
-                    endVal: 480,
+                    endVal: this.player.total_partidos,
                     className: "text-bright",
                     text: "Partidos"
                 },
                 {
                     startVal: 0,
-                    endVal: 5367,
+                    endVal: this.player.total_victorias,
                     className: "text-punch",
                     text: "Victorias"
                 },
                 {
                     startVal: 0,
-                    endVal: 249,
+                    endVal: this.player.total_derrotas,
                     className: "text-primary",
                     text: "Derrotas"
                 }

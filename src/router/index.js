@@ -93,6 +93,14 @@ const router = createRouter({
       component: () => import("../views/game/players/PlayersList.vue"),
     },
     {
+      path: "/player/:id",
+      name: "player",
+      meta: {
+        requiresAuth: true,
+      },
+      component: () => import("../views/game/players/PublicProfile.vue"),
+    },
+    {
       path: "/profile",
       name: "profile",
       meta: {

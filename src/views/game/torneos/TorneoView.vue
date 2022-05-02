@@ -18,23 +18,25 @@ import { useRoute } from 'vue-router'
 
 import { $vfm, VueFinalModal, ModalsContainer } from 'vue-final-modal'
 import Popper from "vue3-popper";
+import BloqueResultadoGrupo from "@/components/Partidos/BloqueResultadoGrupo.vue";
 
 
 export default {
     components: {
-        Breadcrumb,
-        TorneoDetails,
-        Footer,
-        VueFinalModal,
-        ModalsContainer,
-        CountTo,
-        InscribirseTorneo,
-        InscribirAmigos,
-        ConfigurarTorneo,
-        CrearPartidoTorneo,
-        Inscritos,
-        Popper
-    },
+    Breadcrumb,
+    TorneoDetails,
+    Footer,
+    VueFinalModal,
+   // ModalsContainer,
+    CountTo,
+    InscribirseTorneo,
+    InscribirAmigos,
+    ConfigurarTorneo,
+    CrearPartidoTorneo,
+    Inscritos,
+    Popper,
+    BloqueResultadoGrupo
+},
     data() {
         return {
             BreadcrumbTitle: "Detalles Torneo",
@@ -50,7 +52,7 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         totalPartidosGrupo(jugadores){
-            return (jugadores.length * jugadores.length)/2;
+            return ((jugadores.length-1) * (jugadores.length-1))-1;
         }
     },
     computed: {
@@ -117,6 +119,11 @@ export default {
             showModalCrearPartido.value = true;
         }
 
+        const handleNewImageUploaded = () => {
+            loadTorneoData();
+        }
+
+
         const hideModalInscripcion = () => {
             showModalInscribirAmigos.value = false;
             loadTorneoData();
@@ -134,7 +141,7 @@ export default {
              console.log('vfm.openedModals');
              console.log($vfm.modals);
 
-            //loadGruposData();
+            loadGruposData();
         }
 
         const cerrarTodos = () => {
@@ -177,7 +184,9 @@ export default {
             hideModalRegistrarPartido,
             cerrarTodos,
             resultadosPartido,
-            crearPartido
+            crearPartido,
+
+            handleNewImageUploaded
         }
     }
 }
@@ -297,7 +306,7 @@ export default {
     </div>
     <!-- Match Counterup End -->
 
-    <TorneoDetails v-if="torneoData" :torneo="torneoData" />
+    <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
     <div class="container">
         <div class="my-16" v-for="grupo in gruposTorneo" :key="grupo.id">
@@ -343,119 +352,15 @@ export default {
                                 </td>
                                 <td v-for="play in grupo.jugadores" :key="play.id" class="text-center border">
                                     <div v-if="play.id == ply.id" class="flex flex-col">
-                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/santana.png"
+                                        <img class="w-8 h-8 rounded-xl mx-auto" :src="torneoData.club.logo ? torneoData.club.logo : '/images/others/santana.png'"
                                             alt="Ping Pong Ranking" />
                                     </div>
                                     <div v-else>
                                         <div v-if="grupo.jugados.includes(ply.id + '_' + play.id)">
-                                            <Popper hover>
-                                                <RouterLink
-                                                    class="hover:text-primary"
-                                                    :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(ply.id + '_' + play.id)] } }">   
-                                                    <div v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
-                                                        <div class="flex flex-col" v-if="resultadosPartido(grupo, ply.id + '_' + play.id)">
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
-                                                            </span>
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div v-else>
-                                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
-                                                        alt="Ir a Partido" />
-                                                    </div>
-                                                </RouterLink>
-                                                <template #content>
-                                                    <div class="p-0">
-                                                        <h2 class="uppercase">Resultados</h2>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-t-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="play.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="play.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ play.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[1] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-b-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ ply.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, ply.id + '_' + play.id).split(':')[0] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                            </Popper>
+                                            <BloqueResultadoGrupo :principal="ply" :player-a="ply" :player-b="play" :resultado="resultadosPartido(grupo, ply.id + '_' + play.id)" :grupo="grupo" />
                                         </div>
                                         <div v-else-if="grupo.jugados.includes(play.id + '_' + ply.id)">
-                                            <Popper hover>
-                                                <RouterLink
-                                                    class="hover:text-primary"
-                                                    :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(play.id + '_' + ply.id)] } }">   
-                                                    <div v-if="resultadosPartido(grupo, play.id + '_' + ply.id)">
-                                                        <div class="flex flex-col" v-if="resultadosPartido(grupo, play.id + '_' + ply.id)">
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[0] }}
-                                                            </span>
-                                                            <span>
-                                                                {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[1] }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div v-else>
-                                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
-                                                        alt="Ir a Partido" />
-                                                    </div>
-                                                </RouterLink>
-                                                <template #content>
-                                                    <div class="p-0">
-                                                        <h2 class="uppercase">Resultados</h2>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-t-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="play.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="play.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ play.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[0] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex justify-between items-stretch items-center border rounded-b-md">
-                                                            <div class="flex items-center align-middle p-1">
-                                                                <img class="w-8 h-8 rounded-xl mx-auto"
-                                                                    :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre" />
-                                                                <div class="text-center pl-2">
-                                                                    <span class="text-center">{{ ply.nombre }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="border border-primary flex items-center p-1 font-bold">
-                                                                <span>
-                                                                    {{ resultadosPartido(grupo, play.id + '_' + ply.id).split(':')[1] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                            </Popper>
+                                            <BloqueResultadoGrupo :principal="ply" :player-a="play" :player-b="ply"  :resultado="resultadosPartido(grupo, play.id + '_' + ply.id)" :grupo="grupo" />
                                         </div>
                                         <div v-else class="p-1">
                                             <Popper hover>
@@ -463,10 +368,10 @@ export default {
                                                     type="button" 
                                                     >
                                                     <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn.webp"
-                                                        alt="Registrar Partido" />
+                                                        alt="Registrar Resultados" />
                                                 </button>
                                                 <template #content>
-                                                    Registrar Partido
+                                                    Registrar Resultados
                                                 </template>
                                             </Popper>
                                         </div>
@@ -479,20 +384,20 @@ export default {
                         </tbody>
                     </table>
 
-                    <vue-final-modal class="bg-transparent" name="modal-crear-partido" classes="modal-container "
-                        content-class="modal-content" v-model="showModalCrearPartido" 
-                        @closed="cerrarTodos"
-                        :esc-to-close="true"
-                        :adaptive="true">
-                        <CrearPartidoTorneo v-if="torneoData" :partido="newPartidoData"
-                            @hide-modal="hideModalRegistrarPartido" />
-                        <button
-                            class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
-                            @click="hideModalRegistrarPartido"></button>
-                    </vue-final-modal>
                 </section>
             </div>
         </div>
+        <vue-final-modal class="bg-transparent" name="modal-crear-partido" classes="modal-container "
+            content-class="modal-content" v-model="showModalCrearPartido" 
+            @closed="cerrarTodos"
+            :esc-to-close="true"
+            :adaptive="true">
+            <CrearPartidoTorneo v-if="torneoData" :partido="newPartidoData"
+                @hide-modal="hideModalRegistrarPartido" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="hideModalRegistrarPartido"></button>
+        </vue-final-modal>
     </div>
 
     <div class="container" v-if="torneoData">

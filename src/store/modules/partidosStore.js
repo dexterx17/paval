@@ -168,10 +168,10 @@ const actions = {
                 console.log('Puntos',puntos_players);
                 console.log('Sets',sets_players);
                 
-                puntos_players = puntos_players.sort().reverse();
+                puntos_players = puntos_players.sort((a,b) => a-b).reverse();
                 console.log('Puntos Ordenados',puntos_players);
                 
-                sets_players = sets_players.sort().reverse();
+                sets_players = sets_players.sort((a,b) => a-b).reverse();
                 console.log('Sets Ordenados',sets_players);
 
                 let players_posiciones = jugadores.map(j=>{
@@ -179,12 +179,16 @@ const actions = {
 
                     //posicion con puntos
                     let posicion = puntos_players.indexOf(j.puntos);
-                    
+                    //count de puntos en array de puntajes
                     let puntos_iguales = puntos_players.reduce((a, v) => (v === j.puntos ? a + 1 : a), 0);
                     console.log('puntos_iguales: ',puntos_iguales);
                     //si hay otro usuario con puntos iguales
                     if(puntos_iguales > 1){
                         //excluir sets de jugadores con mayor posicion
+
+                        let sets_sin_jugadores_superiores = sets_players.filter(i => i > j.sets);
+                        console.log('sets_sin_jugadores_superiores: ',sets_sin_jugadores_superiores);
+
                         //posicion con sets
                         let posicion_set = sets_players.indexOf(j.sets);
                         //j.posicion = (posicion==-1 ? 0 : posicion )+ (posicion_set+1);

@@ -2,73 +2,41 @@
 import { mapGetters, mapActions } from "vuex";
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
+import { useRoute } from 'vue-router';
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import Avatar from "@/components/Avatar.vue";
 import Footer from "@/components/Footer.vue";
-import PlayerForm from "@/components/Players/PlayerForm.vue";
 import PlayerCounters from "@/components/Players/PlayerCounters.vue";
 
 
 export default {
   components: {
     Breadcrumb,
-    Avatar,
     Footer,
     PlayerCounters,
-    PlayerForm
-  },
-  methods: {
-    ...mapActions(["loadProfile","signOutAction"]),
-    logout() {
-        this.signOutAction();
-        this.$router.replace({ name: "home" });
-    }
   },
   data() {
     return {
-      BreadcrumbTitle: "Mi Perfil",
+      BreadcrumbTitle: "Perfil",
       BreadcrumbSubTitle: "Perfil",
     };
   },
   setup() {
     const store = useStore();
+    const route = useRoute();
     const playerData = ref(null);
 
-    const player = computed(() => store.getters["getUser"]);
-    console.log('player', player.value)
-
-    const loadInfoPlayer = (playerInfo) => {
-      console.log('loadInfoPlayer', playerInfo);
-      store.dispatch("loadProfile", playerInfo.uid).then((value) => {
-        console.log("profile", value);
+    const loadInfoPlayer = (playerId) => {
+      store.dispatch("loadProfile", playerId).then((value) => {
+        console.log("publicProfile", value);
         playerData.value = value;
-        playerData.value.uid = playerInfo.uid;
       });
-
     }
 
-    if (player.value) {
-      loadInfoPlayer(player.value);
-    }
-
-    watch(
-      player, (curr, old) => {
-        console.log('ahora si player')
-        console.log(curr, old)
-
-        console.log(curr);
-        if(curr){
-          console.log(curr.uid);
-          loadInfoPlayer(curr);
-        }
-      }
-    )
-
+    loadInfoPlayer(route.params.id);
 
     return {
       playerData,
-      player
     };
   },
 };
@@ -140,10 +108,6 @@ export default {
           <h5
             class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16"
           >Perfil de Jugador</h5>
-
-          <div v-if="!playerData.sexo">
-            <h3 class="text-lg italic">Bienvenid@</h3>
-          </div>
           <h2
             class="text-white font-exo font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
           >{{ playerData.nombre }}</h2>
@@ -152,11 +116,8 @@ export default {
         <div class="about_desc mb-10" v-if="playerData.sexo">
           <p class="lg:text-xl lg:leading-8">{{ playerData.about }}</p>
         </div>
-        <div v-else>
-          <p>Por favor actualiza tus datos de perfil</p>
-        </div>
 
-        <!-- <div class="about_btn">
+        <div class="about_btn">
           <RouterLink
             to="/contactos"
             class="group primary-btn opacity-100 transition-all"
@@ -169,15 +130,12 @@ export default {
               class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
             />
           </RouterLink>
-        </div>-->
-
-        <PlayerForm v-if="playerData" :player="playerData" />
-        <button class="hover:text-primary underline italic" @click="logout">Cerrar sesión</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <PlayerCounters />
+  <PlayerCounters  v-if="playerData" :player="playerData" />
 
   <Footer />
 </template>

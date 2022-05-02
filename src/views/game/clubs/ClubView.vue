@@ -76,7 +76,9 @@ export default {
         <SerieClubPlayers />
     </div>
 
-    <SerieForm v-if="clubData.total_series < 3" :paddingTop="paddingTop" />
+    <div v-if="clubData">
+        <SerieForm v-if="clubData.total_series < 3" :paddingTop="paddingTop" />
+    </div>
 
     <Footer />
 </template>
