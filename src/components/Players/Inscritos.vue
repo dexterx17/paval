@@ -31,7 +31,11 @@
                             />
                             <h3
                                 class="absolute w-full text-center text-white bg-gray-800 bg-opacity-90 bottom-0"
-                            >{{ team.nombre }}</h3>
+                            >
+                                <RouterLink :to="{ name: 'player', params:{ id: team.id } }">
+                                    {{ team.nombre }}
+                                </RouterLink>
+                            </h3>
                         </div>
                     </div>
                 </swiper-slide>

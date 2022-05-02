@@ -76,11 +76,11 @@
                 class="flex justify-center mt-73"
                 v-if="currentPage * maxPerPage < matchesData.length"
             >
-                <button
-                    class="primary-btn"
-                    style="background-image:url(/images/others/btn-bg.webp);"
-                    @click="loadMore"
-                >Más Torneos</button>
+                <RouterLink
+                    class="primary-btn w-auto px-3"
+                    style="background-image:url(/images/others/btn-bg.webp);  background-size: 275px 75px;"
+                    to="/torneos"
+                >Ver todos los torneos</RouterLink>
             </div>
 
             <div

@@ -27,7 +27,7 @@ export default {
     TorneoDetails,
     Footer,
     VueFinalModal,
-    ModalsContainer,
+   // ModalsContainer,
     CountTo,
     InscribirseTorneo,
     InscribirAmigos,
@@ -52,7 +52,7 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         totalPartidosGrupo(jugadores){
-            return (jugadores.length * jugadores.length)/2;
+            return ((jugadores.length-1) * (jugadores.length-1))-1;
         }
     },
     computed: {
@@ -141,7 +141,7 @@ export default {
              console.log('vfm.openedModals');
              console.log($vfm.modals);
 
-            //loadGruposData();
+            loadGruposData();
         }
 
         const cerrarTodos = () => {
@@ -352,23 +352,15 @@ export default {
                                 </td>
                                 <td v-for="play in grupo.jugadores" :key="play.id" class="text-center border">
                                     <div v-if="play.id == ply.id" class="flex flex-col">
-                                        <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/santana.png"
+                                        <img class="w-8 h-8 rounded-xl mx-auto" :src="torneoData.club.logo ? torneoData.club.logo : '/images/others/santana.png'"
                                             alt="Ping Pong Ranking" />
                                     </div>
                                     <div v-else>
                                         <div v-if="grupo.jugados.includes(ply.id + '_' + play.id)">
-                                            <!-- {{ply}}
-                                            <hr>
-                                            {{play}}
-                                            <hr> -->
-                                            <BloqueResultadoGrupo :player-a="ply" :player-b="play" :grupo="grupo" />
-                                            
+                                            <BloqueResultadoGrupo :principal="ply" :player-a="ply" :player-b="play" :resultado="resultadosPartido(grupo, ply.id + '_' + play.id)" :grupo="grupo" />
                                         </div>
                                         <div v-else-if="grupo.jugados.includes(play.id + '_' + ply.id)">
-                                            <!-- {{ply}}
-                                            <hr>
-                                            {{play}} -->
-                                            <BloqueResultadoGrupo :player-a="play" :player-b="ply" :grupo="grupo" />
+                                            <BloqueResultadoGrupo :principal="ply" :player-a="play" :player-b="ply"  :resultado="resultadosPartido(grupo, play.id + '_' + ply.id)" :grupo="grupo" />
                                         </div>
                                         <div v-else class="p-1">
                                             <Popper hover>
@@ -376,10 +368,10 @@ export default {
                                                     type="button" 
                                                     >
                                                     <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn.webp"
-                                                        alt="Registrar Partido" />
+                                                        alt="Registrar Resultados" />
                                                 </button>
                                                 <template #content>
-                                                    Registrar Partido
+                                                    Registrar Resultados
                                                 </template>
                                             </Popper>
                                         </div>
@@ -392,20 +384,20 @@ export default {
                         </tbody>
                     </table>
 
-                    <vue-final-modal class="bg-transparent" name="modal-crear-partido" classes="modal-container "
-                        content-class="modal-content" v-model="showModalCrearPartido" 
-                        @closed="cerrarTodos"
-                        :esc-to-close="true"
-                        :adaptive="true">
-                        <CrearPartidoTorneo v-if="torneoData" :partido="newPartidoData"
-                            @hide-modal="hideModalRegistrarPartido" />
-                        <button
-                            class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
-                            @click="hideModalRegistrarPartido"></button>
-                    </vue-final-modal>
                 </section>
             </div>
         </div>
+        <vue-final-modal class="bg-transparent" name="modal-crear-partido" classes="modal-container "
+            content-class="modal-content" v-model="showModalCrearPartido" 
+            @closed="cerrarTodos"
+            :esc-to-close="true"
+            :adaptive="true">
+            <CrearPartidoTorneo v-if="torneoData" :partido="newPartidoData"
+                @hide-modal="hideModalRegistrarPartido" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="hideModalRegistrarPartido"></button>
+        </vue-final-modal>
     </div>
 
     <div class="container" v-if="torneoData">

@@ -10,64 +10,23 @@ export default {
             partidoKey: this.playerA.id + '_' + this.playerB.id
         }
     },
-    props:['playerA','playerB','grupo'],
-    methods:{
-        resultadosPartido:  (grupo, partidoKey) => {
-            let index = grupo.jugados.indexOf(partidoKey);
-
-            let partidoId = grupo.partidos[index];
-
-            return grupo.resultados[partidoId] ?? null;
-        },
-        esGanador : (grupo, partidoKey, playerA, playerB) => {
-            let index = grupo.jugados.indexOf(partidoKey);
-
-            let partidoId = grupo.partidos[index];
-
-            let resultado =  grupo.resultados[partidoId] ?? null;
-
-            console.log('resultado:::: ',resultado);
-            
-
-            let puntosA = parseInt(resultado.split(':')[0]);
-            let puntosB = parseInt(resultado.split(':')[1]);
-            
-            console.log('puntosA:::: ',puntosA);
-            console.log('puntosB:::: ',puntosB);
-            
-            console.log('playerA:::: ',playerA);
-
-            return puntosA > puntosB ? playerA : playerB;
-        },
-        puntosA : (grupo, partidoKey) => {
-            let index = grupo.jugados.indexOf(partidoKey);
-
-            let partidoId = grupo.partidos[index];
-
-            let resultado =  grupo.resultados[partidoId] ?? null;
-
-            
-
-            let puntosA = parseInt(resultado.split(':')[0]);
-            
+    props:['playerA','playerB','grupo','resultado','principal'],
+    computed:{
+        puntosA ()  {      
+            let puntosA = parseInt(this.resultado.split(':')[0]);
             return puntosA;
-
         },
-        puntosB : (grupo, partidoKey) => {
-            let index = grupo.jugados.indexOf(partidoKey);
-
-            let partidoId = grupo.partidos[index];
-
-            let resultado =  grupo.resultados[partidoId] ?? null;
-
-            
-
-            let puntosB = parseInt(resultado.split(':')[1]);
-            
+        puntosB () {
+            let puntosB = parseInt(this.resultado.split(':')[1]);
             return puntosB;
-
         },
-    }
+        ganador () {
+            return this.puntosA > this.puntosB ? this.playerA : this.playerB;
+        },
+        perdedor () {
+            return this.puntosB > this.puntosA ? this.playerB : this.playerA;
+        }
+    },
 }
 </script>
 <template>
@@ -75,18 +34,14 @@ export default {
         <RouterLink
             class="hover:text-primary"
             :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(partidoKey)] } }">   
-            <div v-if="resultadosPartido(grupo, partidoKey)">
-                <div class="flex flex-col" v-if="resultadosPartido(grupo, partidoKey)">
-
-                    <!-- {{  esGanador(grupo, partidoKey, playerA, playerB) }} 
-                    <hr>
-                    {{playerA}}
-                    <hr> -->
-                    <span>
-                        {{  esGanador(grupo, partidoKey, playerA, playerB).id == playerA ?  puntosA(grupo, partidoKey) :  puntosB(grupo, partidoKey) }}
+            <div v-if="resultado">
+                <div class="flex flex-col" v-if="resultado">
+                    
+                    <span :class="ganador.id == principal.id ? 'order-1' : 'order-2'">
+                        {{ ganador.id == playerA.id ? puntosA : puntosB }}
                     </span>
-                    <span>
-                        {{  esGanador(grupo, partidoKey, playerA, playerB).id == playerA ?  puntosB(grupo, partidoKey) : puntosA(grupo, partidoKey) }}
+                    <span :class="perdedor.id == principal.id ? 'order-2' : 'order-1'">
+                       {{ ganador.id == playerA.id ? puntosB : puntosA }}
                     </span>
                 </div>
             </div>
@@ -96,22 +51,8 @@ export default {
             </div>
         </RouterLink>
         <template #content>
-            <div class="p-0">
-                <h2 class="uppercase">Resultados</h2>
-                <div class="flex justify-between items-stretch items-center border rounded-t-md">
-                    <div class="flex items-center align-middle p-1">
-                        <img class="w-8 h-8 rounded-xl mx-auto"
-                            :src="playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="playerB.nombre" />
-                        <div class="text-center pl-2">
-                            <span class="text-center">{{ playerB.nombre }}</span>
-                        </div>
-                    </div>
-                    <div class="border border-primary flex items-center p-1 font-bold">
-                        <span>
-                            {{ resultadosPartido(grupo, partidoKey).split(':')[1] }}
-                        </span>
-                    </div>
-                </div>
+            <h2 class="uppercase">Resultados</h2>
+            <div class="p-0 flex flex-col">
                 <div class="flex justify-between items-stretch items-center border rounded-b-md">
                     <div class="flex items-center align-middle p-1">
                         <img class="w-8 h-8 rounded-xl mx-auto"
@@ -122,7 +63,21 @@ export default {
                     </div>
                     <div class="border border-primary flex items-center p-1 font-bold">
                         <span>
-                            {{ resultadosPartido(grupo, partidoKey).split(':')[0] }}
+                            {{ puntosA }}
+                        </span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-stretch items-center border rounded-t-md">
+                    <div class="flex items-center align-middle p-1">
+                        <img class="w-8 h-8 rounded-xl mx-auto"
+                            :src="playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="playerB.nombre" />
+                        <div class="text-center pl-2">
+                            <span class="text-center">{{ playerB.nombre }}</span>
+                        </div>
+                    </div>
+                    <div class="border border-primary flex items-center p-1 font-bold">
+                        <span>
+                            {{ puntosB }}
                         </span>
                     </div>
                 </div>

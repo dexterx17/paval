@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-<!-- 
+
         <div class>
 
             <div
@@ -121,7 +121,7 @@
                 style="background-image:url(/images/others/btn-bg.webp);"
                 to="/torneos"
             >Ver todos los torneos</RouterLink>
-        </div> -->
+        </div>
 
         
 
@@ -149,12 +149,12 @@ export default {
     setup() {
         const store = useStore();
 
-        let torneosData = computed(function () {
+        let matchesData = computed(function () {
             return store.state.torneosStore.torneos;
         });
 
         return {
-            torneosData
+            matchesData
         };
     },
     mounted() {
