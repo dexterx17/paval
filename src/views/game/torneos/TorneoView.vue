@@ -200,9 +200,16 @@ export default {
         <div class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 max-w-lg mx-auto">
             <div class="grid grid-cols-1 items-center">
                 <div class="flex justify-center items-center w-full px-20 sm:px-0">
-                    <img class="lg:mr-9 mr-5 w-16 h-16 rounded-lg"
-                        :src="torneoData.club ? torneoData.club.logo : '/images/others/upcoming-game-thumb3.webp'"
-                        alt="Club" />
+                    <Popper hover>
+                        <img class="lg:mr-9 mr-5 w-16 h-16 rounded-lg"
+                            :src="torneoData.club ? torneoData.club.logo : '/images/others/upcoming-game-thumb3.webp'"
+                            alt="Club" />
+                        <template #content>
+                            <RouterLink :to="`/club/${torneoData.club.id}`">
+                                Ver página de club
+                            </RouterLink>
+                        </template>
+                    </Popper>
                     <!-- <img class="lg:mr-9 mr-5" :src="torneoData.teamVs" alt="Feature Icon" /> -->
                     <img class="w-16 h-16" :src="torneoData.serie ? torneoData.serie.logo : '/images/others/seriei.png'"
                         alt="Serie" />

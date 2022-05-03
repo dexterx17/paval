@@ -93,6 +93,22 @@
                     />
                 </div>
             </div>
+
+            <div class="flex flex-wrap -mx-3 mb-2">
+                <div class="w-full px-3 mb-2 md:mb-0">
+                    <label
+                        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                        for="grid-nombre-serie"
+                    >Puntajes por posición en esta categoría</label>
+                    <input
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                        id="grid-nombre-serie"
+                        type="text"
+                        placeholder="Ej: 200,180,160,140"
+                        v-model="serieData.puntajes"
+                    />
+                </div>
+            </div>
             <div v-if="procesandoForm" class="flex justify-center w-full">
                 <h2 class="text-primary">Procesando...</h2>
             </div>
@@ -150,6 +166,7 @@ export default {
             max_integrantes: null,
             min_integrantes: null,
             relevancia: null,
+            puntajes: null,
             jugadores:[]
         };
 

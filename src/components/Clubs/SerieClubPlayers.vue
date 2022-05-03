@@ -2,8 +2,37 @@
     <!-- Team Number Section Start -->
     <div class="my-8">
         <div class="team-one mt-8" v-for="serie in seriesData" :key="serie.id">
-            <span class="text-primary text-lg uppercase font-semibold mb-4 block">{{ serie.max_integrantes }} Jugadores</span>
-            <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Serie {{ serie.nombre }}</h2>
+            <span class="text-primary text-lg uppercase font-semibold mb-4 flex justify-between">
+                <span>
+                    {{ serie.max_integrantes }} Jugadores
+                </span>
+                <small class="text-xs italic">
+                    Puntos obtenidos por torneo
+                </small>
+            </span>
+            <h2 class="font-bold uppercase text-xl md:text-4xl mb-8 flex justify-between">
+                <span>
+                    Serie {{ serie.nombre }}
+                </span>
+                <table class="text-xs ">
+                    <thead>
+                        <tr>
+                            <th class="border border-primary px-1">Posición</th>
+                            <th v-for="puntaje, index in serie.puntajes" :key="index" class="border border-primary px-1">{{ (index+1) }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="border border-primary px-1">
+                                Puntos
+                            </th>
+                            <td  v-for="puntaje, index in serie.puntajes" :key="index" class="border border-primary px-1 text-center">
+                                {{ puntaje }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </h2>
             <swiper class="swiper" :options="swiperOption">
                 <swiper-slide v-for="(team, index) in teamplayers" :key="index">
                     <div class="rounded-50">
@@ -104,6 +133,10 @@ export default {
                 console.log('gruposClub');
                 console.log(grupos);
                 seriesData.value = grupos;
+                seriesData.value = seriesData.value.map(g => {
+                    g.puntajes = g.puntajes.split(',')
+                    return g;
+                })
             });
         };
 
