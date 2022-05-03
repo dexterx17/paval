@@ -2,7 +2,7 @@
     <div class="flex flex-col mr-12 xl:mr-100">
         <!-- Footer Logo Start -->
         <RouterLink to="/" class="mb-10">
-            <img src="/images/logo.webp" alt="Tenis de Mesa Rank" />
+            <img src="/images/logo.png" alt="Tenis de Mesa Rank" />
         </RouterLink>
         <!-- Footer Logo End -->
 

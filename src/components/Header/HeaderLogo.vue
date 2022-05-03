@@ -4,7 +4,7 @@ import { RouterLink } from "vue-router";
 <template>
     <!-- Header Logo Start -->
     <RouterLink to="/">
-        <img src="/images/logo.webp" alt="Header Logo" />
+        <img src="/images/logo.png" alt="Header Logo" />
     </RouterLink>
     <!-- Header Logo End -->
 </template>
