@@ -12,7 +12,8 @@ module.exports = {
                 'bright': '#1de3eb',
                 'punch': '#df4c21',
                 'gray-100': '#f3f3f3',
-                'gray-500': '#aaa6b9'
+                'gray-500': '#aaa6b9',
+                'rojo': '#b81e20'
             },
             borderColor: theme => ({
                 'light-blue-500': '#281e4d',
@@ -29,7 +30,8 @@ module.exports = {
                '50': '3.125rem'
             },
             backgroundImage: {
-                'nav-shape': "url('/images/others/menu_shape.webp')",
+                //'nav-shape': "url('/images/others/menu_shape.webp')",
+                'nav-shape': "url('/images/others/menu_shape_red.png')",
                 'arrow-shape': "url('/images/icon/navigation-bg1.webp')",
                 'arrow-hover-shape': "url('/images/icon/navigation-bg2.webp')",
                 'team-shape': "url('/images/others/tam-text-shape.webp')",
@@ -79,7 +81,8 @@ module.exports = {
             colors: {
                 primary: '#b154f0',
                 warning: '#ffa700',
-                'gray-800': '#140e38',
+                'gray-800': '#fefefe',
+                'dark-gray': '#262626',
                 'secondary-80': '#281d59',
                 'secondary-100': '#09002a',
                 'yellow': '#ffb300',

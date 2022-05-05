@@ -3,8 +3,8 @@
     <!-- Team Number Section Start -->
     <div class="my-16">
         <div class="team-one">
-            <span class="text-primary text-lg uppercase font-semibold mb-4 block">Team - 01</span>
-            <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Jugadores Inscritos</h2>
+            <span class="text-primary text-lg uppercase font-semibold mb-4 block">{{ jugadoresInscritos.length }} inscritos</span>
+            <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Jugadores Torneo</h2>
             <swiper class="swiper"
                 :modules="swiperOption.modules"
                 :pagination="{ clickable: true }"
@@ -15,16 +15,17 @@
                         <div class>
                             <div v-if="showDeleteButton(team.id)" class="text-sm absolute p-1 right-0 top-0 bg-red-500 rounded-tr-lg">
                                 <Popper
+                                    placement="top"
                                     hover>
                                     <button @click="salirDeTorneo(team.id)" >
                                         X
                                     </button>
-                                    <template #content>
+                                    <template #content class="z-99">
                                         <div>Retirar inscripción</div>
                                     </template>
                                 </Popper>
                             </div>
-                            <Popper hover>
+                            
                                 <RouterLink :to="{ name: 'player', params:{ id: team.id } }">
                                     <img
                                         class="rounded-2xl"
@@ -32,15 +33,11 @@
                                         :alt="team.nombre"
                                     />
                                     <h3
-                                        class="absolute w-full text-center text-white bg-gray-800 bg-opacity-90 bottom-0"
+                                        class="absolute w-full text-center text-dark-gray bg-gray-800 bg-opacity-90 bottom-0"
                                     >
                                             {{ team.nombre }}
                                     </h3>
                                 </RouterLink>
-                                <template #content>
-                                    <div>Ir a perfil</div>
-                                </template>
-                            </Popper>
                         </div>
                     </div>
                 </swiper-slide>

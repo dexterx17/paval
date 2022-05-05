@@ -20,7 +20,7 @@
 @layer utilities {
     @variants responsive {
         .text-shadow {
-            text-shadow: 3px 3px 0px #b154f0;
+            text-shadow: 3px 3px 0px #b81e20;
         }
         .position-absolute {
             position: absolute !important;

@@ -42,6 +42,19 @@ export default {
         console.log(response);
         if (response.user) {
           this.$router.replace({ name: "profile" });
+        }else{
+          switch(response.code){
+						case 'auth/email-already-in-use':
+							this.error = 'El email ya esta registrado!';
+							break;
+						case 'auth/weak-password':
+							this.error = 'La contraseña debe tener al menos 6 caracteres!';
+							break;
+						default:
+							this.error = response.message;
+					}
+          console.log('code: ',response.code);
+					console.log('message: ',response.message);
         }
       });
     }
@@ -151,10 +164,11 @@ export default {
                   </div>
                 </div>
               </div>
+              <div v-if="error" class="text-red-800 text-center font-bold">{{ error }}</div>
               <div class="single-fild col-span-2">
-                <div v-if="procesando">
-                  <h2>Procesando...</h2>
-                </div>
+                <div v-if="procesando" class="flex justify-center w-full">
+								<h2 class="text-primary">Procesando...</h2>
+							</div>
                 <div v-else class="form-btn-wrap flex justify-center w-full mt-4">
                   <button
                     type="submit"

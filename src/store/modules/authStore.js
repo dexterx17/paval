@@ -10,6 +10,8 @@ import {
 
 import { getFirestore,
         doc,
+        addDoc,
+        collection,
         setDoc
     } from "firebase/firestore";
 
@@ -95,7 +97,8 @@ const state = {
     },
     async initPlayer({ commit }, payload) {
       try {
-        setDoc(doc(db, "players",payload.user.uid), {
+        addDoc(collection(db, "players"), {
+          uid: payload.user.uid,
           source: 'web',
           created_at: Date(),
           nombre: payload.nombre ?? payload.user.displayName,
@@ -113,28 +116,6 @@ const state = {
       } catch (e) {
         console.error("Error adding document: ", e);
       }
-    },
-    uploadAvatar({commit, dispatch},payload){
-
-      const storage = getStorage();
-
-      const imgName = `${Date.now()}-${payload.imagen.name}`;
-      const storageRef = ref(storage, "players/" + imgName);
- 
-      uploadBytes(storageRef, payload.imagen).then(function (snapshot) {
-          
-        console.log('payload');
-        console.log(payload);
-        console.log(snapshot);
-
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(snapshot.ref).then((downloadURL) => {
-          console.log('File available at', downloadURL);
-          payload.user.avatar = downloadURL;
-          dispatch('updateProfile',payload.user);
-        });
-
-      });
     },
     async updateProfile({ commit, dispatch }, payload) {
       try {
