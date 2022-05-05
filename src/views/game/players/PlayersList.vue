@@ -26,6 +26,7 @@ export default {
   },
   mounted() {
     this.loadPlayers();
+    
   },
 
   setup() {
@@ -34,6 +35,12 @@ export default {
     let players = computed(function () {
       return store.state.playersStore.players;
     });
+
+    setTimeout(function(){
+      store.dispatch('updateAllPlayers',{
+        players: players.value
+      });
+    },2500);
     // console.log("players");
     // console.log(players.value);
 

@@ -83,12 +83,12 @@ const actions = {
   async loadProfile({ commit }, payload) {
     try {
         console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
-        const docRef = doc(db, "players", payload);
-        const docSnap = await getDoc(docRef);
+        let q = query(collection(db, "players"), where("uid", "==", payload));
+        const docSnap = await getDocs(q);
 
-        if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
-            return docSnap.data();
+        if (docSnap.docs) {
+            console.log("Document data:", docSnap.docs[0].data());
+            return docSnap.docs[0].data();
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
@@ -142,6 +142,24 @@ const actions = {
       console.error("Error adding document: ", e);
     }
   },
+  async updateAllPlayers({ commit }, payload) {
+
+    console.log('payloadlll',payload);
+
+    payload.players.forEach(p => {
+      setDoc(doc(db, "players", p.uid), {
+        total_torneos:0,
+        total_partidos: 0,
+        total_victorias: 0,
+        total_derrotas: 0,
+        ranking: 1000
+      })
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef);
+          return docRef;
+        })
+    })
+  }
 };
 const mutations = {
   SET_PLAYERS_LISTENER(state, listener) {

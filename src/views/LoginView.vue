@@ -70,14 +70,14 @@ export default {
 					<div class="rounded-t mb-0 px-6 py-6">
 						<div class="btn-wrapper text-center">
 							<button
-								class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
+								class="bg-white active:bg-gray-100 text-dark-gray font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
 								type="button"
 								style="transition: all 0.15s ease 0s"
 							>
 								<img alt="Ingresa con Github" class="w-5 mr-1" src="../assets/img/github.svg" />Github
 							</button>
 							<button
-								class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
+								class="bg-white active:bg-gray-100 text-dark-gray font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
 								type="button"
 								style="transition: all 0.15s ease 0s"
 							>

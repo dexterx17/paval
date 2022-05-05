@@ -26,9 +26,15 @@
                 <li>
                     <RouterLink
                         class="text-base font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"
+                        to="/players"
+                    >Jugadores</RouterLink>
+                </li>
+                <!-- <li>
+                    <RouterLink
+                        class="text-base font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"
                         to="/about"
                     >Nosotros</RouterLink>
-                </li>
+                </li> -->
                 <!-- <li class="menu-item-has-children relative block">
                     <RouterLink
                         class="text-base font-semibold capitalize block pb-4 pt-4 border-b-1 border-gray-200 transition-all hover:text-primary text-black"

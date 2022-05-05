@@ -30,10 +30,8 @@ export default {
 }
 </script>
 <template>
-    <Popper hover>
-        <RouterLink
-            class="hover:text-primary"
-            :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(partidoKey)] } }">   
+    <Popper>
+        <div class="cursor-pointer">
             <div v-if="resultado">
                 <div class="flex flex-col" v-if="resultado">
                     
@@ -49,9 +47,15 @@ export default {
                 <img class="w-8 h-8 rounded-xl mx-auto" src="/images/others/play-btn2.webp"
                 alt="Ir a Partido" />
             </div>
-        </RouterLink>
+        </div>
         <template #content>
-            <h2 class="uppercase">Resultados</h2>
+            <h2 class="uppercase">
+                <RouterLink
+                    class="hover:text-rojo"
+                    :to="{ name: 'partido', params: { id: grupo.partidos[grupo.jugados.indexOf(partidoKey)] } }">
+                    Resultados
+                </RouterLink>
+            </h2>
             <div class="p-0 flex flex-col">
                 <div class="flex justify-between items-stretch items-center border rounded-b-md">
                     <div class="flex items-center align-middle p-1">

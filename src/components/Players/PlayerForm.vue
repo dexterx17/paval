@@ -5,6 +5,7 @@ import { useStore } from "vuex";
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import Avatar from "@/components/Avatar.vue";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default {
   components: {
@@ -55,14 +56,17 @@ export default {
       console.log('image');
       console.log(image);
 
-      store.dispatch("uploadAvatar", {
-        user: playerData.value,
-        imagen: image
-      }).then((response) => {
-        console.log("response");
-        console.log(response);
-      });
+      const storage = getStorage();
+      const imgName = `${Date.now()}`;
+      const storageRef = sRef(storage, "players/" + imgName);
 
+      uploadBytes(storageRef, image)
+          .then(function (snapshot) {
+              getDownloadURL(snapshot.ref).then((downloadURL) => {
+                  console.log('File available at', downloadURL);
+                  playerData.value.avatar = downloadURL;
+              });
+          });
     }
 
     const submit = () => {

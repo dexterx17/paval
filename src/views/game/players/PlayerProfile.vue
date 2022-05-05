@@ -177,7 +177,7 @@ export default {
     </div>
   </div>
 
-  <PlayerCounters />
+  <PlayerCounters v-if="playerData" :player="playerData" />
 
   <Footer />
 </template>

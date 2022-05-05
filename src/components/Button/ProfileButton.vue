@@ -3,8 +3,8 @@
         <!-- Button Start -->
         <RouterLink
             to="/profile"
-            style="background-image:url(/images/others/btn-signup.webp);"
-            class="signup-btn transition-all group hidden sm:flex"
+            style="background-image:url(/images/others/button.png);"
+            class="signup-btn transition-all group sm:flex"
         >
             Mi Perfil
             <img
@@ -18,7 +18,7 @@
         <!-- Offcanvas Button Start -->
         <div class="lg:hidden block">
             <button
-                class="icofont-navigation-menu text-white text-4xl ml-9"
+                class="icofont-navigation-menu text-dark-gray text-4xl ml-9"
                 @click="mobiletoggleClass('addClass', 'show-mobile-menu')"
             ></button>
         </div>
