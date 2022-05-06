@@ -93,6 +93,14 @@ const router = createRouter({
       component: () => import("../views/game/players/PlayersList.vue"),
     },
     {
+      path: "/players-importer",
+      name: "players-importer",
+      meta: {
+        requiresAuth: true,
+      },
+      component: () => import("../views/game/players/ImportPlayers.vue"),
+    },
+    {
       path: "/player/:id",
       name: "player",
       meta: {

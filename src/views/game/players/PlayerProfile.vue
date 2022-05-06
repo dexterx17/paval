@@ -156,31 +156,17 @@ export default {
           <p>Por favor actualiza tus datos de perfil</p>
         </div>
 
+        <PlayerForm v-if="playerData" :player="playerData" />
+
         <div class="about_title lg:mb-6 mb-4">
           <h5
             class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16"
           >Club</h5>
-          <h5
-            class="text-white font-exo font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
-          >Aún no perteneces a ningún club, <RouterLink to="/clubs">Únete</RouterLink></h5>
+          <p
+            class="text-white italic font-exo font-bold uppercase  text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
+          >Aún no perteneces a ningún club, <RouterLink to="/clubs">Únete</RouterLink></p>
         </div>
 
-        <!-- <div class="about_btn">
-          <RouterLink
-            to="/contactos"
-            class="group primary-btn opacity-100 transition-all"
-            style="background-image:url(/images/others/btn-bg.webp)"
-          >
-            Retar
-            <img
-              src="/images/icon/arrrow-icon.webp"
-              alt="Arrow Icon"
-              class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
-            />
-          </RouterLink>
-        </div>-->
-
-        <PlayerForm v-if="playerData" :player="playerData" />
         <button class="hover:text-primary underline italic" @click="logout">Cerrar sesión</button>
       </div>
     </div>

@@ -154,14 +154,10 @@ export default {
         ...mapActions(["loadTorneos"]),
         loadMore() {
             let lastTorneo = this.matchesData[this.matchesData.length-1];
-            console.log('%cTorneosBlocks.vue line:160 lastTorneo', 'color: #007acc;', lastTorneo);
             let resultados = this.loadTorneos({
                 limit: this.maxPerPage,
                 lastTorneo: lastTorneo
             });
-            console.log('%cTorneosBlocks.vue line:165 resultados', 'color: #007acc;', resultados);
-            console.log('%cTorneosBlocks.vue line:165 resultados.value', 'color: #007acc;', resultados.value);
-            console.log('%cTorneosBlocks.vue line:165 resultados.length', 'color: #007acc;', resultados.length);
         },
         formatDate(date, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (date) {

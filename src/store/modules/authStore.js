@@ -100,13 +100,15 @@ const state = {
         addDoc(collection(db, "players"), {
           uid: payload.user.uid,
           source: 'web',
-          created_at: Date(),
+          created_at: new Date(),
           nombre: payload.nombre ?? payload.user.displayName,
           avatar: payload.user.photoURL ?? null,
           total_torneos:0,
           total_partidos: 0,
           total_victorias: 0,
           total_derrotas: 0,
+          ranking:0,
+          puntos:0
         }).then((docRef)=>{
           console.log("Document written with ID: ", docRef);
         }).catch((error)=>{

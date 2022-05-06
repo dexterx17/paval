@@ -122,15 +122,6 @@ export default {
           <p class="lg:text-xl lg:leading-8">{{ playerData.about }}</p>
         </div>
 
-        <div class="about_title lg:mb-6 mb-4">
-          <h5
-            class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16"
-          >Club</h5>
-          <h2
-            class="text-white font-exo font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
-          >Nombre de Club</h2>
-        </div>
-
         <div class="about_btn">
           <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
               v-model="showModalRetar" :width="1000" :height="700" :adaptive="true">
@@ -152,7 +143,16 @@ export default {
             />
           </button>
         </div>
-
+        <br>
+        <br>
+        <div class="about_title lg:mb-6 mb-4">
+          <h5
+            class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16"
+          >Club</h5>
+          <h2
+            class="text-white font-exo font-bold uppercase xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
+          >Este jugador aún no pertenece a ningún club</h2>
+        </div>
         
       </div>
     </div>
