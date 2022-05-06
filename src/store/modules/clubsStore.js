@@ -153,6 +153,25 @@ const actions = {
         } catch (e) {
             console.error("Error adding document: ", e);
         }
+    },
+    async solicitarAfiliacion({ commit }, payload) {
+        try {
+            const docRef = doc(db, "clubs", payload.club);
+
+            const colRef = collection(docRef, "solicitudes")
+
+            return await addDoc(colRef, payload.jugador)
+            .then((docRef) => {
+                console.log("Solicitud Afiliación with ID: ", docRef);
+                return docRef;
+            })
+            .catch((error) => {
+                console.log("error adding Solicitud Afiliación");
+                console.log(error);
+            });
+        } catch (e) {
+            console.error("Error adding afiliación: ", e);
+        }
     }
 };
 

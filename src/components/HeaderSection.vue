@@ -1,6 +1,6 @@
 <template>
     <!-- Header Section Start -->
-    <header class="fixed left-0 right-0 z-99 is-sticky" >
+    <header class="fixed left-0 right-0 z-99" :class="{ 'is-sticky': isSticky }" >
         <div class="container">
             <div class="flex py-3 items-center justify-between">
                 <HeaderLogo />

@@ -13,6 +13,31 @@
         <h2
             class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10">
             {{ club.nombre }}</h2>
+        
+        <div class="flex justify-center items-center">
+            <p class="px-2 pt-5">Que esperas para unirte?</p>
+            <div class="about_btn">
+                <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
+                v-model="showModalSolicitarAfiliacion" :width="1000" :height="700" :adaptive="true">
+                <SolicitarAfiliacion :club="club" />
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModalSolicitarAfiliacion = false"></button>
+                </vue-final-modal>
+                <button
+                    @click="showModalSolicitarAfiliacion = true"
+                    class="group primary-btn opacity-100 transition-all w-auto px-2 bg-cover"
+                    style="background-image:url(/images/others/button2.png);"
+                >
+                    Solicitar Afiliación
+                    <img
+                        src="/images/icon/arrrow-icon.webp"
+                        alt="Arrow Icon"
+                        class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
+                    />
+                </button>
+            </div>
+        </div>
         <div class="content-details">
             <div class="description mt-6">
                 <p class="leading-8">{{ club.historia }}</p>
@@ -134,12 +159,15 @@ import { Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { mapGetters, mapActions } from "vuex";
 
+import { $vfm, VueFinalModal } from 'vue-final-modal'
+
 import { computed, ref, watch } from "vue";
 import { useRoute } from 'vue-router'
 import { useStore } from "vuex";
 import Popper from "vue3-popper";
 
 import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
+import SolicitarAfiliacion from "@/components/Clubs/SolicitarAfiliacion.vue";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -154,7 +182,9 @@ export default {
         Pagination,
         Popper,
 
-        ImagenesClub
+        ImagenesClub,
+        SolicitarAfiliacion,
+        VueFinalModal
     },
     props:['club'],
     methods: {
@@ -219,11 +249,13 @@ export default {
     },
     setup(props) {
         const showImagesUploader = ref(false);
+        const showModalSolicitarAfiliacion = ref(false);
 
         showImagesUploader.value = props.club.imagenes.length == 0;
 
         return {
-            showImagesUploader
+            showImagesUploader,
+            showModalSolicitarAfiliacion
         }
     }
 }

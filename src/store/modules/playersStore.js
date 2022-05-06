@@ -80,6 +80,25 @@ const actions = {
         return players;
       }
   },
+  async loadProfileByUid({ commit }, payload) {
+    try {
+        console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+        let q = query(collection(db, "players"), where("uid", "==", payload));
+        const docSnap = await getDocs(q);
+
+      if (docSnap.docs) {
+          
+            console.log("Profile UID data:", docSnap.docs[0].data());
+            return docSnap.docs[0].data();
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+            return null;
+        }
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+  },
   async loadProfile({ commit }, payload) {
     try {
         console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);

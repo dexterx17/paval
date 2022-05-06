@@ -40,7 +40,7 @@ const state = {
       onAuthStateChanged(auth, user => {
         //console.log('onAuthStateChanged',user);
         if(user){
-          dispatch('loadProfile',user.uid).then((player)=>{
+          dispatch('loadProfileByUid',user.uid).then((player)=>{
             console.log('loadPlayerLoggedUser',player);
             user.player = player;
             if (user) {
