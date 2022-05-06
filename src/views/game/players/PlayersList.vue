@@ -16,13 +16,26 @@ export default {
       BreadcrumbTitle: "Jugadores",
       BreadcrumbSubTitle: "Listado",
       players: [],
+      maxPerPage: 3,
+      showReadMore: true,
+      procesandoShowMore: false
     };
   },
   methods: {
     ...mapActions(["loadPlayers"]),
+    loadMore() {
+        let lastTorneo = this.matchesData[this.matchesData.length-1];
+        let resultados = this.loadTorneos({
+            limit: this.maxPerPage,
+            lastTorneo: lastTorneo
+        });
+    },
   },
   computed: {
     ...mapGetters(["getPlayers"]),
+    totalResults() {
+        return Object.keys(this.players).length
+    },
   },
   mounted() {
     this.loadPlayers();
@@ -36,11 +49,11 @@ export default {
       return store.state.playersStore.players;
     });
 
-    setTimeout(function(){
-      store.dispatch('updateAllPlayers',{
-        players: players.value
-      });
-    },2500);
+    // setTimeout(function(){
+    //   store.dispatch('updateAllPlayers',{
+    //     players: players.value
+    //   });
+    // },2500);
     // console.log("players");
     // console.log(players.value);
 
@@ -92,6 +105,22 @@ export default {
                   </h3>
                   <span class="text-white text-sm group-hover:text-white transition-all">{{player.ciudad}}</span>
               </div>
+          </div>
+      </div>
+
+      <div
+          class="flex justify-center mt-73"
+          v-if="showReadMore"
+      >
+          <div class="flex flex-col justify-center items-center">
+              <small class="text-center text-primary py-2">
+                  Mostrando {{ totalResults }} jugadores...
+              </small>
+              <button
+                  class="primary-btn"
+                  style="background-image:url(/images/others/btn-bg.webp);"
+                  @click="loadMore"
+              >Más Jugadres</button>
           </div>
       </div>
 

@@ -80,15 +80,34 @@ const actions = {
         return players;
       }
   },
-  async loadProfile({ commit }, payload) {
+  async loadProfileByUid({ commit }, payload) {
     try {
         console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
         let q = query(collection(db, "players"), where("uid", "==", payload));
         const docSnap = await getDocs(q);
 
-        if (docSnap.docs) {
-            console.log("Document data:", docSnap.docs[0].data());
+      if (docSnap.docs) {
+          
+            console.log("Profile UID data:", docSnap.docs[0].data());
             return docSnap.docs[0].data();
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+            return null;
+        }
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+  },
+  async loadProfile({ commit }, payload) {
+    try {
+        console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+        const docRef = doc(db, "players", payload);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log("Profile data:", docSnap.data());
+            return docSnap.data();
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
@@ -142,17 +161,25 @@ const actions = {
       console.error("Error adding document: ", e);
     }
   },
-  async updateAllPlayers({ commit }, payload) {
+  async importPlayers({ commit }, payload) {
 
     console.log('payloadlll',payload);
 
-    payload.players.forEach(p => {
-      setDoc(doc(db, "players", p.uid), {
+    payload.forEach(p => {
+      console.log('p',p);
+      addDoc(collection(db, "players"), {
+        nombre: p[2],
+        bod: null,
+        nacionalidad: "ec",
+        sexo: "H",
+        avatar: null,
         total_torneos:0,
         total_partidos: 0,
         total_victorias: 0,
         total_derrotas: 0,
-        ranking: 1000
+        ranking: p[0],
+        puntos: p[5],
+        n_socio: p[3]
       })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef);
