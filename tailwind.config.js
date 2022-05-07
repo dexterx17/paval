@@ -7,7 +7,7 @@ module.exports = {
         extend: {
             textColor: theme => theme('colors'),
             textColor: {
-                'primary': '#b154f0',
+                'primary': '#aa182c',
                 'yellow': '#ffb300',
                 'bright': '#1de3eb',
                 'punch': '#df4c21',
@@ -79,8 +79,13 @@ module.exports = {
               'title': ['3.438rem']
             },
             colors: {
-                primary: '#b154f0',
+                primary: '#aa182c',
                 warning: '#ffa700',
+                'rojo': '#96262c',
+                'rojo-claro': '#d81f22',
+                'gris-claro': '#898a8d',
+                'gris':'#6f7271',
+                'gris-oscuro':'#53575a',
                 'gray-800': '#fefefe',
                 'dark-gray': '#262626',
                 'secondary-80': '#281d59',

@@ -9,6 +9,8 @@ import {
 	doc,
 	getDocs,
 	orderBy,
+	limit,
+	startAfter,
 	getDoc,
 	addDoc,
 	setDoc,
@@ -32,7 +34,7 @@ const getters = {
 const actions = {
 	async loadPlayers({ commit }, payload) {
 		console.log("loadPlayers");
-
+		let q;
 		if (payload.lastPlayer) {
 			const docRef = doc(db, "players", payload.lastPlayer.id);
 			const docSnap = await getDoc(docRef);

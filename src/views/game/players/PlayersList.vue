@@ -24,10 +24,10 @@ export default {
   methods: {
     ...mapActions(["loadPlayers"]),
     loadMore() {
-        let lastTorneo = this.players[this.players.length-1];
-        let resultados = this.loadTorneos({
+        let lastPlayer = this.players[this.players.length-1];
+        let resultados = this.loadPlayers({
             limit: this.maxPerPage,
-            lastTorneo: lastTorneo
+            lastPlayer: lastPlayer
         });
     },
   },
