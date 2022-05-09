@@ -107,9 +107,10 @@ const actions = {
 			const docSnap = await getDocs(q);
 
 			if (docSnap.docs) {
-
-				console.log("Profile UID data:", docSnap.docs[0].data());
-				return docSnap.docs[0].data();
+				let userData = docSnap.docs[0].data();
+				userData.id = docSnap.docs[0].id;
+				console.log("Profile UID data:", userData);
+				return userData;
 			} else {
 				// doc.data() will be undefined in this case
 				console.log("No such document!");
@@ -126,8 +127,10 @@ const actions = {
 			const docSnap = await getDoc(docRef);
 
 			if (docSnap.exists()) {
-				console.log("Profile data:", docSnap.data());
-				return docSnap.data();
+				let userData = docSnap.data();
+				userData.id = docSnap.id;
+				console.log("Profile data:", userData);
+				return userData;
 			} else {
 				// doc.data() will be undefined in this case
 				console.log("No such document!");

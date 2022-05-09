@@ -156,10 +156,11 @@ const actions = {
     },
     async solicitarAfiliacion({ commit }, payload) {
         try {
-            const docRef = doc(db, "clubs", payload.club);
+            const docRef = doc(db, "clubs", payload.club.id);
 
             const colRef = collection(docRef, "solicitudes")
 
+            console.log('payloadAfiliacin', payload);
             return await addDoc(colRef, payload.jugador)
             .then((docRef) => {
                 console.log("Solicitud Afiliación with ID: ", docRef);
@@ -172,7 +173,35 @@ const actions = {
         } catch (e) {
             console.error("Error adding afiliación: ", e);
         }
-    }
+    },
+    async fetchSolicitudesClub({ commit }, payload) {
+        try {
+            console.log('fetchSolicitudes: ', payload);
+            const docRef = doc(db, "clubs", payload.club);
+            const querySnapshot = await getDocs(collection(docRef, "solicitudes"));
+            
+            let solicitudes = [];
+
+            return await doSnapShot(querySnapshot);
+    
+            //commit("SET_TORNEOS_LISTENER", query);
+    
+            function doSnapShot(querySnapshot) {
+                console.log("doSnapShot");
+                console.log(querySnapshot.docs);
+                querySnapshot.docs.forEach((doc) => {
+                    let p = doc.data();
+                    console.log(`${doc.id} => ${doc.data()}`);
+                    p.id = doc.id;
+                    solicitudes.push(p);
+                });
+                return solicitudes;
+            }
+
+        } catch (e) {
+            console.error("Error fetching solicitudes: ", e);
+        }
+    },
 };
 
 const mutations = {

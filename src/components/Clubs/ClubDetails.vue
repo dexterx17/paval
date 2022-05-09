@@ -10,6 +10,7 @@
         <!-- Team Varses Team End -->
 
         <!-- <p class="date text-primary font-bold mb-3">03 January, 2021, 05:01:00 AM</p> -->
+
         <h2
             class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10">
             {{ club.nombre }}</h2>
@@ -19,7 +20,7 @@
             <div class="about_btn">
                 <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
                 v-model="showModalSolicitarAfiliacion" :width="1000" :height="700" :adaptive="true">
-                <SolicitarAfiliacion :club="club" />
+                <SolicitarAfiliacion :club="club" @hide-modal="showModalSolicitarAfiliacion = false" />
                 <button
                     class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                     @click="showModalSolicitarAfiliacion = false"></button>
@@ -38,6 +39,9 @@
                 </button>
             </div>
         </div>
+
+        <SolicitudesPendientes />
+
         <div class="content-details">
             <div class="description mt-6">
                 <p class="leading-8">{{ club.historia }}</p>
@@ -168,6 +172,7 @@ import Popper from "vue3-popper";
 
 import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
 import SolicitarAfiliacion from "@/components/Clubs/SolicitarAfiliacion.vue";
+import SolicitudesPendientes from "@/components/Clubs/SolicitudesPendientes.vue";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -184,6 +189,7 @@ export default {
 
         ImagenesClub,
         SolicitarAfiliacion,
+        SolicitudesPendientes,
         VueFinalModal
     },
     props:['club'],
