@@ -5,9 +5,30 @@
             <div class="flex justify-center items-center w-full p-0">
                 <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg border-4 border-light-blue-500" :src="club.logo"
                     :alt="club.nombre" />
+                    <button
+                        @click="showModalAdministradores = true"
+                        class="group primary-btn opacity-100 transition-all w-auto px-2 bg-cover"
+                        style="background-image:url(/images/others/button2.png);"
+                    >
+                        Admins
+                        <img
+                            src="/images/icon/arrrow-icon.webp"
+                            alt="Arrow Icon"
+                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
+                        />
+                    </button>
             </div>
         </div>
         <!-- Team Varses Team End -->
+
+        <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
+            v-model="showModalAdministradores" :width="1000" :height="700" :adaptive="true">
+            <AdministradoresClub :club="club" @hide-modal="showModalAdministradores = false" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="showModalAdministradores = false"></button>
+        </vue-final-modal>
+
 
         <!-- <p class="date text-primary font-bold mb-3">03 January, 2021, 05:01:00 AM</p> -->
 
@@ -172,6 +193,7 @@ import Popper from "vue3-popper";
 
 import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
 import SolicitarAfiliacion from "@/components/Clubs/SolicitarAfiliacion.vue";
+import AdministradoresClub from "@/components/Clubs/AdministradoresClub.vue";
 import SolicitudesPendientes from "@/components/Clubs/SolicitudesPendientes.vue";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -190,6 +212,7 @@ export default {
         ImagenesClub,
         SolicitarAfiliacion,
         SolicitudesPendientes,
+        AdministradoresClub,
         VueFinalModal
     },
     props:['club'],
@@ -256,12 +279,14 @@ export default {
     setup(props) {
         const showImagesUploader = ref(false);
         const showModalSolicitarAfiliacion = ref(false);
+        const showModalAdministradores = ref(false);
 
         showImagesUploader.value = props.club.imagenes.length == 0;
 
         return {
             showImagesUploader,
-            showModalSolicitarAfiliacion
+            showModalSolicitarAfiliacion,
+            showModalAdministradores
         }
     }
 }

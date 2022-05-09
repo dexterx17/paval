@@ -134,6 +134,19 @@ const actions = {
           console.error("Error adding document: ", e);
         }
     },
+    async updateAdministradoresClub({ commit }, payload) {
+        try {
+            console.log('updateAdministradoresClub',payload)
+            const docRef = doc(db, "clubs", payload.club);
+
+            await updateDoc(docRef, {
+                administradores: payload.administradores
+            });
+
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+    },
     async fetchClub({ commit }, payload) {
         try {
             console.log('%cclubsStore.js line:69 payload', 'color: #007acc;', payload);

@@ -74,11 +74,12 @@ const actions = {
 		}
 	},
 	async fetchPlayersOptions({ commit }, payload) {
-		console.log("loadPlayersOptions");
+		console.log("loadPlayersOptions", payload);
 		let q;
 		if (payload.idsInscritos.length > 0) {
 			q = query(collection(db, "players"), where("uid", "not-in", payload.idsInscritos));
 		} else {
+			alert('players');
 			q = query(collection(db, "players"));
 		}
 
