@@ -6,6 +6,7 @@ import TorneosRegularesHome from "@/components/TorneosRegularesHome.vue";
 import TorneoForm from "@/components/Torneos/TorneoForm.vue";
 import Footer from "@/components/Footer.vue";
 
+import { mapGetters } from "vuex";
 
 export default {
     components: {
@@ -22,6 +23,9 @@ export default {
             paddingTop: "pt-8"
         };
     },
+    computed: {
+        ...mapGetters(["isUserAuth"]),
+    },
     methods: {
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
@@ -37,7 +41,7 @@ export default {
     <!-- <TorneosBlocks /> -->
     <TorneosBlocks />
 
-    <TorneoForm :paddingTop="paddingTop" />
+    <TorneoForm v-if="isUserAuth" :paddingTop="paddingTop" />
 
     <Footer />
 </template>

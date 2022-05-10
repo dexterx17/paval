@@ -53,7 +53,7 @@ export default {
                     console.log(props.club.administradores)
                     clientesOptions.value = response;
 
-                    //jugadores.value = response.filter( c => props.club.administradores.includes(c.id))
+                    jugadores.value = response.filter( c => props.club.administradores.includes(c.id))
 
                 })
                 .catch((error) => {

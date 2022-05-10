@@ -101,6 +101,33 @@ const actions = {
 			return players;
 		}
 	},
+	async fetchSociosOptions({ commit }, payload) {
+		console.log("loadSociosOptions", payload);
+		let q;
+		if (payload.idsInscritos.length > 0) {
+			q = query(collection(db, "players"), where("n_socio", "not-in", payload.idsInscritos));
+		} else {
+			q = query(collection(db, "players"));
+		}
+
+		const querySociosSnapshot = await getDocs(q);
+
+		console.log(querySociosSnapshot);
+		let socios = [];
+		return doSnapShot(querySociosSnapshot);
+
+		function doSnapShot(querySociosSnapshot) {
+			console.log("doSnapShot");
+			console.log(querySociosSnapshot.docs);
+			querySociosSnapshot.docs.forEach((doc) => {
+				let p = doc.data();
+				console.log(`Socio: ${doc.id} => ${doc.data()}`);
+				p.id = doc.id;
+				socios.push(p);
+			});
+			return socios;
+		}
+	},
 	async loadProfileByUid({ commit }, payload) {
 		try {
 			console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);

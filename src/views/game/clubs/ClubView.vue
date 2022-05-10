@@ -10,7 +10,8 @@ import Footer from "@/components/Footer.vue";
 
 import { computed, ref, watch } from "vue";
 import { useRoute } from 'vue-router'
-import { useStore } from "vuex";
+import { useStore, mapGetters } from "vuex";
+import { f } from "../../../../dist/assets/vendor.67f9c195";
 
 export default {
     components: {
@@ -33,6 +34,9 @@ export default {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         }
+    },
+    computed: {
+        ...mapGetters(["isUserAuth"]),
     },
     setup() {
         const route = useRoute();
