@@ -63,7 +63,7 @@
             <RouterLink class="text-primary font-extrabold hover:text-rojo-claro" to="/register" v-else>Regístrate</RouterLink>
         </div>
 
-        <SolicitudesPendientes v-if="isUserAuth && isClubAdmin" />
+        <SolicitudesPendientes :club="club" v-if="isUserAuth && isClubAdmin" />
 
         <div class="content-details">
             <div class="description mt-6">

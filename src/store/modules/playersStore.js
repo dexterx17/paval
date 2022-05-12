@@ -130,7 +130,7 @@ const actions = {
 	},
 	async loadProfileByUid({ commit }, payload) {
 		try {
-			console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+			console.log('loadProfileByUid',payload);
 			let q = query(collection(db, "players"), where("uid", "==", payload));
 			const docSnap = await getDocs(q);
 
@@ -150,7 +150,8 @@ const actions = {
 	},
 	async loadProfile({ commit }, payload) {
 		try {
-			console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+			console.log('loadProfile',payload);
+
 			const docRef = doc(db, "players", payload);
 			const docSnap = await getDoc(docRef);
 
@@ -228,12 +229,12 @@ const actions = {
 				total_partidos: 0,
 				total_victorias: 0,
 				total_derrotas: 0,
-				ranking: p[0],
-				puntos: p[5],
-				n_socio: p[3]
+				ranking: parseInt(p[0]),
+				puntos: parseInt(p[5]),
+				n_socio: parseInt(p[3])
 			})
 				.then((docRef) => {
-					console.log("Document written with ID: ", docRef);
+					console.log("Player with ID: ", docRef.id);
 					return docRef;
 				})
 		})

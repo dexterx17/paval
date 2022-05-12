@@ -13,7 +13,7 @@
                                     <RouterLink :to="`/player/${player.jugador_id}`" class="w-full h-full absolute left-0 top-0 bg-gray-900 rounded-5xl opacity-0 group-hover:opacity-70 border-4 border-gray-400 rounded-4xl"></RouterLink>
                                     <ul class="social-link absolute left-0 text-center bottom-0 group-hover:bottom-8 w-full space-x-2 opacity-0 group-hover:opacity-100 transition-all z-20 text-white">
                                         <li class="text-center inline-block">
-                                            <button class="w-32 h-16 flex items-center justify-center transition-all bg-cover text-white hover:bg-arrow-shape bg-arrow-hover-shape z-50">
+                                            <button @click="showAprobarJugador(player)" class="w-32 h-16 flex items-center justify-center transition-all bg-cover text-white hover:bg-arrow-shape bg-arrow-hover-shape z-50">
                                                 Aprobar Jugador
                                             </button>
                                         </li>
@@ -28,6 +28,15 @@
                             </div>
                         </div>
                 </div>
+
+                <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
+                    v-model="showModalAprobarSocio" :width="1000" :height="700" :adaptive="true">
+                    <AprobarSolicitud :club="club" :player="currentPlayer" @hide-modal="showModalAprobarSocio = false" />
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModalAprobarSocio = false"></button>
+                </vue-final-modal>
+
             </div>
         </div>
     </div>
@@ -39,11 +48,22 @@ import { computed, ref, watch } from "vue";
 import { useRoute } from 'vue-router'
 import { useStore } from "vuex";
 
+import { $vfm, VueFinalModal } from 'vue-final-modal'
+
+import AprobarSolicitud from "./AprobarSolicitud.vue";
+
 export default {
+    props:['club'],
+    components:{
+        AprobarSolicitud,
+        VueFinalModal
+    },
     setup(){
         const route = useRoute();
         const store = useStore();
         const solicitudesData = ref([]);
+        const showModalAprobarSocio = ref(false);
+        const currentPlayer = ref(null)
 
         const loadSolicitudesData = () => {
             store.dispatch('fetchSolicitudesClub', {
@@ -57,8 +77,17 @@ export default {
 
         loadSolicitudesData();
 
+        const showAprobarJugador = (player) => {
+            currentPlayer.value = player;
+            showModalAprobarSocio.value = true;
+        }
+
         return {
-            solicitudesData
+            solicitudesData,
+            showModalAprobarSocio,
+            currentPlayer,
+
+            showAprobarJugador
         };
     }
 }

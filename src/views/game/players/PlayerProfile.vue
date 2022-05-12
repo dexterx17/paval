@@ -40,7 +40,7 @@ export default {
 
     const loadInfoPlayer = (playerInfo) => {
       console.log('loadInfoPlayer', playerInfo);
-      store.dispatch("loadProfile", playerInfo.uid).then((value) => {
+      store.dispatch("loadProfileByUid", playerInfo.uid).then((value) => {
         console.log("profile", value);
         playerData.value = value;
         playerData.value.uid = playerInfo.uid;
@@ -164,7 +164,7 @@ export default {
           >Club</h5>
           <p
             class="text-white italic font-exo font-bold uppercase  text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
-          >Aún no perteneces a ningún club, <RouterLink to="/clubs">Únete</RouterLink></p>
+          >Aún no perteneces a ningún club, <RouterLink class="text-gris underline hover:text-white" to="/clubs">Únete</RouterLink></p>
         </div>
 
         <button class="hover:text-primary underline italic" @click="logout">Cerrar sesión</button>

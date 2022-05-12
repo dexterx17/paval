@@ -70,7 +70,9 @@ module.exports = {
             },
             fontFamily: {
               'metal': ["'Metal Mania', cursive"],
-              'exo': ["'Exo', sans-serif"]
+              'exo': ["'Exo', sans-serif"],
+              'roboto': ["'Roboto', cursive"],
+              'roboto-black': ["'Roboto Bk', cursive"],
             },
             fontSize: {
               '7.5xl': ['7.5rem'],
