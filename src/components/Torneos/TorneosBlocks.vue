@@ -10,7 +10,7 @@
                             id="selectgame"
                             class="px-5 h-14 w-full mb-8 sm:mb-0 sm:w-64 text-white bg-secondary-100 border-2 border-solid rounded-lg focus:outline-none border-gray-400 block"
                         >
-                            <option value class="bg-black">Todas los clubs</option>
+                            <option value class="bg-black">Todos los clubs</option>
                         </select>
                     </div>
                 </div>

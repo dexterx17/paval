@@ -6,6 +6,7 @@
                 <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg border-4 border-light-blue-500" :src="club.logo"
                     :alt="club.nombre" />
                     <button
+                        v-if="isUserAuth && isClubAdmin"
                         @click="showModalAdministradores = true"
                         class="group primary-btn opacity-100 transition-all w-auto px-2 bg-cover"
                         style="background-image:url(/images/others/button2.png);"
@@ -21,7 +22,7 @@
         </div>
         <!-- Team Varses Team End -->
 
-        <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
+        <vue-final-modal  v-if="isUserAuth" class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
             v-model="showModalAdministradores" :width="1000" :height="700" :adaptive="true">
             <AdministradoresClub :club="club" @hide-modal="showModalAdministradores = false" />
             <button
@@ -38,7 +39,7 @@
         
         <div class="flex justify-center items-center">
             <p class="px-2 pt-5">Que esperas para unirte?</p>
-            <div class="about_btn">
+            <div class="about_btn"  v-if="isUserAuth">
                 <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
                 v-model="showModalSolicitarAfiliacion" :width="1000" :height="700" :adaptive="true">
                 <SolicitarAfiliacion :club="club" @hide-modal="showModalSolicitarAfiliacion = false" />
@@ -59,9 +60,10 @@
                     />
                 </button>
             </div>
+            <RouterLink class="text-primary font-extrabold hover:text-rojo-claro" to="/register" v-else>Regístrate</RouterLink>
         </div>
 
-        <SolicitudesPendientes />
+        <SolicitudesPendientes :club="club" v-if="isUserAuth && isClubAdmin" />
 
         <div class="content-details">
             <div class="description mt-6">
@@ -103,7 +105,7 @@
                             </template>
                         </Popper>
 
-                        <Popper hover>
+                        <Popper v-if="isUserAuth && isClubAdmin" hover>
                             <button @click="eliminarImagen()"
                                 class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
                                 <img class="w-4 h-6" src="/images/icon/dribble.webp" alt="Eliminar" />
@@ -188,7 +190,6 @@ import { $vfm, VueFinalModal } from 'vue-final-modal'
 
 import { computed, ref, watch } from "vue";
 import { useRoute } from 'vue-router'
-import { useStore } from "vuex";
 import Popper from "vue3-popper";
 
 import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
@@ -258,6 +259,12 @@ export default {
                     })
                 }
             })
+        }
+    },
+    computed: {
+        ...mapGetters(["isUserAuth", "getUser"]),
+        isClubAdmin(){
+            return this.club.administradores.includes(this.getUser.player.id);
         }
     },
     data() {

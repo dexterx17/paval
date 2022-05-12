@@ -101,9 +101,36 @@ const actions = {
 			return players;
 		}
 	},
+	async fetchSociosOptions({ commit }, payload) {
+		console.log("loadSociosOptions", payload);
+		let q;
+		if (payload.idsInscritos.length > 0) {
+			q = query(collection(db, "players"), where("n_socio", "not-in", payload.idsInscritos));
+		} else {
+			q = query(collection(db, "players"));
+		}
+
+		const querySociosSnapshot = await getDocs(q);
+
+		console.log(querySociosSnapshot);
+		let socios = [];
+		return doSnapShot(querySociosSnapshot);
+
+		function doSnapShot(querySociosSnapshot) {
+			console.log("doSnapShot");
+			console.log(querySociosSnapshot.docs);
+			querySociosSnapshot.docs.forEach((doc) => {
+				let p = doc.data();
+				console.log(`Socio: ${doc.id} => ${doc.data()}`);
+				p.id = doc.id;
+				socios.push(p);
+			});
+			return socios;
+		}
+	},
 	async loadProfileByUid({ commit }, payload) {
 		try {
-			console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+			console.log('loadProfileByUid',payload);
 			let q = query(collection(db, "players"), where("uid", "==", payload));
 			const docSnap = await getDocs(q);
 
@@ -123,7 +150,8 @@ const actions = {
 	},
 	async loadProfile({ commit }, payload) {
 		try {
-			console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+			console.log('loadProfile',payload);
+
 			const docRef = doc(db, "players", payload);
 			const docSnap = await getDoc(docRef);
 
@@ -201,12 +229,12 @@ const actions = {
 				total_partidos: 0,
 				total_victorias: 0,
 				total_derrotas: 0,
-				ranking: p[0],
-				puntos: p[5],
-				n_socio: p[3]
+				ranking: parseInt(p[0]),
+				puntos: parseInt(p[5]),
+				n_socio: parseInt(p[3])
 			})
 				.then((docRef) => {
-					console.log("Document written with ID: ", docRef);
+					console.log("Player with ID: ", docRef.id);
 					return docRef;
 				})
 		})

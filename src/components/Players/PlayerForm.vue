@@ -86,6 +86,7 @@ export default {
       playerData,
 
       showForm,
+      isProcessing,
 
       submit,
       changeImage
@@ -242,7 +243,7 @@ export default {
           />
         </div>
       </div>
-      <div v-if="procesandoForm" class="flex justify-center w-full">
+      <div v-if="isProcessing" class="flex justify-center w-full">
           <h2 class="text-primary">Procesando...</h2>
       </div>
       <div v-else class="flex justify-around">
