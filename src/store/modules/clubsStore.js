@@ -8,6 +8,8 @@ import {
     setDoc,
     updateDoc,
     addDoc,
+    query,
+    where,
     arrayUnion,
     arrayRemove
 } from "firebase/firestore";
@@ -156,7 +158,7 @@ const actions = {
             if (docSnap.exists()) {
                 let club = docSnap.data();
                 club.id = docSnap.id;
-                console.log("Document data:", club);
+                console.log("Docum ent data:", club);
                 commit('SET_TORNEO',club);
                 return club;
             } else {
@@ -169,12 +171,12 @@ const actions = {
     },
     async solicitarAfiliacion({ commit }, payload) {
         try {
+            console.log('solicitarAfiliacion',payload)
             const docRef = doc(db, "clubs", payload.club.id);
+            
+            const solRef = doc(docRef, "solicitudes",payload.jugador.jugador_id);
 
-            const colRef = collection(docRef, "solicitudes")
-
-            console.log('payloadAfiliacin', payload);
-            return await addDoc(colRef, payload.jugador)
+            return await setDoc(solRef,payload.jugador)
             .then((docRef) => {
                 console.log("Solicitud Afiliación with ID: ", docRef);
                 return docRef;
@@ -191,7 +193,8 @@ const actions = {
         try {
             console.log('fetchSolicitudes: ', payload);
             const docRef = doc(db, "clubs", payload.club);
-            const querySnapshot = await getDocs(collection(docRef, "solicitudes"));
+            const q = query(collection(docRef, "solicitudes"), where('aprobado','==',false));
+            const querySnapshot = await getDocs(q);
             
             let solicitudes = [];
 
@@ -215,6 +218,56 @@ const actions = {
             console.error("Error fetching solicitudes: ", e);
         }
     },
+    async aprobarAfiliacion({ commit }, payload) {
+        try {
+            console.log('fetchSolicitudes: ', payload);
+            const docRef = doc(db, "clubs", payload.club);
+
+            const solRef = doc(docRef, "solicitudes",payload.player.id);
+            
+            setDoc(solRef,payload.aprobacion, { merge: true });
+
+            const serieRef = doc(docRef, "series",payload.aprobacion.serie_id);
+
+            const infoPlayer = await getDoc(solRef);
+            
+            return await updateDoc(serieRef, {
+                jugadores: arrayUnion(infoPlayer.data())
+            }).then((docRes) => {
+                console.log("Jugador agregado a serie: ", docRes);
+                return docRef;
+            })
+            .catch((error) => {
+                console.log("error adding Imagen club");
+                console.log(error);
+            });
+
+        } catch (e) {
+            console.error("Error aprobando afiliacion: ", e);
+        }
+    },
+    async verificarAfiliacion({ commit },payload){
+        try {
+            console.log('verificarAfiliacion: ', payload);
+            const docRef = doc(db, "clubs", payload.club);
+
+            const solRef = doc(docRef, "solicitudes",payload.player);
+
+            const infoPlayer = await getDoc(solRef);
+
+            if (infoPlayer.exists()) {
+                console.log("Player afiliado:", infoPlayer.data());
+                return infoPlayer.data();
+              } else {
+                // doc.data() will be undefined in this case
+                console.log("Sin afiliar!");
+                return null
+              }
+        
+        }catch( e ) {
+
+        }
+    }
 };
 
 const mutations = {

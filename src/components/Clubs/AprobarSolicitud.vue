@@ -15,7 +15,7 @@ export default {
     },
     props: ["club", "player"],
     methods: {
-        ...mapActions(["updateAdministradoresClub"]),
+        ...mapActions(["aprobarAfiliacion"]),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
@@ -23,10 +23,10 @@ export default {
         submit() {
             console.log('clubAdmins', this.club)
             this.procesando = true;
-            let idsAdmins = this.jugadores.map(j => j.id);
-            this.updateAdministradoresClub({
+            this.aprobarAfiliacion({
                 club: this.club.id,
-                administradores: idsAdmins
+                aprobacion: this.aprobacionData,
+                player: this.player
             })
             this.procesando = false;
             this.$emit('hide-modal')
@@ -42,13 +42,19 @@ export default {
         const procesando = ref(false);
 
         const aprobacionData = ref({
-            serie: null,
+            serie_id: null,
             puntos: null,
             ranking: null,
             n_socio: null,
-            estado: 'activo'
-            
+            aprobado:true,
+            estado: 'activo'  
         })
+
+        const seriePlayer = ref(null);
+
+        const setSerie = (s) => {
+            aprobacionData.value.serie_id = s.id;
+        }
 
         const fetchClientesOptions = function(){
             // console.log('search',search);
@@ -88,7 +94,9 @@ export default {
             jugadores,
             jugador,
             procesando,
-            aprobacionData
+            aprobacionData,
+            seriePlayer,
+            setSerie
         }
     }
 
@@ -178,8 +186,9 @@ export default {
                 <v-select
                     class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     :options="seriesOptions"
-                    v-model="aprobacionData.serie"
-                    :modelValue="aprobacionData.serie"
+                    v-model="seriePlayer"
+                    :modelValue="seriePlayer"
+                    @update:modelValue="setSerie"
                     placeholder="Seleccionar Serie"
                 >
                     <template #selected-option="option">

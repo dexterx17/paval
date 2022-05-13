@@ -37,7 +37,8 @@
             class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10">
             {{ club.nombre }}</h2>
         
-        <div class="flex justify-center items-center">
+        
+        <div v-if="!isAfiliado" class="flex justify-center items-center">
             <p class="px-2 pt-5">Que esperas para unirte?</p>
             <div class="about_btn"  v-if="isUserAuth">
                 <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
@@ -190,7 +191,9 @@ import { $vfm, VueFinalModal } from 'vue-final-modal'
 
 import { computed, ref, watch } from "vue";
 import { useRoute } from 'vue-router'
+import { useStore } from "vuex";
 import Popper from "vue3-popper";
+
 
 import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
 import SolicitarAfiliacion from "@/components/Clubs/SolicitarAfiliacion.vue";
@@ -259,13 +262,13 @@ export default {
                     })
                 }
             })
-        }
+        },
     },
     computed: {
         ...mapGetters(["isUserAuth", "getUser"]),
         isClubAdmin(){
             return this.club.administradores.includes(this.getUser.player.id);
-        }
+        },
     },
     data() {
         return {
@@ -290,10 +293,31 @@ export default {
 
         showImagesUploader.value = props.club.imagenes.length == 0;
 
+        const isAfiliado = ref(false);
+        const isAfiliacionPendiente = ref(false);
+        
+        const store = useStore();
+
+        store.dispatch('verificarAfiliacion', {
+            club: props.club.id,
+            player: store.getters.getUser.player.id
+        }).then((afiliado) => {
+            console.log('afiliadoClub');
+            if(afiliado){
+                isAfiliado.value = true;
+                isAfiliacionPendiente.value = !afiliado.aprobado;
+            }else{
+                isAfiliado.value = false;
+            }
+            console.log(afiliado);
+        });
+
         return {
             showImagesUploader,
             showModalSolicitarAfiliacion,
-            showModalAdministradores
+            showModalAdministradores,
+            isAfiliado,
+            isAfiliacionPendiente
         }
     }
 }
