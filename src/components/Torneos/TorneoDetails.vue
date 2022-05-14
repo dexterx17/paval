@@ -16,18 +16,6 @@
             class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10">
             {{ torneo.nombre }}</h2>
         <div class="content-details">
-            <div class="description mt-6">
-                <p class="leading-8">El tiempo de espera es de {{ torneo.tiempo_espera }} minutos.</p>
-            </div>
-            <!-- <blockquote class="py-5 mb-5">
-                <p class="font-bold text-yellow italic lg:text-3xl text-xl">
-                    El ganador de cada partido será el mejor en
-                    3 de 5 set.
-                </p>
-            </blockquote> -->
-            <div class="description mt-6">
-                <p class="leading-8"></p>
-            </div>
 
             <div class="gameslide my-8" v-if="torneo.imagenes.length > 0">
                 <swiper class="swiper" :modules="swiperOption.modules" :pagination="{ clickable: true }"
@@ -75,6 +63,19 @@
                         </Popper>
                     </div>
                 </div>
+            </div>
+
+            <div class="description mt-6">
+                <p class="leading-8">El tiempo de espera es de {{ torneo.tiempo_espera }} minutos.</p>
+            </div>
+            <!-- <blockquote class="py-5 mb-5">
+                <p class="font-bold text-yellow italic lg:text-3xl text-xl">
+                    El ganador de cada partido será el mejor en
+                    3 de 5 set.
+                </p>
+            </blockquote> -->
+            <div class="description mt-6">
+                <p class="leading-8 font-bold">Organizador: <RouterLink class="italic font-normal hover:text-rojo-claro" :to="`/player/${torneo.organizador.id}`"> {{ torneo.organizador.nombre }} </RouterLink></p>
             </div>
 
             <div v-if="user && torneo.modo_juego && torneo.n_grupos">
@@ -129,7 +130,7 @@ export default {
         ...mapActions(['removeImageTorneo']),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
-            return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
+            return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value+'T00:00'))
         },
         onSlideChange(slide) {
             console.log('slide');

@@ -23,18 +23,19 @@ export default {
             this.inscribirEnTorneo({
                 torneo: this.torneo,
                 jugador: {
-                    jugador_id: user.value.uid,
+                    jugador_id: user.value.player.id,
                     nombre: user.value.player.nombre,
                     avatar: user.value.player.avatar,
                     puntos: 0,
                     sets: 0,
-                    posicion: 0
+                    posicion: 0,
+                    ranking: user.value.player.ranking
                 },
             }).then((inscrito) => {
                 this.procesando = false;
                 console.log('inscrito');
                 console.log(inscrito);
-                if (inscrito.id) {
+                if (inscrito) {
                     this.$emit('hide-modal')
                 }
             })

@@ -57,14 +57,35 @@ const state = {
     signUpAction({ commit, dispatch }, payload) {
       const auth = getAuth();
       return createUserWithEmailAndPassword(auth, payload.email, payload.password)
-         .then((data) => {
+         .then((data) =>  {
             
             data.nombre = payload.name;
-            console.log("Register", data);
             data.uid = data.user.uid;
-            commit("setUser", data);
-            dispatch('initPlayer',data);
-            return data;
+            console.log("Register", data);
+            
+            
+            return addDoc(collection(db, "players"), {
+              uid: data.user.uid,
+              source: 'web',
+              created_at: new Date(),
+              nombre: data.nombre ?? data.user.displayName,
+              avatar: data.user.photoURL ?? null,
+              total_torneos:0,
+              total_partidos: 0,
+              total_victorias: 0,
+              total_derrotas: 0,
+              ranking:0,
+              puntos:0
+            }).then((docRef)=>{
+              console.log("Player init: ", docRef.id);
+              commit("setUser", data);
+              return data;
+            }).catch((error)=>{
+              console.log('error init Player');
+              console.log(error);
+              return null;
+            });
+
          })
         .catch(error => {
           commit("setError", error.message);
@@ -97,7 +118,7 @@ const state = {
     },
     async initPlayer({ commit }, payload) {
       try {
-        addDoc(collection(db, "players"), {
+        await addDoc(collection(db, "players"), {
           uid: payload.user.uid,
           source: 'web',
           created_at: new Date(),
@@ -121,7 +142,8 @@ const state = {
     },
     async updateProfile({ commit, dispatch }, payload) {
       try {
-        return setDoc(doc(db, "players",payload.uid), payload)
+        console.log('updateProfile', payload);
+        return setDoc(doc(db, "players",payload.id), payload)
         .then((docRef)=>{
           console.log("Document written with ID: ", docRef);
           return docRef;

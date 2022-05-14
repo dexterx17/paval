@@ -10,7 +10,7 @@ import Footer from "@/components/Footer.vue";
 <template>
   <HeroBanner />
 
-  <GamingWorld />
+  <!-- <GamingWorld /> -->
 
   <UltimosTorneos />
 

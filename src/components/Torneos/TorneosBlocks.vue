@@ -10,7 +10,7 @@
                             id="selectgame"
                             class="px-5 h-14 w-full mb-8 sm:mb-0 sm:w-64 text-white bg-secondary-100 border-2 border-solid rounded-lg focus:outline-none border-gray-400 block"
                         >
-                            <option value class="bg-black">Todas los clubs</option>
+                            <option value class="bg-black">Todos los clubs</option>
                         </select>
                     </div>
                 </div>
@@ -44,7 +44,9 @@
                     >
                         <p class="sm:text-base text-sm font-medium">
                             
-                            {{ formatDate(match.fecha) }}
+                            <span class="capitalize">{{ formatDate(match.fecha, { weekday: "long" }) }},</span>
+                                {{ formatDate(match.fecha) }}
+                                
                             <span
                                 class="text-primary font-bold"
                             >{{ match.hora }}</span>
@@ -159,13 +161,10 @@ export default {
                 lastTorneo: lastTorneo
             });
         },
-        formatDate(date, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
-            if (date) {
-                //console.log('formateDate', date, String(date));
-                moment.locale('es');
-                return moment(date, "YYYY-MM-DD hh:mm").format('dddd, Do MMMM YYYY')
-            }
-        },
+        formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
+            if (!value) return value
+            return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value+'T00:00'))
+        }
     },
     computed: {
         totalResults() {

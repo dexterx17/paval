@@ -16,7 +16,7 @@ export default {
       BreadcrumbTitle: "Jugadores",
       BreadcrumbSubTitle: "Listado",
       players: [],
-      maxPerPage: 3,
+      maxPerPage: 12,
       showReadMore: true,
       procesandoShowMore: false
     };
@@ -24,10 +24,10 @@ export default {
   methods: {
     ...mapActions(["loadPlayers"]),
     loadMore() {
-        let lastTorneo = this.matchesData[this.matchesData.length-1];
-        let resultados = this.loadTorneos({
+        let lastPlayer = this.players[this.players.length-1];
+        let resultados = this.loadPlayers({
             limit: this.maxPerPage,
-            lastTorneo: lastTorneo
+            lastPlayer: lastPlayer
         });
     },
   },
@@ -38,7 +38,9 @@ export default {
     },
   },
   mounted() {
-    this.loadPlayers();
+    this.loadPlayers({
+            limit: this.maxPerPage
+    });
     
   },
 

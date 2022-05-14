@@ -31,7 +31,7 @@ export default {
 </script>
 <template>
     <Popper>
-        <div class="cursor-pointer">
+        <div class="cursor-pointer hover:text-rojo-claro">
             <div v-if="resultado">
                 <div class="flex flex-col" v-if="resultado">
                     

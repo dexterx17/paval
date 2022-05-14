@@ -10,7 +10,8 @@ import Footer from "@/components/Footer.vue";
 
 import { computed, ref, watch } from "vue";
 import { useRoute } from 'vue-router'
-import { useStore } from "vuex";
+import { useStore, mapGetters } from "vuex";
+
 
 export default {
     components: {
@@ -34,6 +35,9 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         }
     },
+    computed: {
+        ...mapGetters(["isUserAuth"]),
+    },
     setup() {
         const route = useRoute();
         const store = useStore();
@@ -56,7 +60,9 @@ export default {
             () => route.params.id,
             async newId => {
                 console.log('newId', newId);
-                loadClubData(newId);
+                if(newId){
+                    loadClubData(newId);
+                }
             }
         )
 

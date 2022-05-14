@@ -7,6 +7,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Avatar from "@/components/Avatar.vue";
 import Footer from "@/components/Footer.vue";
 import PlayerForm from "@/components/Players/PlayerForm.vue";
+import ClubsPlayer from "@/components/Players/ClubsPlayer.vue";
 import PlayerCounters from "@/components/Players/PlayerCounters.vue";
 
 
@@ -16,7 +17,8 @@ export default {
     Avatar,
     Footer,
     PlayerCounters,
-    PlayerForm
+    PlayerForm,
+    ClubsPlayer
   },
   methods: {
     ...mapActions(["loadProfile","signOutAction"]),
@@ -40,7 +42,7 @@ export default {
 
     const loadInfoPlayer = (playerInfo) => {
       console.log('loadInfoPlayer', playerInfo);
-      store.dispatch("loadProfile", playerInfo.uid).then((value) => {
+      store.dispatch("loadProfileByUid", playerInfo.uid).then((value) => {
         console.log("profile", value);
         playerData.value = value;
         playerData.value.uid = playerInfo.uid;
@@ -158,14 +160,7 @@ export default {
 
         <PlayerForm v-if="playerData" :player="playerData" />
 
-        <div class="about_title lg:mb-6 mb-4">
-          <h5
-            class="text-primary text-xl uppercase font-bold pl-24 lg:mb-6 mb-4 relative before:absolute content-before before:left-0 before:top-1/2 before:-translate-y-1/2 before:transform before:h-1 before:bg-primary before:w-16"
-          >Club</h5>
-          <p
-            class="text-white italic font-exo font-bold uppercase  text-2xl xl:leading-70 lg:leading-12 leading-10 max-w-sm md:max-w-xl lg:max-w-2xl"
-          >Aún no perteneces a ningún club, <RouterLink to="/clubs">Únete</RouterLink></p>
-        </div>
+        <ClubsPlayer :player="playerData" />
 
         <button class="hover:text-primary underline italic" @click="logout">Cerrar sesión</button>
       </div>

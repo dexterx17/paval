@@ -152,6 +152,7 @@ export default {
             representante: "",
             historia: "",
             imagenes: [],
+            administradores: [],
             total_series:0,
             total_miembros:0,
             total_torneos:0,

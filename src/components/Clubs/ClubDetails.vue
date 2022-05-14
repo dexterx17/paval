@@ -5,21 +5,45 @@
             <div class="flex justify-center items-center w-full p-0">
                 <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg border-4 border-light-blue-500" :src="club.logo"
                     :alt="club.nombre" />
+                    <button
+                        v-if="isUserAuth && isClubAdmin"
+                        @click="showModalAdministradores = true"
+                        class="group primary-btn opacity-100 transition-all w-auto px-2 bg-cover"
+                        style="background-image:url(/images/others/button2.png);"
+                    >
+                        Admins
+                        <img
+                            src="/images/icon/arrrow-icon.webp"
+                            alt="Arrow Icon"
+                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
+                        />
+                    </button>
             </div>
         </div>
         <!-- Team Varses Team End -->
 
+        <vue-final-modal  v-if="isUserAuth && isClubAdmin" class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
+            v-model="showModalAdministradores" :width="1000" :height="700" :adaptive="true">
+            <AdministradoresClub :club="club" @hide-modal="showModalAdministradores = false" />
+            <button
+                class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                @click="showModalAdministradores = false"></button>
+        </vue-final-modal>
+
+
         <!-- <p class="date text-primary font-bold mb-3">03 January, 2021, 05:01:00 AM</p> -->
+
         <h2
             class="text-white font-bold uppercase xl:text-title lg:text-5xl md:text-4xl sm:text-3xl text-2xl xl:leading-70 lg:leading-12 leading-10">
             {{ club.nombre }}</h2>
         
-        <div class="flex justify-center items-center">
+        
+        <div v-if="!isAfiliado && !isAfiliacionPendiente" class="flex justify-center items-center">
             <p class="px-2 pt-5">Que esperas para unirte?</p>
-            <div class="about_btn">
+            <div class="about_btn"  v-if="isUserAuth && !isAfiliado">
                 <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
                 v-model="showModalSolicitarAfiliacion" :width="1000" :height="700" :adaptive="true">
-                <SolicitarAfiliacion :club="club" />
+                <SolicitarAfiliacion :club="club" @hide-modal="showModalSolicitarAfiliacion = false" />
                 <button
                     class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                     @click="showModalSolicitarAfiliacion = false"></button>
@@ -37,7 +61,14 @@
                     />
                 </button>
             </div>
+            <RouterLink class="text-primary font-extrabold hover:text-rojo-claro" to="/register" v-else>Regístrate</RouterLink>
         </div>
+        <div v-if="isAfiliado && isAfiliacionPendiente" class="flex justify-center items-center">
+            <p class="px-2 pt-5 font-roboto text-lg">Tu solicitud de afiliación esta siendo revisada por los administadores del club...</p>
+        </div>
+
+        <SolicitudesPendientes :club="club" v-if="isUserAuth && isClubAdmin" />
+
         <div class="content-details">
             <div class="description mt-6">
                 <p class="leading-8">{{ club.historia }}</p>
@@ -78,7 +109,7 @@
                             </template>
                         </Popper>
 
-                        <Popper hover>
+                        <Popper v-if="isUserAuth && isClubAdmin" hover>
                             <button @click="eliminarImagen()"
                                 class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
                                 <img class="w-4 h-6" src="/images/icon/dribble.webp" alt="Eliminar" />
@@ -137,7 +168,7 @@ año dependiendo de las necesidades del club y de los jugadores. El torneo inter
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">TORNEOS:</h4>
-                        <p class="text-gray-400">{{ club.total_torneos }}</p>
+                        <p class="text-gray-400 hover:text-rojo-claro"><RouterLink :to="{name:'torneos'}" >{{ club.total_torneos }}</RouterLink></p>
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">MIEMBROS</h4>
@@ -166,8 +197,11 @@ import { useRoute } from 'vue-router'
 import { useStore } from "vuex";
 import Popper from "vue3-popper";
 
+
 import ImagenesClub from "@/components/Clubs/ImagenesClub.vue";
 import SolicitarAfiliacion from "@/components/Clubs/SolicitarAfiliacion.vue";
+import AdministradoresClub from "@/components/Clubs/AdministradoresClub.vue";
+import SolicitudesPendientes from "@/components/Clubs/SolicitudesPendientes.vue";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -184,6 +218,8 @@ export default {
 
         ImagenesClub,
         SolicitarAfiliacion,
+        SolicitudesPendientes,
+        AdministradoresClub,
         VueFinalModal
     },
     props:['club'],
@@ -229,7 +265,13 @@ export default {
                     })
                 }
             })
-        }
+        },
+    },
+    computed: {
+        ...mapGetters(["isUserAuth", "getUser"]),
+        isClubAdmin(){
+            return this.club.administradores.includes(this.getUser.player.id);
+        },
     },
     data() {
         return {
@@ -250,12 +292,46 @@ export default {
     setup(props) {
         const showImagesUploader = ref(false);
         const showModalSolicitarAfiliacion = ref(false);
+        const showModalAdministradores = ref(false);
 
         showImagesUploader.value = props.club.imagenes.length == 0;
 
+        const isAfiliado = ref(false);
+        const isAfiliacionPendiente = ref(false);
+        
+        const store = useStore();
+
+        const player_id = ref(store.getters.getUser ?  store.getters.getUser.player.id : null);
+
+        const verificarAfiliacion = () => {
+            store.dispatch('verificarAfiliacion', {
+                club: props.club.id,
+                player: player_id.value
+            }).then((afiliado) => {
+                console.log('afiliadoClub');
+                if(afiliado){
+                    isAfiliado.value = true;
+                    isAfiliacionPendiente.value = !afiliado.aprobado;
+                }else{
+                    isAfiliado.value = false;
+                }
+                console.log(afiliado);
+            });
+        }
+
+        verificarAfiliacion();
+
+        watch(player_id, (curr, old) => {
+            alert(curr);
+            verificarAfiliacion();
+        });
+
         return {
             showImagesUploader,
-            showModalSolicitarAfiliacion
+            showModalSolicitarAfiliacion,
+            showModalAdministradores,
+            isAfiliado,
+            isAfiliacionPendiente
         }
     }
 }

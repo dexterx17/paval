@@ -10,7 +10,8 @@ import {
     addDoc,
     updateDoc,
     runTransaction,
-    arrayUnion
+    arrayUnion,
+    increment
 } from "firebase/firestore";
 
 
@@ -130,6 +131,24 @@ const actions = {
                 await updateDoc(torneoRef, {
                     partidos: arrayUnion(partido.id),
                     jugados: arrayUnion(partido_key)
+                });
+
+                // referencia a player Ganador
+                const ganadorRef = doc(db, "players", payload.data.idGanador);
+                console.log('ganadorRef', ganadorRef)
+                //incrementamos en uno el total de torneos del jugador
+                await updateDoc(ganadorRef, {
+                    total_partidos: increment(1),
+                    total_victorias: increment(1)
+                });
+
+                // referencia a player Perdedor
+                const perdedorRef = doc(db, "players", payload.data.idPerdedor);
+                console.log('perdedorRef', perdedorRef)
+                //incrementamos en uno el total de torneos del jugador
+                await updateDoc(perdedorRef, {
+                    total_partidos: increment(1),
+                    total_derrotas: increment(1)
                 });
 
 

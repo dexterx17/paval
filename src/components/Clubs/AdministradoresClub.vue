@@ -13,38 +13,23 @@ export default {
     data() {
         return { }
     },
-    props: ["torneo"],
+    props: ["club"],
     methods: {
-        ...mapActions(["inscribirEnTorneo"]),
+        ...mapActions(["updateAdministradoresClub"]),
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         submit() {
-            const user = computed(() => this.$store.getters["getUser"]);
-            console.log('user', user.value)
-            console.log('nombre', user.value.player.nombre)
-            console.log('avatar', user.value.player.avatar)
+            console.log('clubAdmins', this.club)
             this.procesando = true;
-
-            this.jugadores.forEach((player) => {
-                this.inscribirEnTorneo({
-                    torneo: this.torneo,
-                    jugador: {
-                        jugador_id: player.id,
-                        nombre: player.nombre,
-                        avatar: player.avatar,
-                        puntos: 0,
-                        sets: 0,
-                        posicion: 0,
-                        ranking: player.ranking
-                    },
-                })
-            });
-            setTimeout(() => {
-                this.procesando = false;
-                this.$emit('hide-modal')
-            },2000);
+            let idsAdmins = this.jugadores.map(j => j.id);
+            this.updateAdministradoresClub({
+                club: this.club.id,
+                administradores: idsAdmins
+            })
+            this.procesando = false;
+            this.$emit('hide-modal')
             
         }
     },
@@ -59,16 +44,19 @@ export default {
             // console.log('search',search);
             // console.log('loading',loading);
             store
-                .dispatch("fetchPlayersOptions",{
-                    //q:search,
-                    idsInscritos: props.torneo.inscritos
+                .dispatch("fetchAllPlayersOptions",{
+                    idsInscritos: props.club.administradores
                 })
                 .then(response => {
                     console.log('response options');
                     console.log(response);
-                    if(response){
-                        clientesOptions.value = response;
-                    }
+                    console.log(props.club.administradores)
+                    clientesOptions.value = response;
+
+                    jugadores.value = response.filter( c => props.club.administradores.includes(c.id))
+
+                    clientesOptions.value = response.filter( c => !props.club.administradores.includes(c.id));
+
                 })
                 .catch((error) => {
                     console.log('error');
@@ -90,7 +78,7 @@ export default {
             jugadores.value.splice(index,1);
         }
         
-
+        
         return {
             clientesOptions,
             jugadores,
@@ -113,43 +101,23 @@ export default {
         >
             <div class="col-span-2">
                 <h2
-                    class="text-white text-center font-bold uppercase xl:text-xl lg:leading-12 leading-10"
-                >{{ torneo.nombre }}</h2>
-                <address class="my-2">
-                    <i class="text-sm text-primary">Fecha:</i>
-                    <span class="px-2">
-                        <span class="uppercase">{{ formatDate(torneo.fecha, { weekday: "long" }) }},</span>
-                        {{ formatDate(torneo.fecha) }}
-                        <strong>{{ torneo.hora }}</strong>
-                    </span>
-                </address>
-                <address class="my-2">
-                    <i class="text-sm text-primary">Hora:</i>
-                    <span class="px-2">
-                        <strong>{{ torneo.hora }}</strong>
-                        <small class="pl-4">Tiempo espera: {{ torneo.tiempo_espera }} minutos</small>
-                    </span>
-                </address>
-                <address class="my-2">
-                    <i class="text-sm text-primary">Ubicación:</i>
-                    <span class="px-2">
-                        {{ torneo.ciudad }}
-                        <strong>{{ torneo.lugar }}</strong>
-                    </span>
-                </address>
+                    class="text-primary text-center font-bold uppercase xl:text-xl lg:leading-12 leading-10"
+                >{{ club.nombre }}</h2>
+                <h5 class="py-2 text-gris-oscuro">Usuarios que pueden Administrar la información del Club</h5>
             </div>
             <div class="col-span-2">
                 <div class="">
                     <v-select
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         :options="clientesOptions"
-                        label="para_select"                        
+                        label="nombre"                        
                         @update:modelValue="addPlayer"
+                        value="id"
                         :modelValue="player"
-                        placeholder="Buscar jugadores"
+                        placeholder="Buscar socios del club"
                     >
                         <template #selected-option="option">
-                            <div class="flex border-b border-purple">
+                            <div class="flex border-b border-purple text-primary">
                                 <img
                                     class="w-12 h-12"
                                     :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
@@ -167,7 +135,9 @@ export default {
                                         <strong class="font-extrabold text-rojo-claro">    
                                             {{ option.ranking }}
                                         </strong>
-                                        Rank
+                                        <small>
+                                            Rank
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +189,7 @@ export default {
                                     </Popper>
                                 </div>
                                 <img class="w-16 h-16 lg:w-24 lg:h-24" :src="ply.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="ply.nombre">
-                                <h3 class="text-center">{{ ply.nombre }}</h3>
+                                <h3 class="text-primary text-center">{{ ply.nombre }}</h3>
                             </div>
                         </li> 
                     </ul>
@@ -237,7 +207,7 @@ export default {
                         class="form-btn group primary-btn opacity-100 transition-all uppercase"
                         style="background-image:url(/images/others/btn-bg.webp)"
                     >
-                        INSCRIBIR
+                        ACTUALIZAR
                         <img
                             src="/images/icon/arrrow-icon.webp"
                             alt="Arrow Icon"
@@ -260,8 +230,7 @@ export default {
 .modal-content {
     position: relative;
     width: 50%;
-    min-height: 300px;
-    height: 90% !important;
+    max-height: 300px;
     padding: 16px;
     overflow: auto;
     background-color: #fff;

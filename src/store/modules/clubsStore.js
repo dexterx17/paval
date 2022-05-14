@@ -8,6 +8,8 @@ import {
     setDoc,
     updateDoc,
     addDoc,
+    query,
+    where,
     arrayUnion,
     arrayRemove
 } from "firebase/firestore";
@@ -134,6 +136,19 @@ const actions = {
           console.error("Error adding document: ", e);
         }
     },
+    async updateAdministradoresClub({ commit }, payload) {
+        try {
+            console.log('updateAdministradoresClub',payload)
+            const docRef = doc(db, "clubs", payload.club);
+
+            await updateDoc(docRef, {
+                administradores: payload.administradores
+            });
+
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+    },
     async fetchClub({ commit }, payload) {
         try {
             console.log('%cclubsStore.js line:69 payload', 'color: #007acc;', payload);
@@ -143,7 +158,7 @@ const actions = {
             if (docSnap.exists()) {
                 let club = docSnap.data();
                 club.id = docSnap.id;
-                console.log("Document data:", club);
+                console.log("Docum ent data:", club);
                 commit('SET_TORNEO',club);
                 return club;
             } else {
@@ -151,16 +166,46 @@ const actions = {
                 console.log("No such document!");
             }
         } catch (e) {
-            console.error("Error adding document: ", e);
+            console.error("Error obteniendo datos de club: ", e);
+        }
+    },
+    async fetchSolicitudesClub({ commit }, payload) {
+        try {
+            console.log('fetchSolicitudes: ', payload);
+            const docRef = doc(db, "clubs", payload.club);
+            const q = query(collection(docRef, "solicitudes"), where('aprobado', '==', false));
+            const querySnapshot = await getDocs(q);
+
+            let solicitudes = [];
+
+            return doSnapShot(querySnapshot);
+
+            //commit("SET_TORNEOS_LISTENER", query);
+
+            function doSnapShot(querySnapshot) {
+                console.log("doSnapShotSolicitudesClub");
+                console.log(querySnapshot.docs);
+                querySnapshot.docs.forEach((doc) => {
+                    let p = doc.data();
+                    console.log(`${doc.id} => ${doc.data()}`);
+                    p.id = doc.id;
+                    solicitudes.push(p);
+                });
+                return solicitudes;
+            }
+
+        } catch (e) {
+            console.error("Error fetching solicitudes: ", e);
         }
     },
     async solicitarAfiliacion({ commit }, payload) {
         try {
-            const docRef = doc(db, "clubs", payload.club);
+            console.log('solicitarAfiliacion',payload)
+            const docRef = doc(db, "clubs", payload.club.id);
+            
+            const solRef = doc(docRef, "solicitudes",payload.jugador.jugador_id);
 
-            const colRef = collection(docRef, "solicitudes")
-
-            return await addDoc(colRef, payload.jugador)
+            return await setDoc(solRef,payload.jugador)
             .then((docRef) => {
                 console.log("Solicitud Afiliación with ID: ", docRef);
                 return docRef;
@@ -171,6 +216,70 @@ const actions = {
             });
         } catch (e) {
             console.error("Error adding afiliación: ", e);
+        }
+    },
+    async aprobarAfiliacion({ commit }, payload) {
+        try {
+            console.log('fetchSolicitudes: ', payload);
+            const docRef = doc(db, "clubs", payload.club.id);
+
+            //apruebo solicitud
+            const solRef = doc(docRef, "solicitudes",payload.player.id);
+            setDoc(solRef, payload.aprobacion, { merge: true });
+            
+
+            //instancia de serie asignada al jugador
+            const serieRef = doc(docRef, "series",payload.aprobacion.serie_id);
+            const infoPlayer = await getDoc(solRef);
+            
+            //añado jugador a serie
+            updateDoc(serieRef, {
+                jugadores: arrayUnion(infoPlayer.data())
+            }).then((docRes) => {
+                console.log("Jugador agregado a serie: ", docRes);
+            })
+            .catch((error) => {
+                console.log("error agregado a serie");
+                console.log(error);
+            });
+
+            //instancia de jugador
+            const playerRef = doc(db, "players", payload.player.id);
+            return await updateDoc(playerRef, {
+                clubs: arrayUnion(payload.club)
+            }).then((docRes) => {
+                console.log("Agregando club a jugador: ", docRes);
+                return docRef;
+            })
+            .catch((error) => {
+                console.log("error adding club a jugador");
+                console.log(error);
+            });
+
+        } catch (e) {
+            console.error("Error aprobando afiliacion: ", e);
+        }
+    },
+    async verificarAfiliacion({ commit },payload){
+        try {
+            console.log('verificarAfiliacion: ', payload);
+            const docRef = doc(db, "clubs", payload.club);
+
+            const solRef = doc(docRef, "solicitudes",payload.player);
+
+            const infoPlayer = await getDoc(solRef);
+
+            if (infoPlayer.exists()) {
+                console.log("Player afiliado:", infoPlayer.data());
+                return infoPlayer.data();
+              } else {
+                // doc.data() will be undefined in this case
+                console.log("Sin afiliar!");
+                return null
+              }
+        
+        }catch( e ) {
+
         }
     }
 };

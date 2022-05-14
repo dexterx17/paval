@@ -115,8 +115,6 @@ const actions = {
                 await updateDoc(torneoRef, {
                     total_torneos: increment(1)
                 });
-
-
             }
 
 
@@ -144,6 +142,13 @@ const actions = {
                 inscritos: arrayUnion(payload.jugador.jugador_id)
             });     
 
+            const playerRef = doc(db, "players", payload.jugador.jugador_id);
+            console.log('playerRef', playerRef)
+            //incrementamos en uno el total de torneos del jugador
+            await updateDoc(playerRef, {
+                total_torneos: increment(1)
+            });
+
             const jugadorSubColRef = doc(docRef, "jugadores",payload.jugador.jugador_id);
             
             return await setDoc(jugadorSubColRef, payload.jugador)
@@ -169,6 +174,14 @@ const actions = {
             await updateDoc(torneoRef, {
                 inscritos: arrayRemove(payload.jugador_id)
             });     
+
+            const playerRef = doc(db, "players", payload.jugador_id);
+            console.log('playerRef', playerRef)
+            //incrementamos en -1 el total de torneos del club
+            await updateDoc(playerRef, {
+                total_torneos: increment(-1)
+            });
+
 
             const jugadorSubColRef = doc(torneoRef, "jugadores", payload.jugador_id);
             return await deleteDoc(jugadorSubColRef)
@@ -290,9 +303,11 @@ const actions = {
     },
     async fetchInscritosTorneo({ commit }, payload) {
         try {
-            console.log('%ctorneosStore.js line:69 payload', 'color: #007acc;', payload);
+            console.log('fetchInscritosTorneo', payload);
             const docRef = doc(db, "torneos", payload);
-            const querySnapshot = await getDocs(collection(docRef, "jugadores"));
+
+            const q = query(collection(docRef, "jugadores"), orderBy('ranking','asc'))
+            const querySnapshot = await getDocs(q);
             
             let inscritos = [];
 
@@ -301,8 +316,7 @@ const actions = {
             //commit("SET_TORNEOS_LISTENER", query);
     
             function doSnapShot(querySnapshot) {
-                console.log("doSnapShot");
-                console.log(querySnapshot);
+                console.log("doSnapShotInscritosTorneo");
                 console.log(querySnapshot.docs);
                 querySnapshot.docs.forEach((doc) => {
                     let p = doc.data();

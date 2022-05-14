@@ -38,10 +38,12 @@ export default {
             imagenes: []
         };
         const seriesOptions = ref([]);
+        const playersOptions = ref([]);
 
         const clubsOptions = ref([]);
 
         const torneoData = ref(torneoModel);
+        const organizadorModel = ref(null);
 
 
         const initTorneo = () => {
@@ -65,8 +67,16 @@ export default {
             store.dispatch('loadSeriesClub', {
                 club: club.id
             }).then((items) => {
-                console.log('items');
+                console.log('series');
                 seriesOptions.value = items;
+                console.log(items);
+            });
+
+            store.dispatch('fetchSociosOptions', {
+                club: club.id
+            }).then((items) => {
+                console.log('socios');
+                playersOptions.value = items;
                 console.log(items);
             });
 
@@ -79,6 +89,15 @@ export default {
                 nombre: serie.nombre,
                 logo: serie.logo
             };
+        }
+
+        const setOrganizador = (player) => {
+            console.log('setOrganizador: ',player);
+            torneoData.value.organizador = {
+                id: player.id,
+                nombre: player.nombre,
+                avatar: player.avatar
+            }
         }
 
 
@@ -102,12 +121,15 @@ export default {
             torneoData,
             seriesOptions,
             clubsOptions,
+            playersOptions,
             showForm,
             procesandoForm,
+            organizadorModel,
 
             initTorneo,
             selectClub,
             selectSerie,
+            setOrganizador,
             submit
         };
     },
@@ -148,22 +170,6 @@ export default {
         <form @submit.prevent="submit" v-if="showForm" class="w-full max-w-lg mx-auto py-1">
             <h4 class="my-2 font-extrabold uppercase">Datos Torneo</h4>
 
-            <div class="flex flex-wrap -mx-3 mb-2">
-                <div class="w-full px-3">
-                    <label
-                        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                        for="grid-nombre"
-                    >Nombre de Torneo</label>
-                    <input
-                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                        id="grid-nombre"
-                        type="text"
-                        placeholder="Ej: Ranking Interno Categoria C"
-                        v-model="torneoData.nombre"
-                        required
-                    />
-                </div>
-            </div>
             <div class="flex flex-wrap -mx-3 mb-2">
                 <div class="w-full md:w-2/3 px-3 mb-4">
                     <label
@@ -243,6 +249,32 @@ export default {
                             </div>
                         </template>
                     </v-select>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap -mx-3 mb-2">
+                <div class="w-full px-3">
+                    <label
+                        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                        for="grid-nombre"
+                    >Nombre de Torneo</label>
+                    <input
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                        id="grid-nombre"
+                        type="text"
+                        placeholder="Ej: Ranking Interno Categoria C"
+                        v-model="torneoData.nombre"
+                        required
+                        list="nombres"
+                    />
+                    
+                        <datalist id="nombres">
+                            <option value="Ranking Interno"/>
+                            <option value="Torneo Amistoso"/>
+                            <option value="Torneo Abierto"/>
+                            <option value="Ranking Provincial"/>
+                            <option value="Ranking Nacional"/>
+                        </datalist>
                 </div>
             </div>
             <div class="flex flex-wrap -mx-3 mb-4">
@@ -353,7 +385,7 @@ export default {
                     />
                 </div>
             </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
+            <!-- <div class="flex flex-wrap -mx-3 mb-2">
                 <div class="w-full px-3 mb-6 md:mb-0">
                     <label
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -367,7 +399,58 @@ export default {
                         v-model="torneoData.organizador"
                     />
                 </div>
+            </div> -->
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full px-3 mb-6 md:mb-0">
+                    <label
+                        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                        for="grid-organizador"
+                    >Organizador</label>
+                    <v-select
+                        class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        :options="playersOptions"
+                        label="nombre"                        
+                        @update:modelValue="setOrganizador"
+                        :modelValue="organizadorModel"
+                        placeholder="Buscar jugadores"
+                    >
+                        <template #selected-option="option">
+                            <div class="flex border-b border-purple">
+                                <img
+                                    class="w-12 h-12"
+                                    :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
+                                    :alt="option.nombre"
+                                />
+                                <div class="p-2">
+                                    <h3 class="font-bold">{{ option.nombre }}</h3>
+                                    <em>
+                                        {{ option.ciudad }}
+                                        <small>{{ option.nacionalidad }}</small>
+                                    </em>
+                                </div>
+                            </div>
+                        </template>
+                        <template #option="option">
+                            <div class="flex items-center bg-purple-100 rounded-md my-1 hover:text-primary">
+                                <img
+                                    class="w-12 h-12"
+                                    :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
+                                    :alt="option.nombre"
+                                />
+                                <div class="p-2">
+                                    <h3 class="font-bold">{{ option.nombre }}</h3>
+                                    <em>
+                                        {{ option.ciudad }}
+                                        <small>{{ option.nacionalidad }}</small>
+                                    </em>
+                                </div>
+                            </div>
+                        </template>
+                    </v-select>
+                </div>
             </div>
+
+            
             <div v-if="procesandoForm" class="flex justify-center w-full">
                 <h2 class="text-primary">Procesando...</h2>
             </div>

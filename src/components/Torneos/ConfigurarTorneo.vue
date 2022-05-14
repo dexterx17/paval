@@ -232,8 +232,15 @@ export default {
                                             <div class="flex flex-col pl-1">
                                                 <span class>{{ ply.nombre }}</span>
                                                 <small
-                                                    class="text-xs text-primary"
-                                                ># {{ (torneo.inscritos.indexOf(ply.jugador_id) + 1) }}</small>
+                                                    class="text-xs text-primary flex justify-between"
+                                                >
+                                                    <span>
+                                                        <i class="text-gris">Rank:</i> {{ ply.ranking }}
+                                                    </span>
+                                                    <span>
+                                                        <i>#</i>  {{ (torneo.inscritos.indexOf(ply.jugador_id) + 1) }}
+                                                    </span>
+                                                </small>
                                             </div>
                                         </div>
                                         <div class="bg-white text-primary font-bold px-0 flex items-center ">
@@ -292,6 +299,7 @@ export default {
     position: relative;
     width: 80% !important;
     /* max-height: 300px; */
+    height: 80% !important;
     padding: 16px;
     overflow: auto;
     background-color: #fff;
