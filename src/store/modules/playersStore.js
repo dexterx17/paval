@@ -76,12 +76,12 @@ const actions = {
 	async fetchPlayersOptions({ commit }, payload) {
 		console.log("loadPlayersOptions", payload);
 		let q;
-		if (payload.idsInscritos.length > 0) {
-			q = query(collection(db, "players"), where("uid", "not-in", payload.idsInscritos));
-		} else {
-			alert('players');
-			q = query(collection(db, "players"));
-		}
+		// if (payload.idsInscritos.length > 0) {
+		// 	q = query(collection(db, "players"), where("id", "not-in", payload.idsInscritos));
+		// } else {
+			
+			q = query(collection(db, "players"), orderBy('ranking','asc'));
+		//}
 
 		const queryPlayersSnapshot = await getDocs(q);
 
@@ -96,20 +96,49 @@ const actions = {
 				let p = doc.data();
 				console.log(`Player: ${doc.id} => ${doc.data()}`);
 				p.id = doc.id;
-				players.push(p);
+				p.para_select = p.nombre + ' (' + p.ranking + ')';
+				if (!payload.idsInscritos.includes(p.id)) {
+					players.push(p);
+				}
+			});
+			return players;
+		}
+	},
+	async fetchAllPlayersOptions({ commit }, payload) {
+		console.log("loadPlayersOptions", payload);
+		let q;
+		// if (payload.idsInscritos.length > 0) {
+		// 	q = query(collection(db, "players"), where("id", "not-in", payload.idsInscritos));
+		// } else {
+			
+			q = query(collection(db, "players"), orderBy('ranking','asc'));
+		//}
+
+		const queryPlayersSnapshot = await getDocs(q);
+
+		console.log(queryPlayersSnapshot);
+		let players = [];
+		return doSnapShot(queryPlayersSnapshot);
+
+		function doSnapShot(queryPlayersSnapshot) {
+			console.log("doSnapShot");
+			console.log(queryPlayersSnapshot.docs);
+			queryPlayersSnapshot.docs.forEach((doc) => {
+				let p = doc.data();
+				console.log(`Player: ${doc.id} => ${doc.data()}`);
+				p.id = doc.id;
+				p.para_select = p.nombre + ' (' + p.ranking + ')';
+				//if (!payload.idsInscritos.includes(p.id)) {
+					players.push(p);
+				//}
 			});
 			return players;
 		}
 	},
 	async fetchSociosOptions({ commit }, payload) {
 		console.log("loadSociosOptions", payload);
-		let q;
-		if (payload.idsInscritos.length > 0) {
-			q = query(collection(db, "players"), where("n_socio", "not-in", payload.idsInscritos));
-		} else {
-			q = query(collection(db, "players"));
-		}
-
+		const docRef = doc(db, "clubs", payload.club);
+		const q = query(collection(docRef, "solicitudes"), where('aprobado', '==', true));
 		const querySociosSnapshot = await getDocs(q);
 
 		console.log(querySociosSnapshot);

@@ -24,7 +24,11 @@ export default {
             console.log('clubAdmins', this.club)
             this.procesando = true;
             this.aprobarAfiliacion({
-                club: this.club.id,
+                club: {
+                    id: this.club.id,
+                    nombre: this.club.nombre,
+                    logo: this.club.logo
+                },
                 aprobacion: this.aprobacionData,
                 player: this.player
             })

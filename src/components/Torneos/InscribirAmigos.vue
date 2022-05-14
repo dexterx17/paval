@@ -31,17 +31,20 @@ export default {
                 this.inscribirEnTorneo({
                     torneo: this.torneo,
                     jugador: {
-                        jugador_id: player.uid,
+                        jugador_id: player.id,
                         nombre: player.nombre,
                         avatar: player.avatar,
                         puntos: 0,
                         sets: 0,
-                        posicion: 0
+                        posicion: 0,
+                        ranking: player.ranking
                     },
                 })
             });
-            this.procesando = false;
-            this.$emit('hide-modal')
+            setTimeout(() => {
+                this.procesando = false;
+                this.$emit('hide-modal')
+            },2000);
             
         }
     },
@@ -140,7 +143,7 @@ export default {
                     <v-select
                         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         :options="clientesOptions"
-                        label="nombre"                        
+                        label="para_select"                        
                         @update:modelValue="addPlayer"
                         :modelValue="player"
                         placeholder="Buscar jugadores"
@@ -152,12 +155,20 @@ export default {
                                     :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
                                     :alt="option.nombre"
                                 />
-                                <div class="p-2">
-                                    <h3 class="font-bold">{{ option.nombre }}</h3>
-                                    <em>
-                                        {{ option.ciudad }}
-                                        <small>{{ option.nacionalidad }}</small>
-                                    </em>
+                                <div class="p-2 flex justify-between">
+                                    <div>
+                                        <h3 class="font-bold">{{ option.nombre }}</h3>
+                                        <em>
+                                            {{ option.ciudad }}
+                                            <small>{{ option.nacionalidad }}</small>
+                                        </em>
+                                    </div>
+                                    <div class="flex flex-col px-4 ml-2 text-center border border-primary rounded-md">
+                                        <strong class="font-extrabold text-rojo-claro">    
+                                            {{ option.ranking }}
+                                        </strong>
+                                        Rank
+                                    </div>
                                 </div>
                             </div>
                         </template>
@@ -168,12 +179,22 @@ export default {
                                     :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
                                     :alt="option.nombre"
                                 />
-                                <div class="p-2">
-                                    <h3 class="font-bold">{{ option.nombre }}</h3>
-                                    <em>
-                                        {{ option.ciudad }}
-                                        <small>{{ option.nacionalidad }}</small>
-                                    </em>
+                                <div class="p-2 flex justify-between">
+                                    <div>
+                                        <h3 class="font-bold">{{ option.nombre }}</h3>
+                                        <em>
+                                            {{ option.ciudad }}
+                                            <small>{{ option.nacionalidad }}</small>
+                                        </em>
+                                    </div>
+                                    <div class="flex flex-col px-4 ml-2 text-center border border-primary rounded-md">
+                                        <strong class="font-extrabold text-rojo-claro">    
+                                            {{ option.ranking }}
+                                        </strong>
+                                        <small>
+                                            Rank
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                         </template>
@@ -239,7 +260,8 @@ export default {
 .modal-content {
     position: relative;
     width: 50%;
-    max-height: 300px;
+    min-height: 300px;
+    height: 90% !important;
     padding: 16px;
     overflow: auto;
     background-color: #fff;

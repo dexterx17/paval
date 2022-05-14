@@ -44,7 +44,7 @@ export default {
             // console.log('search',search);
             // console.log('loading',loading);
             store
-                .dispatch("fetchPlayersOptions",{
+                .dispatch("fetchAllPlayersOptions",{
                     idsInscritos: props.club.administradores
                 })
                 .then(response => {
@@ -54,6 +54,8 @@ export default {
                     clientesOptions.value = response;
 
                     jugadores.value = response.filter( c => props.club.administradores.includes(c.id))
+
+                    clientesOptions.value = response.filter( c => !props.club.administradores.includes(c.id));
 
                 })
                 .catch((error) => {
@@ -121,12 +123,22 @@ export default {
                                     :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
                                     :alt="option.nombre"
                                 />
-                                <div class="p-2">
-                                    <h3 class="font-bold">{{ option.nombre }}</h3>
-                                    <em>
-                                        {{ option.ciudad }}
-                                        <small>{{ option.nacionalidad }}</small>
-                                    </em>
+                                <div class="p-2 flex justify-between">
+                                    <div>
+                                        <h3 class="font-bold">{{ option.nombre }}</h3>
+                                        <em>
+                                            {{ option.ciudad }}
+                                            <small>{{ option.nacionalidad }}</small>
+                                        </em>
+                                    </div>
+                                    <div class="flex flex-col px-4 ml-2 text-center border border-primary rounded-md">
+                                        <strong class="font-extrabold text-rojo-claro">    
+                                            {{ option.ranking }}
+                                        </strong>
+                                        <small>
+                                            Rank
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                         </template>
@@ -137,12 +149,22 @@ export default {
                                     :src="option.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
                                     :alt="option.nombre"
                                 />
-                                <div class="p-2">
-                                    <h3 class="font-bold">{{ option.nombre }}</h3>
-                                    <em>
-                                        {{ option.ciudad }}
-                                        <small>{{ option.nacionalidad }}</small>
-                                    </em>
+                                <div class="p-2 flex justify-between">
+                                    <div>
+                                        <h3 class="font-bold">{{ option.nombre }}</h3>
+                                        <em>
+                                            {{ option.ciudad }}
+                                            <small>{{ option.nacionalidad }}</small>
+                                        </em>
+                                    </div>
+                                    <div class="flex flex-col px-4 ml-2 text-center border border-primary rounded-md">
+                                        <strong class="font-extrabold text-rojo-claro">    
+                                            {{ option.ranking }}
+                                        </strong>
+                                        <small>
+                                            Rank
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                         </template>

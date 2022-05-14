@@ -142,6 +142,7 @@ const state = {
     },
     async updateProfile({ commit, dispatch }, payload) {
       try {
+        console.log('updateProfile', payload);
         return setDoc(doc(db, "players",payload.id), payload)
         .then((docRef)=>{
           console.log("Document written with ID: ", docRef);

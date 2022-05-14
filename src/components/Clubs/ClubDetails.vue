@@ -22,7 +22,7 @@
         </div>
         <!-- Team Varses Team End -->
 
-        <vue-final-modal  v-if="isUserAuth" class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
+        <vue-final-modal  v-if="isUserAuth && isClubAdmin" class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
             v-model="showModalAdministradores" :width="1000" :height="700" :adaptive="true">
             <AdministradoresClub :club="club" @hide-modal="showModalAdministradores = false" />
             <button
@@ -38,9 +38,9 @@
             {{ club.nombre }}</h2>
         
         
-        <div v-if="!isAfiliado" class="flex justify-center items-center">
+        <div v-if="!isAfiliado && !isAfiliacionPendiente" class="flex justify-center items-center">
             <p class="px-2 pt-5">Que esperas para unirte?</p>
-            <div class="about_btn"  v-if="isUserAuth">
+            <div class="about_btn"  v-if="isUserAuth && !isAfiliado">
                 <vue-final-modal  class="bg-transparent" name="modal-retar" classes="modal-container " content-class="modal-content"
                 v-model="showModalSolicitarAfiliacion" :width="1000" :height="700" :adaptive="true">
                 <SolicitarAfiliacion :club="club" @hide-modal="showModalSolicitarAfiliacion = false" />
@@ -62,6 +62,9 @@
                 </button>
             </div>
             <RouterLink class="text-primary font-extrabold hover:text-rojo-claro" to="/register" v-else>Regístrate</RouterLink>
+        </div>
+        <div v-if="isAfiliado && isAfiliacionPendiente" class="flex justify-center items-center">
+            <p class="px-2 pt-5 font-roboto text-lg">Tu solicitud de afiliación esta siendo revisada por los administadores del club...</p>
         </div>
 
         <SolicitudesPendientes :club="club" v-if="isUserAuth && isClubAdmin" />
@@ -165,7 +168,7 @@ año dependiendo de las necesidades del club y de los jugadores. El torneo inter
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">TORNEOS:</h4>
-                        <p class="text-gray-400">{{ club.total_torneos }}</p>
+                        <p class="text-gray-400 hover:text-rojo-claro"><RouterLink :to="{name:'torneos'}" >{{ club.total_torneos }}</RouterLink></p>
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">MIEMBROS</h4>
@@ -298,18 +301,29 @@ export default {
         
         const store = useStore();
 
-        store.dispatch('verificarAfiliacion', {
-            club: props.club.id,
-            player: store.getters.getUser.player.id
-        }).then((afiliado) => {
-            console.log('afiliadoClub');
-            if(afiliado){
-                isAfiliado.value = true;
-                isAfiliacionPendiente.value = !afiliado.aprobado;
-            }else{
-                isAfiliado.value = false;
-            }
-            console.log(afiliado);
+        const player_id = ref(store.getters.getUser ?  store.getters.getUser.player.id : null);
+
+        const verificarAfiliacion = () => {
+            store.dispatch('verificarAfiliacion', {
+                club: props.club.id,
+                player: player_id.value
+            }).then((afiliado) => {
+                console.log('afiliadoClub');
+                if(afiliado){
+                    isAfiliado.value = true;
+                    isAfiliacionPendiente.value = !afiliado.aprobado;
+                }else{
+                    isAfiliado.value = false;
+                }
+                console.log(afiliado);
+            });
+        }
+
+        verificarAfiliacion();
+
+        watch(player_id, (curr, old) => {
+            alert(curr);
+            verificarAfiliacion();
         });
 
         return {

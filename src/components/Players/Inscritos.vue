@@ -61,6 +61,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import Popper from "vue3-popper";
 import { mapGetters, mapActions } from "vuex";
 
+import { ref } from "vue";
 
 // Import Swiper styles
 import 'swiper/css/bundle';
@@ -68,7 +69,8 @@ import 'swiper/css/bundle';
 export default {
     props: {
         jugadoresInscritos: {
-            type: Object
+            type: Object,
+            required: true
         },
         torneo: {
             type: Object
@@ -90,11 +92,20 @@ export default {
             this.quitarDeTorneo({
                 torneo_id: this.torneo.id,
                 jugador_id: userId
+            }).then(r => {
+                console.log('this.inscritos',this.inscritos)
+                //this.inscritos = this.inscritos.filter( j => j.id == userId)
+                
             })
+
+            
         },
         showDeleteButton(userId){
-            return !this.torneo.modo_juego && !this.torneo.n_grupos;
-            return this.user ? this.user.uid == userId : false;
+            let torneo_por_iniciar = !this.torneo.modo_juego && !this.torneo.n_grupos;
+
+            let user_con_permisos = this.user ? (this.user.player.id == this.torneo.organizador.id || this.user.player.id == userId) : false;
+
+            return torneo_por_iniciar && user_con_permisos
         }
     },
     data() {
@@ -129,6 +140,20 @@ export default {
                     }
                 },
             },
+        }
+    },
+    setup(props){
+        const inscritos = ref([]);
+
+        inscritos.value = props.jugadoresInscritos;
+
+        console.log('props')
+        console.log(props)
+        console.log('props.jugadoresInscritos')
+        console.log(props.jugadoresInscritos)
+
+        return {
+            inscritos
         }
     }
 }

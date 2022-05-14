@@ -166,7 +166,36 @@ const actions = {
                 console.log("No such document!");
             }
         } catch (e) {
-            console.error("Error adding document: ", e);
+            console.error("Error obteniendo datos de club: ", e);
+        }
+    },
+    async fetchSolicitudesClub({ commit }, payload) {
+        try {
+            console.log('fetchSolicitudes: ', payload);
+            const docRef = doc(db, "clubs", payload.club);
+            const q = query(collection(docRef, "solicitudes"), where('aprobado', '==', false));
+            const querySnapshot = await getDocs(q);
+
+            let solicitudes = [];
+
+            return doSnapShot(querySnapshot);
+
+            //commit("SET_TORNEOS_LISTENER", query);
+
+            function doSnapShot(querySnapshot) {
+                console.log("doSnapShotSolicitudesClub");
+                console.log(querySnapshot.docs);
+                querySnapshot.docs.forEach((doc) => {
+                    let p = doc.data();
+                    console.log(`${doc.id} => ${doc.data()}`);
+                    p.id = doc.id;
+                    solicitudes.push(p);
+                });
+                return solicitudes;
+            }
+
+        } catch (e) {
+            console.error("Error fetching solicitudes: ", e);
         }
     },
     async solicitarAfiliacion({ commit }, payload) {
@@ -189,56 +218,41 @@ const actions = {
             console.error("Error adding afiliación: ", e);
         }
     },
-    async fetchSolicitudesClub({ commit }, payload) {
-        try {
-            console.log('fetchSolicitudes: ', payload);
-            const docRef = doc(db, "clubs", payload.club);
-            const q = query(collection(docRef, "solicitudes"), where('aprobado','==',false));
-            const querySnapshot = await getDocs(q);
-            
-            let solicitudes = [];
-
-            return await doSnapShot(querySnapshot);
-    
-            //commit("SET_TORNEOS_LISTENER", query);
-    
-            function doSnapShot(querySnapshot) {
-                console.log("doSnapShot");
-                console.log(querySnapshot.docs);
-                querySnapshot.docs.forEach((doc) => {
-                    let p = doc.data();
-                    console.log(`${doc.id} => ${doc.data()}`);
-                    p.id = doc.id;
-                    solicitudes.push(p);
-                });
-                return solicitudes;
-            }
-
-        } catch (e) {
-            console.error("Error fetching solicitudes: ", e);
-        }
-    },
     async aprobarAfiliacion({ commit }, payload) {
         try {
             console.log('fetchSolicitudes: ', payload);
-            const docRef = doc(db, "clubs", payload.club);
+            const docRef = doc(db, "clubs", payload.club.id);
 
+            //apruebo solicitud
             const solRef = doc(docRef, "solicitudes",payload.player.id);
+            setDoc(solRef, payload.aprobacion, { merge: true });
             
-            setDoc(solRef,payload.aprobacion, { merge: true });
 
+            //instancia de serie asignada al jugador
             const serieRef = doc(docRef, "series",payload.aprobacion.serie_id);
-
             const infoPlayer = await getDoc(solRef);
             
-            return await updateDoc(serieRef, {
+            //añado jugador a serie
+            updateDoc(serieRef, {
                 jugadores: arrayUnion(infoPlayer.data())
             }).then((docRes) => {
                 console.log("Jugador agregado a serie: ", docRes);
+            })
+            .catch((error) => {
+                console.log("error agregado a serie");
+                console.log(error);
+            });
+
+            //instancia de jugador
+            const playerRef = doc(db, "players", payload.player.id);
+            return await updateDoc(playerRef, {
+                clubs: arrayUnion(payload.club)
+            }).then((docRes) => {
+                console.log("Agregando club a jugador: ", docRes);
                 return docRef;
             })
             .catch((error) => {
-                console.log("error adding Imagen club");
+                console.log("error adding club a jugador");
                 console.log(error);
             });
 

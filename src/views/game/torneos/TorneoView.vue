@@ -57,6 +57,9 @@ export default {
     },
     computed: {
         //...mapGetters(["getTorneo"]),
+        isClubAdmin(){
+            return false;
+        },
     },
     setup() {
         const route = useRoute();
@@ -126,6 +129,7 @@ export default {
 
         const hideModalInscripcion = () => {
             showModalInscribirAmigos.value = false;
+            showModal.value = false;
             loadTorneoData();
             loadInscritos();
         }
@@ -246,20 +250,22 @@ export default {
                 </div>
             </div>
             <div v-if="user" class="flex flex-col justify-end mt-16 md:mt-0">
-                <button v-if="!torneoData.modo_juego && !torneoData.n_grupos" @click="showModalInscribirAmigos = true"
-                    class="group primary-btn opacity-100 transition-all"
-                    style="background-image:url(/images/others/btn-bg.webp)">
-                    Inscribir Amigos
-                    <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
-                        class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
-                </button>
-                <div v-if="torneoData.inscritos.includes(user.uid)"
+                <div v-if="torneoData.organizador.id == user.player.id || isClubAdmin">
+                    <button v-if="!torneoData.modo_juego && !torneoData.n_grupos" @click="showModalInscribirAmigos = true"
+                        class="group primary-btn opacity-100 transition-all"
+                        style="background-image:url(/images/others/btn-bg.webp)">
+                        Inscribir Amigos
+                        <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
+                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
+                    </button>
+                </div>
+                <div v-if="torneoData.inscritos.includes(user.player.id)"
                     class="flex flex-col align-content-center content-center">
                     <h3>Ya estas inscrito en este torneo</h3>
                     <h2
                         class="flex justify-center items-center py-2 uppercase text-2xl font-semibold text-primary text-center">
                         <small class="text-xs italic capitalize">Jugador</small>
-                        <span class="pl-2"># {{ (torneoData.inscritos.indexOf(user.uid) + 1) }}</span>
+                        <span class="pl-2"># {{ (torneoData.inscritos.indexOf(user.player.id) + 1) }}</span>
                     </h2>
                 </div>
                 <div v-else>
@@ -271,13 +277,15 @@ export default {
                             class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
                     </button>
                 </div>
-                <button @click="showModalConfigurarTorneo = true" v-if="!torneoData.modo_juego && !torneoData.n_grupos"
-                    class="group primary-btn opacity-100 transition-all"
-                    style="background-image:url(/images/others/btn-bg.webp)">
-                    Iniciar Torneo
-                    <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
-                        class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
-                </button>
+                <div v-if="torneoData.organizador.id == user.player.id || isClubAdmin">
+                    <button @click="showModalConfigurarTorneo = true" v-if="!torneoData.modo_juego && !torneoData.n_grupos"
+                        class="group primary-btn opacity-100 transition-all"
+                        style="background-image:url(/images/others/btn-bg.webp)">
+                        Iniciar Torneo
+                        <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
+                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
+                    </button>
+                </div>
             </div>
             <div v-else>
                 <div class="flex flex-col align-content-center content-center">
@@ -287,7 +295,7 @@ export default {
                 </div>
             </div>
         </div>
-        <div v-if="!torneoData.modo_juego && !torneoData.n_grupos">
+        <div v-if="!torneoData.modo_juego && !torneoData.n_grupos && user">
             <vue-final-modal  class="bg-transparent" name="modal-inscribirse" classes="modal-container " content-class="modal-content"
                 v-model="showModal" :width="1000" :height="700" :adaptive="true">
                 <InscribirseTorneo :torneo="torneoData" @hide-modal="hideModalInscripcion" />
@@ -295,7 +303,7 @@ export default {
                     class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
                     @click="showModal = false"></button>
             </vue-final-modal>
-            <vue-final-modal class="bg-transparent" name="modal-inscribir-amigos" classes="modal-container " content-class="modal-content"
+            <vue-final-modal v-if="torneoData.organizador.id == user.player.id || isClubAdmin" class="bg-transparent" name="modal-inscribir-amigos" classes="modal-container " content-class="modal-content"
                 v-model="showModalInscribirAmigos" :width="1000" :height="700" :adaptive="true">
                 <InscribirAmigos :torneo="torneoData" @hide-modal="hideModalInscripcion" />
                 <button
