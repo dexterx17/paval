@@ -27,6 +27,12 @@
                             </div>
                             
                                 <RouterLink :to="{ name: 'player', params:{ id: team.id } }">
+                                    <div class="absolute flex flex-col text-center border border-primary rounded-tl-2xl bg-gris-oscuro">
+                                        <strong>
+                                            {{ team.ranking }}
+                                        </strong>
+                                        <small class="text-sm italic">Rank</small>
+                                    </div>
                                     <img
                                         class="rounded-2xl"
                                         :src="team.avatar ?? '/images/blog/blog3.webp'"
@@ -94,11 +100,8 @@ export default {
                 jugador_id: userId
             }).then(r => {
                 console.log('this.inscritos',this.inscritos)
-                //this.inscritos = this.inscritos.filter( j => j.id == userId)
-                
+                this.$emit('reload-inscritos')
             })
-
-            
         },
         showDeleteButton(userId){
             let torneo_por_iniciar = !this.torneo.modo_juego && !this.torneo.n_grupos;

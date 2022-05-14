@@ -60,7 +60,9 @@ export default {
             () => route.params.id,
             async newId => {
                 console.log('newId', newId);
-                loadClubData(newId);
+                if(newId){
+                    loadClubData(newId);
+                }
             }
         )
 

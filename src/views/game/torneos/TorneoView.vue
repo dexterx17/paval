@@ -189,6 +189,7 @@ export default {
             cerrarTodos,
             resultadosPartido,
             crearPartido,
+            loadInscritos,
 
             handleNewImageUploaded
         }
@@ -324,6 +325,16 @@ export default {
     <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
     <div class="container">
+        <div v-if="isClubAdmin" class="bg-white grid gap-1 text-gray-700 " :class="'grid-rows-'+(gruposTorneo.length)" >
+            <div class="flex flex-col border border-primary"  v-for="grupo in gruposTorneo" :key="grupo.id">
+                <div class="border">
+                    Primero Grupo {{ grupo.grupo }}
+                </div>
+                <div class="border">
+                    Segundo Grupo {{ grupo.grupo }}
+                </div>
+            </div>
+        </div>
         <div class="my-16" v-for="grupo in gruposTorneo" :key="grupo.id">
             <div class="team-one">
                 <span class="text-primary text-lg uppercase font-semibold mb-4 block">Grupo {{ grupo.grupo }}</span>
@@ -416,7 +427,7 @@ export default {
     </div>
 
     <div class="container" v-if="torneoData">
-        <Inscritos v-if="jugadoresInscritos" :torneo="torneoData" :jugadores-inscritos="jugadoresInscritos" />
+        <Inscritos v-if="jugadoresInscritos" :torneo="torneoData" :jugadores-inscritos="jugadoresInscritos" @reload-inscritos="loadInscritos" />
 
         <div class="description mt-6">
             <RouterLink :to="{ name: 'torneos' }">

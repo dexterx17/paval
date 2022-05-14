@@ -306,7 +306,7 @@ const actions = {
             console.log('fetchInscritosTorneo', payload);
             const docRef = doc(db, "torneos", payload);
 
-            const q = query(collection(docRef, "jugadores"), orderBy('posicion','asc'))
+            const q = query(collection(docRef, "jugadores"), orderBy('ranking','asc'))
             const querySnapshot = await getDocs(q);
             
             let inscritos = [];
