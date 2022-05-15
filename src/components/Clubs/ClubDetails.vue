@@ -102,7 +102,7 @@
                         <Popper v-if="club.imagenes.length < 3" hover>
                             <button @click="showImagesUploader = true"
                                 class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
-                                <img class="w-4 h-6" src="/images/icon/facebook-bg.webp" alt="Agregar Imagen Torneo" />
+                                <i class="icofont-ui-add"></i>
                             </button>
                             <template #content>
                                 <div>Agregar Imagen</div>
@@ -112,7 +112,7 @@
                         <Popper v-if="isUserAuth && isClubAdmin" hover>
                             <button @click="eliminarImagen()"
                                 class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
-                                <img class="w-4 h-6" src="/images/icon/dribble.webp" alt="Eliminar" />
+                                <i class="icofont-ui-delete"></i>
                             </button>
                             <template #content>
                                 <div>Eliminar Imagen</div>
@@ -163,7 +163,7 @@ año dependiendo de las necesidades del club y de los jugadores. El torneo inter
                         <p class="text-gray-400">{{ club.fecha_constitucion }}</p>
                     </div>
                     <div class="additional_information_text">
-                        <h4 class="font-bold mb-5">SERIES:</h4>
+                        <h4 class="font-bold mb-5">CATEGORÍAS:</h4>
                         <p class="text-gray-400">{{ club.total_series }}</p>
                     </div>
                     <div class="additional_information_text">
@@ -176,7 +176,7 @@ año dependiendo de las necesidades del club y de los jugadores. El torneo inter
                     </div>
                     <div class="additional_information_text">
                         <h4 class="font-bold mb-5">PARTIDOS:</h4>
-                        <p class="text-gray-400">{{ club.total_partidos }}</p>
+                        <p class="text-gray-400"><RouterLink :to="{name:'partidos'}" >{{ club.total_partidos }}</RouterLink></p>
                     </div>
                 </div>
             </div>

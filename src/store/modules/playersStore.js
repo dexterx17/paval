@@ -39,14 +39,14 @@ const actions = {
 			const docRef = doc(db, "players", payload.lastPlayer.id);
 			const docSnap = await getDoc(docRef);
 			q = query(collection(db, "players"),
-				orderBy('ranking', "desc"),
+				orderBy('ranking', "asc"),
 				startAfter(docSnap),
 				limit(payload.limit)
 			)
 		} else {
 			commit("SET_PLAYERS", []);
 			q = query(collection(db, "players"),
-				orderBy('ranking', "desc"),
+				orderBy('ranking', "asc"),
 				limit(payload.limit)
 			)
 		}

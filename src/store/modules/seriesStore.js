@@ -7,6 +7,7 @@ import {
     getDoc,
     addDoc,
     updateDoc,
+    setDoc,
     increment 
 } from "firebase/firestore";
 
@@ -107,6 +108,23 @@ const actions = {
             });
         } catch (e) {
             console.error("Error adding document: ", e);
+        }
+    },
+    async updateSerie({ commit }, payload) {
+        try {
+            console.log('updateSerie', payload);
+            
+            const clubRef = doc(db, "clubs", payload.club);
+
+            setDoc(doc(clubRef, "series",payload.id), payload)
+            .then((docRef)=>{
+                console.log("Serie updated with ID: ", docRef);
+            }).catch((error)=>{
+                console.log('error Update serie');
+                console.log(error);
+            });
+        } catch (e) {
+          console.error("Error updating serie: ", e);
         }
     },
     async fetchSerie({ commit }, payload) {
