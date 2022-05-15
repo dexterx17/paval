@@ -159,7 +159,7 @@ const actions = {
                 let club = docSnap.data();
                 club.id = docSnap.id;
                 console.log("Docum ent data:", club);
-                commit('SET_TORNEO',club);
+                commit('SET_CLUB',club);
                 return club;
             } else {
                 // doc.data() will be undefined in this case

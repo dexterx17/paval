@@ -180,6 +180,11 @@ año dependiendo de las necesidades del club y de los jugadores. El torneo inter
                     </div>
                 </div>
             </div>
+
+            <div class="flex justify-end" v-if="isUserAuth && isClubAdmin">
+                <RouterLink class="italic underline hover:text-rojo-claro" :to="{name: 'players-importer', params: {id: club.id } }">Importar Jugadores</RouterLink>
+            </div>
+
         </div>
     </div>
 </template>

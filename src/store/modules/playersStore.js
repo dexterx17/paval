@@ -245,8 +245,10 @@ const actions = {
 	async importPlayers({ commit }, payload) {
 
 		console.log('payloadlll', payload);
+		
+		const clubRef = doc(db, "clubs", payload.club.id);
 
-		payload.forEach(p => {
+		payload.players.forEach(p => {
 			console.log('p', p);
 			addDoc(collection(db, "players"), {
 				nombre: p[2],
@@ -260,12 +262,41 @@ const actions = {
 				total_derrotas: 0,
 				ranking: parseInt(p[0]),
 				puntos: parseInt(p[5]),
-				n_socio: parseInt(p[3])
+				n_socio: parseInt(p[3]),
+				clubs:[{
+					id: payload.club.id,
+					nombre: payload.club.nombre,
+					logo: payload.club.logo
+				}]
 			})
-				.then((docRef) => {
-					console.log("Player with ID: ", docRef.id);
-					return docRef;
-				})
+			.then((docRef) => {
+				console.log("Player with ID: ", docRef.id);
+				console.log("Player with ID: ", docRef);
+
+				const jugador = {
+                    jugador_id: docRef.id,
+                    nombre: p[2],
+                    avatar: docRef.avatar,
+					serie_id: null,
+					ranking: parseInt(p[0]),
+					puntos: parseInt(p[5]),
+					n_socio: parseInt(p[3]),
+					aprobado:true,
+					estado: 'activo',
+                    fecha: new Date()
+                };
+
+				const solRef = doc(clubRef, "solicitudes",docRef.id);
+	
+				setDoc(solRef,jugador)
+					.then((afiliacionRef) => {
+						console.log("Solicitud Afiliación with ID: ", afiliacionRef);
+						return afiliacionRef;
+					})
+
+				
+				return docRef;
+			})
 		})
 	}
 };
