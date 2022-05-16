@@ -167,7 +167,7 @@ export default {
     computed: {
         ...mapGetters(["isUserAuth", "getUser"]),
         isClubAdmin(){
-            return this.club.administradores.includes(this.getUser.player.id);
+            return this.getUser ? this.club.administradores.includes(this.getUser.player.id) : false;
         },
     },
     setup(props){

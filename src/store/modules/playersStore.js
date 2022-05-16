@@ -14,6 +14,8 @@ import {
 	getDoc,
 	addDoc,
 	setDoc,
+	updateDoc,
+	arrayUnion
 } from "firebase/firestore";
 
 const state = {
@@ -174,7 +176,7 @@ const actions = {
 				return null;
 			}
 		} catch (e) {
-			console.error("Error adding document: ", e);
+			console.error("Error loading profile by UID: ", e);
 		}
 	},
 	async loadProfile({ commit }, payload) {
@@ -248,6 +250,7 @@ const actions = {
 		
 		const clubRef = doc(db, "clubs", payload.club.id);
 
+		console.log('clubRef',clubRef)
 		payload.players.forEach(p => {
 			console.log('p', p);
 			addDoc(collection(db, "players"), {
@@ -271,13 +274,14 @@ const actions = {
 			})
 			.then((docRef) => {
 				console.log("Player with ID: ", docRef.id);
-				console.log("Player with ID: ", docRef);
+				console.log("Player with ID: ", );
 
+				//datos de solicitud de jugador
 				const jugador = {
                     jugador_id: docRef.id,
                     nombre: p[2],
-                    avatar: docRef.avatar,
-					serie_id: null,
+                    avatar: null,
+					serie_id: p[4],
 					ranking: parseInt(p[0]),
 					puntos: parseInt(p[5]),
 					n_socio: parseInt(p[3]),
@@ -286,15 +290,20 @@ const actions = {
                     fecha: new Date()
                 };
 
+				//solicitud de afilicacion aprobada
 				const solRef = doc(clubRef, "solicitudes",docRef.id);
-	
 				setDoc(solRef,jugador)
-					.then((afiliacionRef) => {
-						console.log("Solicitud Afiliación with ID: ", afiliacionRef);
-						return afiliacionRef;
-					})
 
-				
+				//instancia de serie asignada al jugador
+				const serieRef = doc(clubRef, "series",jugador.serie_id);
+            
+				//añado jugador a serie
+				updateDoc(serieRef, {
+					jugadores: arrayUnion(jugador)
+				}).then((docRes) => {
+					console.log("Jugador agregado a serie: ", docRes);
+				})
+
 				return docRef;
 			})
 		})

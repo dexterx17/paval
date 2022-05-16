@@ -221,16 +221,16 @@ const actions = {
     async aprobarAfiliacion({ commit }, payload) {
         try {
             console.log('fetchSolicitudes: ', payload);
-            const docRef = doc(db, "clubs", payload.club.id);
+            const clubRef = doc(db, "clubs", payload.club.id);
 
             //apruebo solicitud
-            const solRef = doc(docRef, "solicitudes",payload.player.id);
+            const solRef = doc(clubRef, "solicitudes",payload.player.id);
             setDoc(solRef, payload.aprobacion, { merge: true });
             
+            const infoPlayer = await getDoc(solRef);
 
             //instancia de serie asignada al jugador
-            const serieRef = doc(docRef, "series",payload.aprobacion.serie_id);
-            const infoPlayer = await getDoc(solRef);
+            const serieRef = doc(clubRef, "series",payload.aprobacion.serie_id);
             
             //añado jugador a serie
             updateDoc(serieRef, {
@@ -249,7 +249,7 @@ const actions = {
                 clubs: arrayUnion(payload.club)
             }).then((docRes) => {
                 console.log("Agregando club a jugador: ", docRes);
-                return docRef;
+                return clubRef;
             })
             .catch((error) => {
                 console.log("error adding club a jugador");

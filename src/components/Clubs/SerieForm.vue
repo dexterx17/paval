@@ -167,7 +167,9 @@ export default {
             min_integrantes: null,
             relevancia: null,
             puntajes: null,
-            jugadores:[]
+            jugadores:[],
+            total_torneos: 0,
+            total_partidos: 0
         };
 
         const serieData = ref(serieModel);

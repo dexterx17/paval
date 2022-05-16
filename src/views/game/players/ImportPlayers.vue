@@ -26,8 +26,10 @@ export default {
     methods:{
         ...mapActions(["importPlayers"]),
         importarUsuarios(){
+
+            let players = this.tableData.slice(0,this.totalImportar);
             this.importPlayers({
-                players: this.tableData,
+                players: players,
                 club: this.clubData
             })
         },
@@ -55,17 +57,31 @@ export default {
                         if (sheet[key] == null) { 
                             break; 
                         }
-                        vm.tableRow.push(sheet[key]['w']); 
+
+                        var value = sheet[key]['w'];
+
+                        //Categoria debe estar en la celda E
+                        if(c == 'E'){
+                            let serie = vm.seriesData.find(s => s.nombre == value);
+                            if(serie){
+                                value = serie.id;
+                            }else{
+                                alert('error al encontrar Categoría de jugador '+row)
+                            }
+                        }
+                        vm.tableRow.push(value); 
                     }
                     vm.tableData.push(vm.tableRow);
                     vm.tableRow = [] 
                 } 
+                this.totalImportar = vm.tableData.length;
             };
             reader.readAsBinaryString(f); 
         },
         onLoad(){
             setTimeout(()=>{
                 var target = this.$refs.target;
+                console.log('target',target);
                 target.addEventListener('dragenter', function (){
                     this.classList.remove('hover'); 
                 });
@@ -82,7 +98,7 @@ export default {
                     e.preventDefault();
                     this.handleDrop(e.dataTransfer.files[0]);
                 }); 
-            },1500);
+            },2500);
         }
     },
     setup() {
@@ -90,6 +106,8 @@ export default {
         const store = useStore();
         const clubData = ref(null);
         const showModal = ref(false);
+        const totalImportar = ref(0);
+        const seriesData = ref([]);
 
         const loadClubData = (clubId) => {
             store.dispatch('fetchClub', clubId).then((value) => {
@@ -100,6 +118,19 @@ export default {
         }
 
         loadClubData(route.params.id);
+
+        const loadPlayersSerieData = () => {
+            store.dispatch('loadSeriesClub', {
+                club: route.params.id
+            }).then((grupos) => {
+                console.log('gruposClub');
+                console.log(grupos);
+                seriesData.value = grupos;
+            });
+        };
+
+        loadPlayersSerieData();
+
 
 
         // fetch the user information when params change
@@ -116,6 +147,8 @@ export default {
         return {
             clubData,
             showModal,
+            totalImportar,
+            seriesData
         }
     }
 
@@ -139,7 +172,7 @@ export default {
 
         <div class="description mt-6">
             <h3 class="text-2xl text-white uppercase font-bold mb-5">Importar Jugadores</h3>
-            <p class="leading-8">Sube un excel con la siguientes celdas y en el mismo orden</p>
+            <p class="leading-8 flex justify-between"><span>Sube un excel con la siguientes celdas y en el mismo orden</span> <span>Asegúrate que la columna Categoría solo puede contener: <strong class="px-1" v-for="serie in seriesData" :key="serie.id">{{ serie.nombre }}</strong></span></p>
             <table class="mx-auto">
                 <thead>
                     <tr class="border border-primary">
@@ -174,9 +207,12 @@ export default {
 
         <!-- Team Varses Team End -->
         <div ref="target" id="target" class="hover">
-            <button @click="importarUsuarios" v-if="tableData.length > 0" class="text-black p-2 bg-red-800 rounded-tl hover:text-white">
-                Importar {{ tableData.length }} jugadores
-            </button>
+            <div>
+                <button @click="importarUsuarios" v-if="tableData.length > 0" class="text-black p-2 bg-red-800 rounded-tl hover:text-white">
+                    Importar {{ totalImportar }} jugadores
+                </button>
+                <input class="text-black" min="0" :max="tableData.length" type="number" v-model="totalImportar" placeholder="Ej: 19">
+            </div>
             <table>
                 <tr v-for="data,f in tableData" :key="f">
                     <td v-for="row,c in data" :key="c">{{ row }}</td>

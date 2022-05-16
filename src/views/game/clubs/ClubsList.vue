@@ -7,6 +7,7 @@ import ClubForm from "@/components/Clubs/ClubForm.vue";
 import CounterUp from "@/components/CounterUp.vue";
 import Footer from "@/components/Footer.vue";
 
+import { mapGetters } from "vuex";
 
 export default {
     components: {
@@ -23,6 +24,9 @@ export default {
             paddingTop: "pt-8"
         };
     },
+    computed: {
+        ...mapGetters(["isUserAuth"]),
+    },
     methods: {
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
@@ -37,7 +41,7 @@ export default {
 
     <ClubsBlocks />
 
-    <ClubForm :paddingTop="paddingTop" />
+    <ClubForm v-if="isUserAuth" :paddingTop="paddingTop" />
 
     <CounterUp />
 
