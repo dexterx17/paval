@@ -111,6 +111,7 @@ export default {
 <template>
     <div>
         <form
+            v-if="partido.playerA"
             @submit.prevent="submit"
             id="contact-form"
             class="grid sm:gap-x-8 gap-x-4 grid-cols-2"

@@ -347,7 +347,7 @@ export default {
 
     <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
-    <div class="container">
+    <div class="container"  v-if="torneoData">
         <div  class="bg-white rounded grid gap-1 text-gray-700" :class="'grid-cols-'+(gruposTorneo.length)" >
             <div>
                 <div v-for="grupo in cuartosFinal" :key="grupo.id">
@@ -388,10 +388,10 @@ export default {
             </div>
             <div class="flex flex-col border border-primary row-span-2" >
                 <div class="border">
-                    Primero Grupo 2
+                    Player 1
                 </div>
                 <div class="border">
-                    Segundo Grupo 1
+                    Player 2
                 </div>
             </div>
 
@@ -479,12 +479,12 @@ export default {
                 </section>
             </div>
         </div>
-        <vue-final-modal class="bg-transparent" name="modal-crear-partido" classes="modal-container "
+        <vue-final-modal  class="bg-transparent" name="modal-crear-partido" classes="modal-container "
             content-class="modal-content" v-model="showModalCrearPartido" 
             @closed="cerrarTodos"
             :esc-to-close="true"
             :adaptive="true">
-            <CrearPartidoTorneo v-if="torneoData" :partido="newPartidoData"
+            <CrearPartidoTorneo v-if="torneoData.modo_juego && torneoData.n_grupos" :partido="newPartidoData"
                 @hide-modal="hideModalRegistrarPartido" />
             <button
                 class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
