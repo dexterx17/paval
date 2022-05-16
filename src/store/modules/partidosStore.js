@@ -11,6 +11,8 @@ import {
     updateDoc,
     runTransaction,
     arrayUnion,
+    orderBy,
+    where,
     increment
 } from "firebase/firestore";
 
@@ -92,6 +94,48 @@ const actions = {
             return partidos;
         }
 
+    },
+    async loadPartidosJugador({ commit }, payload) {
+        console.log("loadPartidosJugador", payload);
+        let q;
+        if (payload.lastPartido) {
+            const docRef = doc(db, "partidos", payload.lastPartido.id);
+            const docSnap = await getDoc(docRef);
+            q = query(collection(db, "partidos"),
+                where('playerA.id', '==', payload.player_id),
+                orderBy('fecha', "desc"),
+                startAfter(docSnap),
+                limit(payload.limit)
+            )
+        } else {
+            commit("SET_PARTIDOS", []);
+            q = query(collection(db, "partidos"),
+                where('playerA.id','==',payload.player_id),
+                orderBy('fecha', "desc"),
+                limit(payload.limit)
+            )
+        }
+
+        const querySnapshot = await getDocs(q);
+        let partidos = [];
+
+        return doSnapShot(querySnapshot);
+
+        //commit("SET_TORNEOS_LISTENER", query);
+
+        function doSnapShot(querySnapshot) {
+            console.log("doSnapShotPartidos");
+            console.log(querySnapshot.docs);
+            querySnapshot.docs.forEach((doc) => {
+                let p = doc.data();
+                console.log(`Partido: ${doc.id} => ${doc.data()}`);
+                p.id = doc.id;
+                partidos.push(p);
+                commit("ADD_PARTIDO", p);
+            });
+            //commit("SET_TORNEOS", partidos);
+            return partidos;
+        }
     },
     async addPartido({ commit }, payload) {
         try {

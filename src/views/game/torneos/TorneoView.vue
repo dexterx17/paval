@@ -52,7 +52,7 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         totalPartidosGrupo(jugadores){
-            return ((jugadores.length-1) * 2);
+            return ((jugadores.length-1) * jugadores.length)/2;
         }
     },
     computed: {
@@ -108,23 +108,31 @@ export default {
                 console.log('gruposTorneo');
                 console.log(grupos);
                 gruposTorneo.value = grupos;
-                cuartosFinal.value = grupos;
-
-                cuartosFinal.value = cuartosFinal.value.map(gr => {
-                    gr.jugadores = gr.jugadores.sort((a,b) => a.posicion-b.posicion);
-
-                    gr.eliminatorias = [];
-                    return gr;
-                });
-
                 
-                for (let index = 0, index2= grupos.length-1; index < grupos.length; index++, index2-- ) {
+                gruposTorneo.value = gruposTorneo.value.map(g => {
+                    g.jugadores = g.jugadores.sort((a,b) => a.indice - b.indice);
+                    g.ganadores = g.jugadores.sort((a,b) => a.posicion - b.posicion);
+                    return g;
+                })
+                
+                if(gruposTorneo.length> 1){
 
-
-                    cuartosFinal.value[index].eliminatorias.push({
-                        playerA: cuartosFinal.value[index].jugadores[0],
-                        playerB: cuartosFinal.value[index2].jugadores[1]
+                    cuartosFinal.value = grupos;
+    
+                    cuartosFinal.value = cuartosFinal.value.map(gr => {
+                        gr.jugadores = gr.jugadores.sort((a,b) => a.posicion-b.posicion);
+                        gr.eliminatorias = [];
+                        return gr;
                     });
+    
+                    
+                    for (let index = 0, index2= grupos.length-1; index < grupos.length; index++, index2-- ) {
+                        cuartosFinal.value[index].eliminatorias.push({
+                            playerA: cuartosFinal.value[index].jugadores[0],
+                            playerB: cuartosFinal.value[index2].jugadores[1]
+                        });
+                    }
+
 
                 }
 
@@ -348,7 +356,36 @@ export default {
     <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
     <div class="container"  v-if="torneoData">
-        <div  class="bg-white rounded grid gap-1 text-gray-700" :class="'grid-cols-'+(gruposTorneo.length)" >
+        <div v-if="gruposTorneo.length == 1"  class="flex items-end justify-center podium border border-gris-claro p-2 rounded-lg">
+            <div class="podium__item flex flex-col justify-center items-center">
+                <RouterLink :to="{name: 'player', params: {id: gruposTorneo[0].ganadores[1].id } }" class="px-2 hover:scale-110">
+                    <img :src="gruposTorneo[0].ganadores[1].avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="gruposTorneo[0].ganadores[1].nombre" />
+                </RouterLink>
+                <p class="podium__city">{{ gruposTorneo[0].ganadores[1].nombre }}</p>
+                <div class="podium__rank second w-full">2</div>
+            </div>
+            <div class="podium__item flex flex-col justify-center">
+                <RouterLink :to="{name: 'player', params: {id: gruposTorneo[0].ganadores[0].id } }" class="px-2 hover:scale-110">
+                <img class="w-full" :src="gruposTorneo[0].ganadores[0].avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="gruposTorneo[0].ganadores[0].nombre" />
+                </RouterLink>
+                <p class="podium__city">{{ gruposTorneo[0].ganadores[0].nombre }}</p>
+                <div class="podium__rank first">
+                <svg class="podium__number" viewBox="0 0 27.476 75.03" xmlns="http://www.w3.org/2000/svg">
+                <g transform="matrix(1, 0, 0, 1, 214.957736, -43.117417)">
+                    <path class="st8" d="M -198.928 43.419 C -200.528 47.919 -203.528 51.819 -207.828 55.219 C -210.528 57.319 -213.028 58.819 -215.428 60.019 L -215.428 72.819 C -210.328 70.619 -205.628 67.819 -201.628 64.119 L -201.628 117.219 L -187.528 117.219 L -187.528 43.419 L -198.928 43.419 L -198.928 43.419 Z" style="fill: #000;"/>
+                </g>
+                </svg>
+                </div>
+            </div>
+            <div class="podium__item flex flex-col items-center">
+                <RouterLink :to="{name: 'player', params: {id: gruposTorneo[0].ganadores[2].id } }" class="px-2 hover:scale-110">
+                    <img :src="gruposTorneo[0].ganadores[2].avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="gruposTorneo[0].ganadores[2].nombre" />
+                </RouterLink>
+                <p class="podium__city">{{ gruposTorneo[0].ganadores[2].nombre }}</p>
+                <div class="podium__rank w-full third">3</div>
+            </div>
+        </div>
+        <div v-if="gruposTorneo.length > 1"  class="bg-white rounded grid gap-1 text-gray-700" :class="'grid-cols-'+(gruposTorneo.length)" >
             <div>
                 <div v-for="grupo in cuartosFinal" :key="grupo.id">
                     <div class="flex flex-col border border-primary m-2 rounded"  v-for="partido, index2 in grupo.eliminatorias" :key="index2">
@@ -540,4 +577,49 @@ export default {
 .modal-close::hover {
     color: gray;
 }
+
+
+.podium__item {
+  width: 200px;
+}
+
+.podium__rank {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  color: #fff;
+}
+
+.podium__city {
+  text-align: center;
+  padding: 0 .5rem;
+}
+
+.podium__number {
+  width: 27px;
+  height: 75px;
+}
+
+.podium .first {
+  min-height: 150px;
+  background: rgb(255,172,37);
+background: 
+  linear-gradient(333deg, 
+  rgba(255,172,37,1) 0%, 
+  rgba(254,207,51,1) 13%, 
+  rgba(254,224,51,1) 53%, 
+  rgba(255,172,37,1) 100%);
+}
+
+.podium .second {
+  min-height: 100px;
+  background: blue;
+}
+
+.podium .third {
+  min-height: 50px;
+  background: green;
+}
+
 </style>

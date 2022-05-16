@@ -93,6 +93,7 @@ export default {
 
         const setOrganizador = (player) => {
             console.log('setOrganizador: ',player);
+            organizadorModel.value = player;
             torneoData.value.organizador = {
                 id: player.id,
                 nombre: player.nombre,

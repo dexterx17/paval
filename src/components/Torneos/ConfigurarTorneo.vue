@@ -21,6 +21,15 @@ export default {
         },
         submit() {
             this.procesando = true;
+            //asignar orden original de jugadores en cada grupo
+            this.grupos = this.grupos.map(g=>{
+                g.jugadores = g.jugadores.map((j,i) => {
+                    j.indice = (i+1);
+                    return j;
+                });
+                return g;
+            })
+
             this.configurarTorneo({
                 torneo_id: this.torneo.id,
                 data: {

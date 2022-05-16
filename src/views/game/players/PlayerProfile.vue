@@ -10,6 +10,8 @@ import PlayerForm from "@/components/Players/PlayerForm.vue";
 import ClubsPlayer from "@/components/Players/ClubsPlayer.vue";
 import PlayerCounters from "@/components/Players/PlayerCounters.vue";
 
+import UltimosPartidos from "@/components/Partidos/UltimosPartidos.vue";
+
 
 export default {
   components: {
@@ -18,7 +20,8 @@ export default {
     Footer,
     PlayerCounters,
     PlayerForm,
-    ClubsPlayer
+    ClubsPlayer,
+    UltimosPartidos
   },
   methods: {
     ...mapActions(["loadProfile","signOutAction"]),
@@ -168,6 +171,8 @@ export default {
   </div>
 
   <PlayerCounters v-if="playerData" :player="playerData" />
+
+  <UltimosPartidos />
 
   <Footer />
 </template>
