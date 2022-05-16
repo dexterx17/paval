@@ -9,6 +9,9 @@ import Footer from "@/components/Footer.vue";
 import PlayerCounters from "@/components/Players/PlayerCounters.vue";
 import ClubsPlayer from "@/components/Players/ClubsPlayer.vue";
 import RetarJugador from "@/components/Players/RetarJugador.vue";
+
+import UltimosPartidosPlayer from "@/components/Players/UltimosPartidosPlayer.vue";
+
 import { $vfm, VueFinalModal } from 'vue-final-modal'
 
 export default {
@@ -18,6 +21,7 @@ export default {
     PlayerCounters,
     RetarJugador,
     ClubsPlayer,
+    UltimosPartidosPlayer,
 
     VueFinalModal
   },
@@ -158,6 +162,8 @@ export default {
   </div>
 
   <PlayerCounters  v-if="playerData" :player="playerData" />
+
+  <UltimosPartidosPlayer />
 
   <Footer />
 </template>
