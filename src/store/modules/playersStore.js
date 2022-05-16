@@ -14,6 +14,8 @@ import {
 	getDoc,
 	addDoc,
 	setDoc,
+	updateDoc,
+	arrayUnion
 } from "firebase/firestore";
 
 const state = {
@@ -39,14 +41,14 @@ const actions = {
 			const docRef = doc(db, "players", payload.lastPlayer.id);
 			const docSnap = await getDoc(docRef);
 			q = query(collection(db, "players"),
-				orderBy('ranking', "desc"),
+				orderBy('ranking', "asc"),
 				startAfter(docSnap),
 				limit(payload.limit)
 			)
 		} else {
 			commit("SET_PLAYERS", []);
 			q = query(collection(db, "players"),
-				orderBy('ranking', "desc"),
+				orderBy('ranking', "asc"),
 				limit(payload.limit)
 			)
 		}
@@ -174,7 +176,7 @@ const actions = {
 				return null;
 			}
 		} catch (e) {
-			console.error("Error adding document: ", e);
+			console.error("Error loading profile by UID: ", e);
 		}
 	},
 	async loadProfile({ commit }, payload) {
@@ -245,8 +247,11 @@ const actions = {
 	async importPlayers({ commit }, payload) {
 
 		console.log('payloadlll', payload);
+		
+		const clubRef = doc(db, "clubs", payload.club.id);
 
-		payload.forEach(p => {
+		console.log('clubRef',clubRef)
+		payload.players.forEach(p => {
 			console.log('p', p);
 			addDoc(collection(db, "players"), {
 				nombre: p[2],
@@ -260,12 +265,47 @@ const actions = {
 				total_derrotas: 0,
 				ranking: parseInt(p[0]),
 				puntos: parseInt(p[5]),
-				n_socio: parseInt(p[3])
+				n_socio: parseInt(p[3]),
+				clubs:[{
+					id: payload.club.id,
+					nombre: payload.club.nombre,
+					logo: payload.club.logo
+				}]
 			})
-				.then((docRef) => {
-					console.log("Player with ID: ", docRef.id);
-					return docRef;
+			.then((docRef) => {
+				console.log("Player with ID: ", docRef.id);
+				console.log("Player with ID: ", );
+
+				//datos de solicitud de jugador
+				const jugador = {
+                    jugador_id: docRef.id,
+                    nombre: p[2],
+                    avatar: null,
+					serie_id: p[4],
+					ranking: parseInt(p[0]),
+					puntos: parseInt(p[5]),
+					n_socio: parseInt(p[3]),
+					aprobado:true,
+					estado: 'activo',
+                    fecha: new Date()
+                };
+
+				//solicitud de afilicacion aprobada
+				const solRef = doc(clubRef, "solicitudes",docRef.id);
+				setDoc(solRef,jugador)
+
+				//instancia de serie asignada al jugador
+				const serieRef = doc(clubRef, "series",jugador.serie_id);
+            
+				//añado jugador a serie
+				updateDoc(serieRef, {
+					jugadores: arrayUnion(jugador)
+				}).then((docRes) => {
+					console.log("Jugador agregado a serie: ", docRes);
 				})
+
+				return docRef;
+			})
 		})
 	}
 };

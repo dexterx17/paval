@@ -79,7 +79,7 @@ export default {
     <ClubDetails v-if="clubData" :club="clubData" />
 
     <div class="container">
-        <SerieClubPlayers />
+        <SerieClubPlayers  v-if="clubData" :club="clubData" />
     </div>
 
     <div v-if="clubData">
