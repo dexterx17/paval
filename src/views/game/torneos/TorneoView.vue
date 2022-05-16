@@ -52,7 +52,7 @@ export default {
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value))
         },
         totalPartidosGrupo(jugadores){
-            return ((jugadores.length-1) * (jugadores.length-1))-1;
+            return ((jugadores.length-1) * 2);
         }
     },
     computed: {
@@ -67,6 +67,8 @@ export default {
         const torneoData = ref(null);
         const jugadoresInscritos = ref([]);
         const gruposTorneo = ref([]);
+        const cuartosFinal = ref([]);
+
         const showModal = ref(false);
         const showModalConfigurarTorneo = ref(false);
         const showModalCrearPartido = ref(false);
@@ -106,7 +108,27 @@ export default {
                 console.log('gruposTorneo');
                 console.log(grupos);
                 gruposTorneo.value = grupos;
+                cuartosFinal.value = grupos;
 
+                cuartosFinal.value = cuartosFinal.value.map(gr => {
+                    gr.jugadores = gr.jugadores.sort((a,b) => a.posicion-b.posicion);
+
+                    gr.eliminatorias = [];
+                    return gr;
+                });
+
+                
+                for (let index = 0, index2= grupos.length-1; index < grupos.length; index++, index2-- ) {
+
+
+                    cuartosFinal.value[index].eliminatorias.push({
+                        playerA: cuartosFinal.value[index].jugadores[0],
+                        playerB: cuartosFinal.value[index2].jugadores[1]
+                    });
+
+                }
+
+                
             });
         };
 
@@ -176,6 +198,7 @@ export default {
             torneoData,
             jugadoresInscritos,
             gruposTorneo,
+            cuartosFinal,
             showModal,
             showModalConfigurarTorneo,
             showModalCrearPartido,
@@ -325,15 +348,53 @@ export default {
     <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
     <div class="container">
-        <div v-if="isClubAdmin" class="bg-white grid gap-1 text-gray-700 " :class="'grid-rows-'+(gruposTorneo.length)" >
-            <div class="flex flex-col border border-primary"  v-for="grupo in gruposTorneo" :key="grupo.id">
+        <div  class="bg-white rounded grid gap-1 text-gray-700" :class="'grid-cols-'+(gruposTorneo.length)" >
+            <div>
+                <div v-for="grupo in cuartosFinal" :key="grupo.id">
+                    <div class="flex flex-col border border-primary m-2 rounded"  v-for="partido, index2 in grupo.eliminatorias" :key="index2">
+                        <div class="border border-primary border-dotted">
+                            <div class="flex justify-between align-middle ">
+                                <div class="flex flex-row items-center pl-1">
+                                    <img class="w-8 h-8 rounded-xl mx-auto"
+                                        :src="partido.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partido.playerA.nombre" />
+                                    <div class="text-center">
+                                        <span class="text-center">{{ partido.playerA.nombre }} 1ero</span>
+                                    </div>
+                                </div>
+                                <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
+                                    0
+                                </span>
+                            </div>
+                        </div>
+                        <div class="border">
+                            <div class="flex justify-between align-middle ">
+                                <div class="flex flex-row items-center pl-1">
+                                    <img class="w-8 h-8 rounded-xl mx-auto"
+                                        :src="partido.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partido.playerB.nombre" />
+                                    <div class="text-center">
+                                        <span class="text-center">{{ partido.playerB.nombre }} 2do</span>
+                                    </div>
+                                </div>
+                            
+                                <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
+                                    0
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+
+            </div>
+            <div class="flex flex-col border border-primary row-span-2" >
                 <div class="border">
-                    Primero Grupo {{ grupo.grupo }}
+                    Primero Grupo 2
                 </div>
                 <div class="border">
-                    Segundo Grupo {{ grupo.grupo }}
+                    Segundo Grupo 1
                 </div>
             </div>
+
         </div>
         <div class="my-16" v-for="grupo in gruposTorneo" :key="grupo.id">
             <div class="team-one">
@@ -347,8 +408,13 @@ export default {
                                     <div class="flex flex-col italic text-primary">
                                         <span>{{
                                             totalPartidosGrupo(grupo.jugadores)
-                                        }}</span>
-                                        <span>Partidos</span>
+                                        }}
+                                            Partidos
+                                        </span>
+                                        <small>
+                                            <i class="">{{ (grupo.jugadores.length-1) }}</i>
+                                            x Jugador
+                                        </small>
                                     </div>
                                 </th>
                                 <td v-for="ply in grupo.jugadores" :key="ply.id" class="border p-1">

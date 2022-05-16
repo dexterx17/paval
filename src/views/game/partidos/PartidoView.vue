@@ -7,6 +7,7 @@
 
     import Breadcrumb from "@/components/Breadcrumb.vue";
     import Footer from "@/components/Footer.vue";
+    import Popper from "vue3-popper";
 
     import EstablecerResultados from "@/components/Partidos/EstablecerResultados.vue";
 
@@ -16,6 +17,7 @@
             Footer,
             CountTo,
             EstablecerResultados,
+            Popper,
 
             VueFinalModal,
             ModalsContainer
@@ -105,9 +107,24 @@
             <div class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 max-w-lg mx-auto">
                 <div class="grid grid-cols-1 items-center">
                     <div class="flex justify-center items-center w-full px-20 sm:px-0">
-                        <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg" :src="partidoData.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partidoData.playerA.nombre">
+                        <Popper hover>
+                            <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg" :src="partidoData.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partidoData.playerA.nombre">
+                            <template #content>
+                                <RouterLink :to="`/player/${partidoData.playerA.id}`">
+                                    Ver perfil
+                                </RouterLink>
+                            </template>
+                        </Popper>
                         <img class="lg:mr-9 mr-5" src="/images/others/game-vs1.webp" alt="Feature Icon">
-                        <img class="w-24 h-24 rounded-lg" :src="partidoData.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partidoData.playerB.nombre">
+
+                        <Popper hover>
+                            <img class="w-24 h-24 rounded-lg" :src="partidoData.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partidoData.playerB.nombre">
+                            <template #content>
+                                <RouterLink :to="`/player/${partidoData.playerB.id}`">
+                                    Ver perfil
+                                </RouterLink>
+                            </template>
+                        </Popper>
                     </div>
                 </div>
             </div>

@@ -124,6 +124,12 @@ export default {
                         <div class="grid grid-cols-1 items-center">
                             <div class="flex justify-center items-center w-full px-0 lg:px-8">
                                 <div class="text-center">
+                                    <div class="absolute flex flex-col text-center border border-primary rounded-tl-2xl bg-gris-oscuro">
+                                        <strong>
+                                            {{ partido.playerA.ranking }}
+                                        </strong>
+                                        <small class="text-sm italic">Rank</small>
+                                    </div>
                                     <img
                                         class="w-16 h-16 rounded-2xl"
                                         :src="partido.playerA ? (partido.playerA.avatar ??  '/images/others/upcoming-game-thumb3.webp') : ''"
@@ -137,6 +143,12 @@ export default {
                                     alt="Feature Icon"
                                 />
                                 <div class="text-center">
+                                    <div class="absolute flex flex-col text-center border border-primary rounded-tl-2xl bg-gris-oscuro">
+                                        <strong>
+                                            {{ partido.playerB.ranking }}
+                                        </strong>
+                                        <small class="text-sm italic">Rank</small>
+                                    </div>
                                     <img
                                         class="w-16 h-16 rounded-2xl"
                                         :src="partido.playerB ? ( partido.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp') : ''"
@@ -181,7 +193,7 @@ export default {
                         for="grid-club">SETS</label>
                     <input
                         class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
-                        type="number" v-model="resultadoA" :placeholder="`Puntos (${partido.playerA ? partido.playerA.nombre : ''})`"
+                        type="number" min="0" max="9" v-model="resultadoA" :placeholder="`Puntos (${partido.playerA ? partido.playerA.nombre : ''})`"
                         required />
                 </div>
                 <div class="w-1/2 px-3 mb-2 flex items-center">
@@ -189,7 +201,7 @@ export default {
                         for="grid-club">SETS</label>
                     <input
                         class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
-                        type="number" v-model="resultadoB" :placeholder="`Puntos (${partido.playerB ? partido.playerB.nombre : ''})`"
+                        type="number" min="0" max="9" v-model="resultadoB" :placeholder="`Puntos (${partido.playerB ? partido.playerB.nombre : ''})`"
                         required />
                 </div>
             </div>
