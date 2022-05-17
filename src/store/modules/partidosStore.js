@@ -9,10 +9,13 @@ import {
     getDoc,
     addDoc,
     updateDoc,
+    deleteDoc,
     runTransaction,
     arrayUnion,
+    arrayRemove,
     orderBy,
     where,
+    startAfter,
     increment
 } from "firebase/firestore";
 
@@ -111,6 +114,48 @@ const actions = {
             commit("SET_PARTIDOS", []);
             q = query(collection(db, "partidos"),
                 where('playerA.id','==',payload.player_id),
+                orderBy('fecha', "desc"),
+                limit(payload.limit)
+            )
+        }
+
+        const querySnapshot = await getDocs(q);
+        let partidos = [];
+
+        return doSnapShot(querySnapshot);
+
+        //commit("SET_TORNEOS_LISTENER", query);
+
+        function doSnapShot(querySnapshot) {
+            console.log("doSnapShotPartidos");
+            console.log(querySnapshot.docs);
+            querySnapshot.docs.forEach((doc) => {
+                let p = doc.data();
+                console.log(`Partido: ${doc.id} => ${doc.data()}`);
+                p.id = doc.id;
+                partidos.push(p);
+                commit("ADD_PARTIDO", p);
+            });
+            //commit("SET_TORNEOS", partidos);
+            return partidos;
+        }
+    },
+    async loadPartidosTorneo({ commit }, payload) {
+        console.log("loadPartidosTorneo", payload);
+        let q;
+        if (payload.lastPartido) {
+            const docRef = doc(db, "partidos", payload.lastPartido.id);
+            const docSnap = await getDoc(docRef);
+            q = query(collection(db, "partidos"),
+                where('torneo_id', '==', payload.torneo_id),
+                orderBy('fecha', "desc"),
+                startAfter(docSnap),
+                limit(payload.limit)
+            )
+        } else {
+            commit("SET_PARTIDOS", []);
+            q = query(collection(db, "partidos"),
+                where('torneo_id','==',payload.torneo_id),
                 orderBy('fecha', "desc"),
                 limit(payload.limit)
             )
@@ -277,7 +322,6 @@ const actions = {
                 console.log(partido);
                 return partido;
             });
-            console.log("Partido registrado correctamente!");
         } catch (e) {
             console.error("Error adding partido: ", e);
         }
@@ -382,6 +426,136 @@ const actions = {
 
         } catch (e) {
             console.error("Error adding document: ", e);
+        }
+    },
+    async deletePartidoTorneo({ commit }, payload) {
+        try {
+            console.log('deletePartidoTorneo');
+            console.log(payload);
+            return await runTransaction(db, async (transaction) => {
+
+                const colPartido = doc(db, "partidos",payload.partido.id);
+
+                // borramos partido
+                let partido = await deleteDoc(colPartido, payload.partido);
+
+
+                console.log('partido', partido);
+                let partido_key = payload.partido.playerA.id + '_' + payload.partido.playerB.id;
+                console.log('partido_key', partido_key);
+
+                // referencia a torneo
+                const torneoRef = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
+                // actualizamos torneo
+                await updateDoc(torneoRef, {
+                    partidos: arrayRemove(payload.partido.id),
+                    jugados: arrayRemove(partido_key)
+                });
+
+                // referencia a player Ganador
+                const ganadorRef = doc(db, "players", payload.data.idGanador);
+                console.log('ganadorRef', ganadorRef)
+                //decrementamos en uno el total de torneos del jugador
+                await updateDoc(ganadorRef, {
+                    total_partidos: increment(-1),
+                    total_victorias: increment(-1)
+                });
+
+                // referencia a player Perdedor
+                const perdedorRef = doc(db, "players", payload.data.idPerdedor);
+                console.log('perdedorRef', perdedorRef)
+                //decrementamos en uno el total de torneos del jugador
+                await updateDoc(perdedorRef, {
+                    total_partidos: increment(-1),
+                    total_derrotas: increment(-1)
+                });
+
+
+                const refGrupo = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
+                const sfGrupo = await transaction.get(refGrupo);
+                if (!sfGrupo.exists()) {
+                    throw "Grupo does not exist!";
+                }
+
+                console.log('sfGrupo', sfGrupo.data());
+
+                const resultados = sfGrupo.data().resultados;
+
+                console.log('resultados', resultados);
+                delete resultados[payload.partido.id];
+                console.log('resultados', resultados);
+
+                const jugadores = sfGrupo.data().jugadores;
+                console.log('jugadores sfGrupo', jugadores);
+
+                let players = jugadores.map(j => {
+                    if (j.id == payload.data.idGanador) {
+                        j.puntos = j.puntos - 2;
+                        j.sets = j.sets - (payload.data.puntosGanador - payload.data.puntosPerdedor);
+                    }
+                    if (j.id == payload.data.idPerdedor) {
+                        j.puntos = j.puntos - 1;
+                        j.sets = j.sets - (payload.data.puntosPerdedor - payload.data.puntosGanador);
+                    }
+                    return j;
+                });
+
+                console.log('jugadoresConPuntos', players);
+
+                let puntos_players = jugadores.filter(j => j.puntos > 0).map(j => j.puntos);
+                let sets_players = jugadores.filter(j => j.puntos > 0).map(j => j.sets);
+
+                console.log('Puntos', puntos_players);
+                console.log('Sets', sets_players);
+
+                puntos_players = puntos_players.sort((a, b) => a - b).reverse();
+                console.log('Puntos Ordenados', puntos_players);
+
+                sets_players = sets_players.sort((a, b) => a - b).reverse();
+                console.log('Sets Ordenados', sets_players);
+
+                let players_posiciones = jugadores.map(j => {
+                    console.log('j', j);
+
+                    //posicion con puntos
+                    let posicion = puntos_players.indexOf(j.puntos);
+                    //count de puntos en array de puntajes
+                    let puntos_iguales = puntos_players.reduce((a, v) => (v === j.puntos ? a + 1 : a), 0);
+                    console.log('puntos_iguales: ', puntos_iguales);
+                    //si hay otro usuario con puntos iguales
+                    if (puntos_iguales > 1) {
+                        //excluir sets de jugadores con mayor posicion
+
+                        let sets_sin_jugadores_superiores = sets_players.filter(i => i > j.sets);
+                        console.log('sets_sin_jugadores_superiores: ', sets_sin_jugadores_superiores);
+
+                        //posicion con sets
+                        let posicion_set = sets_players.indexOf(j.sets);
+                        //j.posicion = (posicion==-1 ? 0 : posicion )+ (posicion_set+1);
+                        j.posicion = (posicion_set + 1);
+                    } else {
+                        j.posicion = (posicion + 1);
+                    }
+
+
+                    console.log('Posicion: ' + j.posicion);
+                    return j;
+                });
+
+                console.log('jugadoresConPosiciones', players_posiciones);
+
+
+                transaction.update(refGrupo, {
+                    resultados: resultados,
+                    jugadores: players_posiciones
+                });
+
+                console.log('partido return');
+                console.log(partido);
+                return partido;
+            });
+        } catch (e) {
+            console.error("Error eliminando partido: ", e);
         }
     },
     async fetchPartido({ commit }, payload) {

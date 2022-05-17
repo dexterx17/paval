@@ -11,6 +11,7 @@ import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 import InscribirAmigos from "@/components/Torneos/InscribirAmigos.vue";
 import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
 import CrearPartidoTorneo from "@/components/Partidos/CrearPartidoTorneo.vue";
+import UltimosPartidosTorneo from "@/components/Torneos/UltimosPartidosTorneo.vue";
 
 import Inscritos from '@/components/Players/Inscritos.vue';
 
@@ -23,20 +24,21 @@ import BloqueResultadoGrupo from "@/components/Partidos/BloqueResultadoGrupo.vue
 
 export default {
     components: {
-    Breadcrumb,
-    TorneoDetails,
-    Footer,
-    VueFinalModal,
-   // ModalsContainer,
-    CountTo,
-    InscribirseTorneo,
-    InscribirAmigos,
-    ConfigurarTorneo,
-    CrearPartidoTorneo,
-    Inscritos,
-    Popper,
-    BloqueResultadoGrupo
-},
+        Breadcrumb,
+        TorneoDetails,
+        Footer,
+        VueFinalModal,
+    // ModalsContainer,
+        CountTo,
+        InscribirseTorneo,
+        InscribirAmigos,
+        ConfigurarTorneo,
+        CrearPartidoTorneo,
+        UltimosPartidosTorneo,
+        Inscritos,
+        Popper,
+        BloqueResultadoGrupo
+    },
     data() {
         return {
             BreadcrumbTitle: "Detalles Torneo",
@@ -56,9 +58,10 @@ export default {
         }
     },
     computed: {
-        //...mapGetters(["getTorneo"]),
+        //...mapGetters(["isUserAuth", "getUser"]),
         isClubAdmin(){
             return false;
+          //  return this.getUser ? this.club.administradores.includes(this.getUser.player.id) : false;
         },
     },
     setup() {
@@ -110,8 +113,44 @@ export default {
                 gruposTorneo.value = grupos;
                 
                 gruposTorneo.value = gruposTorneo.value.map(g => {
-                    g.jugadores = g.jugadores.sort((a,b) => a.indice - b.indice);
-                    g.ganadores = g.jugadores.sort((a,b) => a.posicion - b.posicion);
+                    console.log('jugadoresSinOrdenar',g.jugadores);
+                    let jugadores = [...g.jugadores];
+                    let ganadores = [...g.jugadores];
+                    g.jugadores = jugadores.sort((a,b) => a.indice - b.indice);
+                    g.ganadores = ganadores.sort((a,b) => a.posicion - b.posicion);
+
+                    let matchs = [];
+
+                    g.jugadores.forEach(pl1 => {
+                        g.jugadores.forEach(pl2 => {
+                            if(pl1.id != pl2.id){
+                                let keys = [
+                                    pl1.id+'_'+pl2.id,
+                                    pl2.id+'_'+pl1.id
+                                ];
+                                
+                                let match = matchs.find(m => keys.includes(m.key));
+
+                                if(match){
+                                    
+                                }else{
+                                    console.log('pendiente: '+pl1.id+'_'+pl2.id)
+                                    matchs.push({
+                                        key: pl1.id+'_'+pl2.id,
+                                        playerA: pl1,
+                                        playerB: pl2
+                                    })
+                                }
+                                
+                            }
+                        });
+                    });
+                    console.log('matchs',matchs.length)
+                    console.log('jugados',g.jugados)
+                    matchs = matchs.filter( m => !g.jugados.includes(m.key));
+                    console.log('matchs',matchs)
+                    g.matchs = matchs;
+
                     return g;
                 })
                 
@@ -178,6 +217,10 @@ export default {
             loadGruposData();
         }
 
+        const handlePartidoEliminado = () => {
+            loadGruposData();
+        };
+
         const cerrarTodos = () => {
             console.log('cerrarA');
             $vfm.hideAll();
@@ -222,7 +265,8 @@ export default {
             crearPartido,
             loadInscritos,
 
-            handleNewImageUploaded
+            handleNewImageUploaded,
+            handlePartidoEliminado
         }
     }
 }
@@ -470,7 +514,7 @@ export default {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border" v-for="ply in grupo.jugadores" :key="ply.id">
+                            <tr class="border hover:bg-gray-900" v-for="ply in grupo.jugadores" :key="ply.id">
                                 <td class="border border-dotted px-2">
                                     {{ ply.indice }}
                                 </td>
@@ -519,6 +563,42 @@ export default {
 
                 </section>
             </div>
+
+            <h2 class="mt-2 uppercase ">Partidos Pendientes <span class="mx-2 font-bold">{{ grupo.matchs.length}} <i>de</i> {{ totalPartidosGrupo(grupo.jugadores)}}</span></h2>
+            <div>
+                <ul class="grid gap-1 grid-cols-4">
+                    <li v-for="ply in grupo.matchs" :key="ply.key" class="border p-1">
+                            <div
+                                class="flex justify-around items-center px-4 w-full"
+                                >
+                                <Popper hover>
+                                    <div class="">
+                                        <strong>
+                                            {{ ply.playerA.indice }}
+                                        </strong>
+                                        <img
+                                            class="w-4 h-4 mx-2"
+                                            src="/images/others/game-vs1.webp"
+                                            alt="Feature Icon"
+                                        />
+                                        <strong>
+                                            {{ ply.playerB.indice }}
+                                        </strong>
+                                    </div>
+                                    <template #content>
+                                        {{ ply.playerA.nombre}}
+                                        <img
+                                            class="w-4 h-4 mx-2"
+                                            src="/images/others/game-vs1.webp"
+                                            alt="Feature Icon"
+                                        />
+                                        {{ ply.playerB.nombre}}
+                                    </template>
+                                </Popper>
+                            </div>
+                    </li>
+                </ul>
+            </div>
         </div>
         <vue-final-modal  class="bg-transparent" name="modal-crear-partido" classes="modal-container "
             content-class="modal-content" v-model="showModalCrearPartido" 
@@ -544,6 +624,8 @@ export default {
             </RouterLink>
         </div>
     </div>
+
+    <UltimosPartidosTorneo v-if="torneoData"  :torneo="torneoData" @reload-data="handlePartidoEliminado" />
 
     <Footer />
 </template>

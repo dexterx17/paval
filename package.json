@@ -8,13 +8,14 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@chenfengyuan/vue-number-input": "^2.0.1",
     "@popperjs/core": "^2.11.5",
     "cropperjs": "^1.5.12",
     "firebase": "^9.6.8",
     "moment": "^2.29.1",
     "swiper": "^8.0.7",
     "tailwindcss-pseudo": "^1.0.3",
-    "vue": "^3.2.31",
+    "vue": "^3.2.33",
     "vue-awesome-swiper": "^5.0.1",
     "vue-backtotop": "^1.6.1",
     "vue-client-only": "^2.0.0",
