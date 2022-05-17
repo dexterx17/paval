@@ -356,7 +356,7 @@ export default {
     <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
     <div class="container"  v-if="torneoData">
-        <div v-if="gruposTorneo.length == 1"  class="flex items-end justify-center podium border border-gris-claro p-2 rounded-lg">
+        <div v-if="gruposTorneo.length == 1 &&  gruposTorneo[0].partidos.length == totalPartidosGrupo(gruposTorneo[0].jugadores)"  class="flex items-end justify-center podium border border-gris-claro p-2 rounded-lg">
             <div class="podium__item flex flex-col justify-center items-center">
                 <RouterLink :to="{name: 'player', params: {id: gruposTorneo[0].ganadores[1].id } }" class="px-2 hover:scale-110">
                     <img :src="gruposTorneo[0].ganadores[1].avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="gruposTorneo[0].ganadores[1].nombre" />
@@ -438,9 +438,10 @@ export default {
                 <span class="text-primary text-lg uppercase font-semibold mb-4 block">Grupo {{ grupo.grupo }}</span>
                 <!-- <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Jugadores Inscritos</h2> -->
                 <section>
-                    <table class="border-2 border-primary mx-auto">
+                    <table class="border-2 border-primary mx-auto rounded">
                         <thead>
                             <tr>
+                                <th class="border rounded border-dotted px-2">#</th>
                                 <th>
                                     <div class="flex flex-col italic text-primary">
                                         <span>{{
@@ -470,6 +471,9 @@ export default {
                         </thead>
                         <tbody>
                             <tr class="border" v-for="ply in grupo.jugadores" :key="ply.id">
+                                <td class="border border-dotted px-2">
+                                    {{ ply.indice }}
+                                </td>
                                 <td>
                                     <div class="flex flex-col align-middle pl-1">
                                         <img class="w-8 h-8 rounded-xl mx-auto"

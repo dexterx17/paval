@@ -46,12 +46,12 @@
                         <div
                             class="md:col-start-10 md:col-end-13 flex md:justify-end justify-center items-center w-full "
                         >
-                            <div class="rounded-lg text-center">
+                            <div class="rounded-lg text-center flex flex-col justify-center">
                                 <img :src="match.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="match.playerA.nombre">
                                 <strong v-if="match.resultado"> {{ match.resultado.split(':')[0] }} </strong>
                             </div>
                             <img class="mx-5" src="/images/others/game-vs1.webp" alt="Feature Icon">
-                            <div class="text-center">
+                            <div class="text-center flex flex-col justify-center">
                                 <img class=" rounded-lg" :src="match.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="match.playerB.nombre">
                                 <strong v-if="match.resultado"> {{ match.resultado.split(':')[1] }} </strong>
                             </div>
