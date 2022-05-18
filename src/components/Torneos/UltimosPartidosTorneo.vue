@@ -8,7 +8,7 @@
                 <div
                     v-for="(match, imageIndex) in matchesData"
                     :key="imageIndex"
-                    class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 mb-7.5 last:mb-0"
+                    class="border-4 border-light-blue-500 rounded-4xl px-10 lg:px-16 py-8 mb-7.5 last:mb-0 relative"
                 >
                     <div class="grid md:grid-cols-12 grid-cols-1 items-center">
                         <div
@@ -56,6 +56,19 @@
                                 <strong v-if="match.resultado"> {{ match.resultado.split(':')[1] }} </strong>
                             </div>
                         </div>
+
+                    </div>
+                    <div v-if="showDeleteButton" class="text-sm absolute px-3 right-1 top-0 bg-red-500 rounded-tr-3xl">
+                        <Popper
+                            placement="top"
+                            hover>
+                            <button @click="eliminarPartido(match)" >
+                                X
+                            </button>
+                            <template #content class="z-99">
+                                <div>Eliminar Partido</div>
+                            </template>
+                        </Popper>
                     </div>
                 </div>
             </div>
@@ -76,40 +89,88 @@
 import TitleSection from '@/components/Title/TitleSection.vue'
 
 import { computed } from 'vue';
-import { mapActions, useStore } from "vuex";
+import { mapActions, useStore, mapGetters } from "vuex";
 import { useRoute } from 'vue-router'
+import Popper from "vue3-popper";
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 export default {
     components: {
         TitleSection,
+        Popper
     },
     data() {
         return {
             title: "Últimos partidos",
-            text: "Partidos de este jugador ordenados cronológicamente",
+            text: "Partidos de este torneo ordenados cronológicamente",
             index: null,
             maxPerPage: 3,
             showReadMore: true,
         }
     },
+    props:['torneo'],
     computed: {
+        ...mapGetters(["isUserAuth", "getUser"]),
+        showDeleteButton() {
+            return  this.getUser ? (this.torneo.organizador.id == this.getUser.player.id) : false;
+        },
         totalResults() {
             return Object.keys(this.matchesData).length
         },
     },
     methods: {
-        ...mapActions(["loadPartidosJugador"]),
+        ...mapActions(["loadPartidosTorneo","deletePartidoTorneo"]),
         loadMore() {
-            let lastTorneo = this.matchesData[this.matchesData.length-1];
-            let resultados = this.loadPartidosJugador({
+            let lastPartido = this.matchesData[this.matchesData.length-1];
+            let resultados = this.loadPartidosTorneo({
                 limit: this.maxPerPage,
-                player_id: this.$route.params.id,
-                lastTorneo: lastTorneo
+                torneo_id: this.$route.params.id,
+                lastPartido: lastPartido
             });
         },
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
             if (!value) return value
             return new Intl.DateTimeFormat('es-ES', formatting).format(new Date(value+'T00:00'))
+        },
+        eliminarPartido(match){
+            
+            Swal.fire({
+                title: 'Estás seguro?',
+                text: "Quieres borrar este partido?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, borrarla!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let resultadoA = match.resultado.split(':')[0];
+                    let resultadoB = match.resultado.split(':')[1];
+
+                    let idGanador = resultadoA > resultadoB ? match.playerA.id : match.playerB.id;
+                    let idPerdedor = resultadoA > resultadoB ? match.playerB.id : match.playerA.id;
+                    let puntosGanador = resultadoA > resultadoB ? resultadoA : resultadoB;
+                    let puntosPerdedor = resultadoA > resultadoB ? resultadoB : resultadoA;
+
+
+                    this.deletePartidoTorneo({
+                        partido: match,
+                        data:{
+                            idGanador: idGanador,
+                            puntosGanador: puntosGanador,
+                            idPerdedor: idPerdedor,
+                            puntosPerdedor: puntosPerdedor,
+                        }
+                    }).then(e => {
+                        console.log('partido borrado correctamente', e)
+                        this.$emit('reload-data');
+                        this.matchesData = this.matchesData.filter(m => m.id != match.id)
+                    });
+                }
+            });
+
         }
     },
     setup() {
@@ -134,9 +195,9 @@ export default {
     },
     mounted() {
 
-        this.loadPartidosJugador({
+        this.loadPartidosTorneo({
             limit: this.maxPerPage,
-            player_id: this.$route.params.id
+            torneo_id: this.$route.params.id
         });
     },
 }

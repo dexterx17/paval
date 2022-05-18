@@ -4,10 +4,12 @@ import { computed, ref } from 'vue';
 
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
+import VueNumberInput from '@chenfengyuan/vue-number-input';
 
 export default {
     components: {
-        vSelect
+        vSelect,
+        VueNumberInput
     },
     props: ["partido"],
     methods: {
@@ -56,6 +58,11 @@ export default {
         }
     },
     computed:{
+        puntosMaximos: function(){
+            let modo = this.partido.torneo.modo_juego;
+            let min = modo.split('de');
+            return min.length > 0 ? parseInt(min[0]) : 0;
+        },
         resultadoFinal: function(){
             return this.resultadoA + ':' + this.resultadoB;
         },
@@ -189,21 +196,31 @@ export default {
                 </div>
             </div>
             <div class="col-span-2 flex flex-wrap -mx-3">
-                <div class="w-1/2 px-3 mb-2 flex  items-center">
-                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
+                <div class="w-1/2 px-3 mb-2 flex  items-center justify-end">
+                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2 pr-2"
                         for="grid-club">SETS</label>
-                    <input
-                        class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
-                        type="number" min="0" max="9" v-model="resultadoA" :placeholder="`Puntos (${partido.playerA ? partido.playerA.nombre : ''})`"
-                        required />
+                    <vue-number-input class="text-black border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md  focus:outline-none"
+                                    :placeholder="`Puntos (${partido.playerA ? partido.playerA.nombre : ''})`"
+                                    v-model="resultadoA"
+                                    :min="0"
+                                    :max="puntosMaximos"
+                                    inline
+                                    :attrs="{ required: true }"
+                                    controls>
+                        </vue-number-input>
                 </div>
                 <div class="w-1/2 px-3 mb-2 flex items-center">
-                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2"
+                    <label class="uppercase tracking-wide text-center text-primary text-xs font-bold mb-2 pr-2"
                         for="grid-club">SETS</label>
-                    <input
-                        class="px-6 h-12 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
-                        type="number" min="0" max="9" v-model="resultadoB" :placeholder="`Puntos (${partido.playerB ? partido.playerB.nombre : ''})`"
-                        required />
+                    <vue-number-input class="text-black border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md  focus:outline-none"
+                            :placeholder="`Puntos (${partido.playerB ? partido.playerB.nombre : ''})`"
+                            v-model="resultadoB"
+                            :min="0"
+                            :max="puntosMaximos"
+                            inline
+                            :attrs="{ required: true }"
+                            controls>
+                    </vue-number-input>
                 </div>
             </div>
             <div class="single-fild col-span-2">

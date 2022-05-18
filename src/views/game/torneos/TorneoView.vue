@@ -11,6 +11,7 @@ import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 import InscribirAmigos from "@/components/Torneos/InscribirAmigos.vue";
 import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
 import CrearPartidoTorneo from "@/components/Partidos/CrearPartidoTorneo.vue";
+import UltimosPartidosTorneo from "@/components/Torneos/UltimosPartidosTorneo.vue";
 
 import Inscritos from '@/components/Players/Inscritos.vue';
 
@@ -23,20 +24,21 @@ import BloqueResultadoGrupo from "@/components/Partidos/BloqueResultadoGrupo.vue
 
 export default {
     components: {
-    Breadcrumb,
-    TorneoDetails,
-    Footer,
-    VueFinalModal,
-   // ModalsContainer,
-    CountTo,
-    InscribirseTorneo,
-    InscribirAmigos,
-    ConfigurarTorneo,
-    CrearPartidoTorneo,
-    Inscritos,
-    Popper,
-    BloqueResultadoGrupo
-},
+        Breadcrumb,
+        TorneoDetails,
+        Footer,
+        VueFinalModal,
+    // ModalsContainer,
+        CountTo,
+        InscribirseTorneo,
+        InscribirAmigos,
+        ConfigurarTorneo,
+        CrearPartidoTorneo,
+        UltimosPartidosTorneo,
+        Inscritos,
+        Popper,
+        BloqueResultadoGrupo
+    },
     data() {
         return {
             BreadcrumbTitle: "Detalles Torneo",
@@ -56,9 +58,9 @@ export default {
         }
     },
     computed: {
-        //...mapGetters(["getTorneo"]),
+        ...mapGetters(["isUserAuth", "getUser"]),
         isClubAdmin(){
-            return false;
+            return this.getUser ? ( this.club ? this.club.administradores.includes(this.getUser.player.id) : false ) : false;
         },
     },
     setup() {
@@ -67,7 +69,9 @@ export default {
         const torneoData = ref(null);
         const jugadoresInscritos = ref([]);
         const gruposTorneo = ref([]);
-        const cuartosFinal = ref([]);
+        const semiFinales = ref([]);
+        const finales = ref(null);
+        const club = ref(null);
 
         const showModal = ref(false);
         const showModalConfigurarTorneo = ref(false);
@@ -94,12 +98,23 @@ export default {
             });
         };
 
+        const loadClubData = (clubId) => {
+            store.dispatch('fetchClub', clubId).then((clubResponse) => {
+                console.log('clubResponse');
+                console.log(clubResponse);
+                club.value = clubResponse;
+            });
+        };
+
         const loadTorneoData = () => {
             store.dispatch('fetchTorneo', route.params.id).then((torneo) => {
                 console.log('torneoData');
                 console.log(torneo);
                 torneoData.value = torneo;
                 newPartidoData.value.torneo = torneo;
+                if(torneo.club){
+                    loadClubData(torneo.club.id)
+                }
             });
         };
 
@@ -110,30 +125,68 @@ export default {
                 gruposTorneo.value = grupos;
                 
                 gruposTorneo.value = gruposTorneo.value.map(g => {
-                    g.jugadores = g.jugadores.sort((a,b) => a.indice - b.indice);
-                    g.ganadores = g.jugadores.sort((a,b) => a.posicion - b.posicion);
+                    console.log('jugadoresSinOrdenar',g.jugadores);
+                    let jugadores = [...g.jugadores];
+                    let ganadores = [...g.jugadores];
+                    g.jugadores = jugadores.sort((a,b) => a.indice - b.indice);
+                    g.ganadores = ganadores.sort((a,b) => a.posicion - b.posicion);
+
+                    let matchs = [];
+
+                    g.jugadores.forEach(pl1 => {
+                        g.jugadores.forEach(pl2 => {
+                            if(pl1.id != pl2.id){
+                                let keys = [
+                                    pl1.id+'_'+pl2.id,
+                                    pl2.id+'_'+pl1.id
+                                ];
+                                
+                                let match = matchs.find(m => keys.includes(m.key));
+
+                                if(match){
+                                    
+                                }else{
+                                    console.log('pendiente: '+pl1.id+'_'+pl2.id)
+                                    matchs.push({
+                                        key: pl1.id+'_'+pl2.id,
+                                        playerA: pl1,
+                                        playerB: pl2
+                                    })
+                                }
+                                
+                            }
+                        });
+                    });
+                    console.log('matchs',matchs.length)
+                    console.log('jugados',g.jugados)
+                    matchs = matchs.filter( m => !g.jugados.includes(m.key));
+                    console.log('matchs',matchs)
+                    g.matchs = matchs;
+
                     return g;
                 })
                 
-                if(gruposTorneo.length> 1){
+                if(gruposTorneo.value.length == 2){
 
-                    cuartosFinal.value = grupos;
-    
-                    cuartosFinal.value = cuartosFinal.value.map(gr => {
-                        gr.jugadores = gr.jugadores.sort((a,b) => a.posicion-b.posicion);
-                        gr.eliminatorias = [];
-                        return gr;
-                    });
-    
-                    
-                    for (let index = 0, index2= grupos.length-1; index < grupos.length; index++, index2-- ) {
-                        cuartosFinal.value[index].eliminatorias.push({
-                            playerA: cuartosFinal.value[index].jugadores[0],
-                            playerB: cuartosFinal.value[index2].jugadores[1]
-                        });
+                    semiFinales.value = [{
+                        'playerA': grupos[0].ganadores[0],
+                        'playerB': grupos[1].ganadores[1],
+                    },{
+                        'playerA': grupos[1].ganadores[0],
+                        'playerB': grupos[0].ganadores[1],
+                    }];
+
+                    let ganador =  grupos[0].ganadores[0];
+                    let perdedor =  grupos[1].ganadores[0];
+
+                    finales.value = {
+                        key: ganador.id+'_'+perdedor.id,
+                        playerA: ganador,
+                        playerB: perdedor
                     }
 
-
+                }else if(gruposTorneo.value.length == 3){
+                    
                 }
 
                 
@@ -178,6 +231,10 @@ export default {
             loadGruposData();
         }
 
+        const handlePartidoEliminado = () => {
+            loadGruposData();
+        };
+
         const cerrarTodos = () => {
             console.log('cerrarA');
             $vfm.hideAll();
@@ -206,12 +263,14 @@ export default {
             torneoData,
             jugadoresInscritos,
             gruposTorneo,
-            cuartosFinal,
+            semiFinales,
+            finales,
             showModal,
             showModalConfigurarTorneo,
             showModalCrearPartido,
             showModalInscribirAmigos,
             user,
+            club,
             newPartidoData,
 
             hideModalConfigurar,
@@ -222,7 +281,8 @@ export default {
             crearPartido,
             loadInscritos,
 
-            handleNewImageUploaded
+            handleNewImageUploaded,
+            handlePartidoEliminado
         }
     }
 }
@@ -356,7 +416,7 @@ export default {
     <TorneoDetails v-if="torneoData" :torneo="torneoData" @imagen-cargada="handleNewImageUploaded" />
 
     <div class="container"  v-if="torneoData">
-        <div v-if="gruposTorneo.length == 1"  class="flex items-end justify-center podium border border-gris-claro p-2 rounded-lg">
+        <div v-if="gruposTorneo.length == 1 &&  gruposTorneo[0].partidos.length == totalPartidosGrupo(gruposTorneo[0].jugadores)"  class="flex items-end justify-center podium border border-gris-claro p-2 rounded-lg">
             <div class="podium__item flex flex-col justify-center items-center">
                 <RouterLink :to="{name: 'player', params: {id: gruposTorneo[0].ganadores[1].id } }" class="px-2 hover:scale-110">
                     <img :src="gruposTorneo[0].ganadores[1].avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="gruposTorneo[0].ganadores[1].nombre" />
@@ -387,8 +447,9 @@ export default {
         </div>
         <div v-if="gruposTorneo.length > 1"  class="bg-white rounded grid gap-1 text-gray-700" :class="'grid-cols-'+(gruposTorneo.length)" >
             <div>
-                <div v-for="grupo in cuartosFinal" :key="grupo.id">
-                    <div class="flex flex-col border border-primary m-2 rounded"  v-for="partido, index2 in grupo.eliminatorias" :key="index2">
+                <h2 class="text-center text-primary font-bold pt-1">SEMI-FINALES</h2>
+                <div v-for="partido in semiFinales" :key="partido.id">
+                    <div class="flex flex-col border border-primary m-2 rounded">
                         <div class="border border-primary border-dotted">
                             <div class="flex justify-between align-middle ">
                                 <div class="flex flex-row items-center pl-1">
@@ -421,14 +482,40 @@ export default {
                     </div>
     
                 </div>
-
             </div>
-            <div class="flex flex-col border border-primary row-span-2" >
-                <div class="border">
-                    Player 1
-                </div>
-                <div class="border">
-                    Player 2
+            <div v-if="finales" class="flex flex-col items-center justify-center mr-2">
+                <h2 class="text-center text-primary font-bold pt-1 justify-self-start ">FINAL</h2>
+                <div  class="flex flex-col border border-primary w-full rounded m-2" >
+                    <div class="border border-primary border-dotted">
+                        <div class="flex justify-between align-middle ">
+                            <div class="flex flex-row items-center pl-1">
+                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                    :src="finales.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="finales.playerA.nombre" />
+                                <div class="text-center">
+                                    <span class="text-center">{{ finales.playerA.nombre }} 1ero</span>
+                                </div>
+                            </div>
+                            <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
+                                0
+                            </span>
+                        </div>
+                    </div>
+                    <div class="border ">
+                        <div class="flex justify-between align-middle ">
+                            <div class="flex flex-row items-center pl-1">
+                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                    :src="finales.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="finales.playerB.nombre" />
+                                <div class="text-center">
+                                    <span class="text-center">{{ finales.playerB.nombre }} 2do</span>
+                                </div>
+                            </div>
+                        
+                            <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
+                                0
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -438,10 +525,10 @@ export default {
                 <span class="text-primary text-lg uppercase font-semibold mb-4 block">Grupo {{ grupo.grupo }}</span>
                 <!-- <h2 class="font-bold uppercase text-xl md:text-4xl mb-8">Jugadores Inscritos</h2> -->
                 <section>
-                    <table class="border-2 border-primary mx-auto">
+                    <table class="border-2 border-primary mx-auto rounded">
                         <thead>
                             <tr>
-                                <th>
+                                <th class="border rounded border-dotted px-2" colspan="2">
                                     <div class="flex flex-col italic text-primary">
                                         <span>{{
                                             totalPartidosGrupo(grupo.jugadores)
@@ -469,7 +556,10 @@ export default {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border" v-for="ply in grupo.jugadores" :key="ply.id">
+                            <tr class="border hover:bg-gray-900" v-for="ply in grupo.jugadores" :key="ply.id">
+                                <td class="border border-dotted px-2">
+                                    {{ ply.indice }}
+                                </td>
                                 <td>
                                     <div class="flex flex-col align-middle pl-1">
                                         <img class="w-8 h-8 rounded-xl mx-auto"
@@ -515,6 +605,42 @@ export default {
 
                 </section>
             </div>
+
+            <h2 class="mt-2 uppercase ">Partidos Pendientes <span class="mx-2 font-bold">{{ grupo.matchs.length}} <i>de</i> {{ totalPartidosGrupo(grupo.jugadores)}}</span></h2>
+            <div>
+                <ul class="grid gap-1 grid-cols-4">
+                    <li v-for="ply in grupo.matchs" :key="ply.key" class="border p-1">
+                            <div
+                                class="flex justify-around items-center px-4 w-full"
+                                >
+                                <Popper hover>
+                                    <div class="">
+                                        <strong>
+                                            {{ ply.playerA.indice }}
+                                        </strong>
+                                        <img
+                                            class="w-4 h-4 mx-2"
+                                            src="/images/others/game-vs1.webp"
+                                            alt="Feature Icon"
+                                        />
+                                        <strong>
+                                            {{ ply.playerB.indice }}
+                                        </strong>
+                                    </div>
+                                    <template #content>
+                                        {{ ply.playerA.nombre}}
+                                        <img
+                                            class="w-4 h-4 mx-2"
+                                            src="/images/others/game-vs1.webp"
+                                            alt="Feature Icon"
+                                        />
+                                        {{ ply.playerB.nombre}}
+                                    </template>
+                                </Popper>
+                            </div>
+                    </li>
+                </ul>
+            </div>
         </div>
         <vue-final-modal  class="bg-transparent" name="modal-crear-partido" classes="modal-container "
             content-class="modal-content" v-model="showModalCrearPartido" 
@@ -540,6 +666,8 @@ export default {
             </RouterLink>
         </div>
     </div>
+
+    <UltimosPartidosTorneo v-if="torneoData"  :torneo="torneoData" @reload-data="handlePartidoEliminado" />
 
     <Footer />
 </template>

@@ -34,7 +34,8 @@ export default {
                 torneo_id: this.torneo.id,
                 data: {
                     modo_juego: this.modoJuego,
-                    n_grupos: this.nGrupos
+                    n_grupos: this.nGrupos,
+                    n_mesas: this.nMesas
                 },
                 grupos: this.grupos
             }).then((torneo) => {
@@ -91,6 +92,7 @@ export default {
     setup(props) {
         const modoJuego = ref('2de3');
         const nGrupos = ref(1);
+        const nMesas = ref(4);
         const nGrupoOption = ref({
                 id: 1,
                 label: '1 Grupo (3 a 7 jugadores)'
@@ -140,6 +142,7 @@ export default {
         return {
             modoJuego,
             nGrupos,
+            nMesas,
             nGrupoOption,
             grupos,
             procesando,
@@ -216,6 +219,19 @@ export default {
                         @reduce="val => val.id"
                         @update:modelValue="selectTotalGrupos"
                     ></v-select>
+                </div>
+            </div>
+            <div class="col-span-2 flex flex-wrap -mx-3 mb-2">
+                <div class="w-full md:w-2/3 px-3 mb-2">
+                    <label
+                        class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
+                        for="grid-mesas"
+                    >Número de mesas</label>
+                    <input
+                        id="grid-mesas"
+                        type="number"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                        v-model="nMesas" />
                 </div>
             </div>
             <div class="col-span-2">

@@ -3,6 +3,8 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import { useStore, mapGetters, mapActions } from "vuex";
 import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 export default {
     components: {
@@ -31,6 +33,12 @@ export default {
             this.importPlayers({
                 players: players,
                 club: this.clubData
+            }).then(r=>{
+                 Swal.fire(
+                    'Jugadores importados',
+                    players.length + ' jugadores importados correctamente.',
+                    'success'
+                )
             })
         },
         handleDrop(f){ 
@@ -59,10 +67,11 @@ export default {
                         }
 
                         var value = sheet[key]['w'];
-
+                        
                         //Categoria debe estar en la celda E
                         if(c == 'E'){
-                            let serie = vm.seriesData.find(s => s.nombre == value);
+                            let serie = vm.seriesData.find(s => s.nombre.trim() == value.trim());
+                            console.log(value, serie);
                             if(serie){
                                 value = serie.id;
                             }else{
