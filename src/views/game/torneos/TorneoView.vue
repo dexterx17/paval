@@ -58,10 +58,9 @@ export default {
         }
     },
     computed: {
-        //...mapGetters(["isUserAuth", "getUser"]),
+        ...mapGetters(["isUserAuth", "getUser"]),
         isClubAdmin(){
-            return false;
-          //  return this.getUser ? this.club.administradores.includes(this.getUser.player.id) : false;
+            return this.getUser ? ( this.club ? this.club.administradores.includes(this.getUser.player.id) : false ) : false;
         },
     },
     setup() {
@@ -70,7 +69,9 @@ export default {
         const torneoData = ref(null);
         const jugadoresInscritos = ref([]);
         const gruposTorneo = ref([]);
-        const cuartosFinal = ref([]);
+        const semiFinales = ref([]);
+        const finales = ref(null);
+        const club = ref(null);
 
         const showModal = ref(false);
         const showModalConfigurarTorneo = ref(false);
@@ -97,12 +98,23 @@ export default {
             });
         };
 
+        const loadClubData = (clubId) => {
+            store.dispatch('fetchClub', clubId).then((clubResponse) => {
+                console.log('clubResponse');
+                console.log(clubResponse);
+                club.value = clubResponse;
+            });
+        };
+
         const loadTorneoData = () => {
             store.dispatch('fetchTorneo', route.params.id).then((torneo) => {
                 console.log('torneoData');
                 console.log(torneo);
                 torneoData.value = torneo;
                 newPartidoData.value.torneo = torneo;
+                if(torneo.club){
+                    loadClubData(torneo.club.id)
+                }
             });
         };
 
@@ -154,25 +166,27 @@ export default {
                     return g;
                 })
                 
-                if(gruposTorneo.length> 1){
+                if(gruposTorneo.value.length == 2){
 
-                    cuartosFinal.value = grupos;
-    
-                    cuartosFinal.value = cuartosFinal.value.map(gr => {
-                        gr.jugadores = gr.jugadores.sort((a,b) => a.posicion-b.posicion);
-                        gr.eliminatorias = [];
-                        return gr;
-                    });
-    
-                    
-                    for (let index = 0, index2= grupos.length-1; index < grupos.length; index++, index2-- ) {
-                        cuartosFinal.value[index].eliminatorias.push({
-                            playerA: cuartosFinal.value[index].jugadores[0],
-                            playerB: cuartosFinal.value[index2].jugadores[1]
-                        });
+                    semiFinales.value = [{
+                        'playerA': grupos[0].ganadores[0],
+                        'playerB': grupos[1].ganadores[1],
+                    },{
+                        'playerA': grupos[1].ganadores[0],
+                        'playerB': grupos[0].ganadores[1],
+                    }];
+
+                    let ganador =  grupos[0].ganadores[0];
+                    let perdedor =  grupos[1].ganadores[0];
+
+                    finales.value = {
+                        key: ganador.id+'_'+perdedor.id,
+                        playerA: ganador,
+                        playerB: perdedor
                     }
 
-
+                }else if(gruposTorneo.value.length == 3){
+                    
                 }
 
                 
@@ -249,12 +263,14 @@ export default {
             torneoData,
             jugadoresInscritos,
             gruposTorneo,
-            cuartosFinal,
+            semiFinales,
+            finales,
             showModal,
             showModalConfigurarTorneo,
             showModalCrearPartido,
             showModalInscribirAmigos,
             user,
+            club,
             newPartidoData,
 
             hideModalConfigurar,
@@ -431,8 +447,9 @@ export default {
         </div>
         <div v-if="gruposTorneo.length > 1"  class="bg-white rounded grid gap-1 text-gray-700" :class="'grid-cols-'+(gruposTorneo.length)" >
             <div>
-                <div v-for="grupo in cuartosFinal" :key="grupo.id">
-                    <div class="flex flex-col border border-primary m-2 rounded"  v-for="partido, index2 in grupo.eliminatorias" :key="index2">
+                <h2 class="text-center text-primary font-bold pt-1">SEMI-FINALES</h2>
+                <div v-for="partido in semiFinales" :key="partido.id">
+                    <div class="flex flex-col border border-primary m-2 rounded">
                         <div class="border border-primary border-dotted">
                             <div class="flex justify-between align-middle ">
                                 <div class="flex flex-row items-center pl-1">
@@ -465,14 +482,40 @@ export default {
                     </div>
     
                 </div>
-
             </div>
-            <div class="flex flex-col border border-primary row-span-2" >
-                <div class="border">
-                    Player 1
-                </div>
-                <div class="border">
-                    Player 2
+            <div v-if="finales" class="flex flex-col items-center justify-center mr-2">
+                <h2 class="text-center text-primary font-bold pt-1 justify-self-start ">FINAL</h2>
+                <div  class="flex flex-col border border-primary w-full rounded m-2" >
+                    <div class="border border-primary border-dotted">
+                        <div class="flex justify-between align-middle ">
+                            <div class="flex flex-row items-center pl-1">
+                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                    :src="finales.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="finales.playerA.nombre" />
+                                <div class="text-center">
+                                    <span class="text-center">{{ finales.playerA.nombre }} 1ero</span>
+                                </div>
+                            </div>
+                            <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
+                                0
+                            </span>
+                        </div>
+                    </div>
+                    <div class="border ">
+                        <div class="flex justify-between align-middle ">
+                            <div class="flex flex-row items-center pl-1">
+                                <img class="w-8 h-8 rounded-xl mx-auto"
+                                    :src="finales.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="finales.playerB.nombre" />
+                                <div class="text-center">
+                                    <span class="text-center">{{ finales.playerB.nombre }} 2do</span>
+                                </div>
+                            </div>
+                        
+                            <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
+                                0
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -485,8 +528,7 @@ export default {
                     <table class="border-2 border-primary mx-auto rounded">
                         <thead>
                             <tr>
-                                <th class="border rounded border-dotted px-2">#</th>
-                                <th>
+                                <th class="border rounded border-dotted px-2" colspan="2">
                                     <div class="flex flex-col italic text-primary">
                                         <span>{{
                                             totalPartidosGrupo(grupo.jugadores)
