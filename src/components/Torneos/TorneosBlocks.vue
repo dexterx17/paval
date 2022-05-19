@@ -102,13 +102,14 @@
 
         <div
             class="flex justify-center mt-73"
-            v-if="showReadMore"
+            
         >
             <div class="flex flex-col justify-center items-center">
                 <small class="text-center text-primary py-2">
                     Mostrando {{ totalResults }} torneos...
                 </small>
                 <button
+                    v-if="showReadMore"
                     class="primary-btn"
                     style="background-image:url(/images/others/btn-bg.webp);"
                     @click="loadMore"
@@ -159,6 +160,11 @@ export default {
             let resultados = this.loadTorneos({
                 limit: this.maxPerPage,
                 lastTorneo: lastTorneo
+            }).then(r=>{
+                console.log('r',r)
+                if(r.length==0){
+                    this.showReadMore = false;
+                }
             });
         },
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {

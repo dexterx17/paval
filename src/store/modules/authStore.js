@@ -74,7 +74,7 @@ const state = {
               total_partidos: 0,
               total_victorias: 0,
               total_derrotas: 0,
-              ranking:0,
+              ranking:999,
               puntos:0
             }).then((docRef)=>{
               console.log("Player init: ", docRef.id);
@@ -128,7 +128,7 @@ const state = {
           total_partidos: 0,
           total_victorias: 0,
           total_derrotas: 0,
-          ranking:0,
+          ranking:999,
           puntos:0
         }).then((docRef)=>{
           console.log("Document written with ID: ", docRef);

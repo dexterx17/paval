@@ -44,20 +44,20 @@ export default {
         const clubData = ref(null);
         const showModal = ref(false);
 
-        const loadClubData = (clubId) => {
-            store.dispatch('fetchClub', clubId).then((value) => {
+        const loadClubData = (clubSlug) => {
+            store.dispatch('fetchClubBySlug', clubSlug).then((value) => {
                 console.log('value');
                 console.log(value);
                 clubData.value = value;
             });
         }
 
-        loadClubData(route.params.id);
+        loadClubData(route.params.slug);
 
 
         // fetch the user information when params change
         watch(
-            () => route.params.id,
+            () => route.params.slug,
             async newId => {
                 console.log('newId', newId);
                 if(newId){

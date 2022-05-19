@@ -64,12 +64,20 @@ const router = createRouter({
       component: () => import("../views/game/clubs/ClubsList.vue"),
     },
     {
-      path: "/club/:id",
+      path: "/club/:slug",
       name: "club",
       meta: {
         requiresAuth: true,
       },
       component: () => import("../views/game/clubs/ClubView.vue"),
+    },
+    {
+      path: "/club/:id/estadisticas",
+      name: "club-stats",
+      meta: {
+        requiresAuth: true,
+      },
+      component: () => import("../views/game/clubs/ClubStats.vue"),
     },
     {
       path: "/torneos",

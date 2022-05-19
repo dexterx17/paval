@@ -27,6 +27,7 @@ export default {
                 club: {
                     id: this.club.id,
                     nombre: this.club.nombre,
+                    slug: this.club.slug,
                     logo: this.club.logo
                 },
                 aprobacion: this.aprobacionData,

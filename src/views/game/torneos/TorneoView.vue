@@ -10,6 +10,7 @@ import TorneoDetails from "@/components/Torneos/TorneoDetails.vue";
 import InscribirseTorneo from "@/components/Torneos/InscribirseTorneo.vue";
 import InscribirAmigos from "@/components/Torneos/InscribirAmigos.vue";
 import ConfigurarTorneo from "@/components/Torneos/ConfigurarTorneo.vue";
+import ConfigurarSemifinales from "@/components/Torneos/ConfigurarSemifinales.vue";
 import CrearPartidoTorneo from "@/components/Partidos/CrearPartidoTorneo.vue";
 import UltimosPartidosTorneo from "@/components/Torneos/UltimosPartidosTorneo.vue";
 
@@ -35,6 +36,7 @@ export default {
         ConfigurarTorneo,
         CrearPartidoTorneo,
         UltimosPartidosTorneo,
+        ConfigurarSemifinales,
         Inscritos,
         Popper,
         BloqueResultadoGrupo
@@ -77,6 +79,9 @@ export default {
         const showModalConfigurarTorneo = ref(false);
         const showModalCrearPartido = ref(false);
         const showModalInscribirAmigos = ref(false);
+        const showModalConfigurarSemifinales = ref(false);
+
+        const gruposFinalizados = ref(false);
 
         const newPartidoData = ref({
             playerA: null,
@@ -123,6 +128,8 @@ export default {
                 console.log('gruposTorneo');
                 console.log(grupos);
                 gruposTorneo.value = grupos;
+
+                let gruposFin = 0;
                 
                 gruposTorneo.value = gruposTorneo.value.map(g => {
                     console.log('jugadoresSinOrdenar',g.jugadores);
@@ -163,8 +170,21 @@ export default {
                     console.log('matchs',matchs)
                     g.matchs = matchs;
 
+                    let totalPartidosGrupo = ((g.jugadores.length-1) * g.jugadores.length)/2;
+
+                    console.log('totalPartidos: ', totalPartidosGrupo);
+                    console.log('Jugados: ', g.jugados);
+
+                    if(g.jugados.length == totalPartidosGrupo){
+                        gruposFin = gruposFin+1;
+                    }
+
                     return g;
                 })
+
+                if(gruposFin == gruposTorneo.value.length){
+                    gruposFinalizados.value = true;
+                }
                 
                 if(gruposTorneo.value.length == 2){
 
@@ -172,8 +192,8 @@ export default {
                         'playerA': grupos[0].ganadores[0],
                         'playerB': grupos[1].ganadores[1],
                     },{
-                        'playerA': grupos[1].ganadores[0],
-                        'playerB': grupos[0].ganadores[1],
+                        'playerA': grupos[0].ganadores[1],
+                        'playerB': grupos[1].ganadores[0],
                     }];
 
                     let ganador =  grupos[0].ganadores[0];
@@ -203,6 +223,10 @@ export default {
             newPartidoData.value.playerA = playerA;
             newPartidoData.value.playerB = playerB;
             showModalCrearPartido.value = true;
+        }
+
+        const configurarSemifinales = () => {
+            showModalConfigurarSemifinales.value = true;
         }
 
         const handleNewImageUploaded = () => {
@@ -269,6 +293,8 @@ export default {
             showModalConfigurarTorneo,
             showModalCrearPartido,
             showModalInscribirAmigos,
+            showModalConfigurarSemifinales,
+            gruposFinalizados,
             user,
             club,
             newPartidoData,
@@ -282,7 +308,8 @@ export default {
             loadInscritos,
 
             handleNewImageUploaded,
-            handlePartidoEliminado
+            handlePartidoEliminado,
+            configurarSemifinales
         }
     }
 }
@@ -301,7 +328,7 @@ export default {
                             :src="torneoData.club ? torneoData.club.logo : '/images/others/upcoming-game-thumb3.webp'"
                             alt="Club" />
                         <template #content>
-                            <RouterLink :to="`/club/${torneoData.club.id}`">
+                            <RouterLink :to="`/club/${torneoData.club.slug}`">
                                 Ver página de club
                             </RouterLink>
                         </template>
@@ -342,15 +369,6 @@ export default {
                 </div>
             </div>
             <div v-if="user" class="flex flex-col justify-end mt-16 md:mt-0">
-                <div v-if="torneoData.organizador.id == user.player.id || isClubAdmin">
-                    <button v-if="!torneoData.modo_juego && !torneoData.n_grupos" @click="showModalInscribirAmigos = true"
-                        class="group primary-btn opacity-100 transition-all"
-                        style="background-image:url(/images/others/btn-bg.webp)">
-                        Inscribir Amigos
-                        <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
-                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
-                    </button>
-                </div>
                 <div v-if="torneoData.inscritos.includes(user.player.id)"
                     class="flex flex-col align-content-center content-center">
                     <h3>Ya estas inscrito en este torneo</h3>
@@ -360,11 +378,20 @@ export default {
                         <span class="pl-2"># {{ (torneoData.inscritos.indexOf(user.player.id) + 1) }}</span>
                     </h2>
                 </div>
-                <div v-else>
+                <div class="mb-2" v-else>
                     <button v-if="!torneoData.modo_juego && !torneoData.n_grupos" @click="showModal = true"
+                        class="group primary-btn opacity-100 transition-all bg-cover"
+                        style="background-image:url(/images/others/button.png)">
+                        {{ btnName }}
+                        <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
+                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
+                    </button>
+                </div>
+                <div class="mb-2" v-if="torneoData.organizador.id == user.player.id || isClubAdmin">
+                    <button v-if="!torneoData.modo_juego && !torneoData.n_grupos" @click="showModalInscribirAmigos = true"
                         class="group primary-btn opacity-100 transition-all"
                         style="background-image:url(/images/others/btn-bg.webp)">
-                        {{ btnName }}
+                        Inscribir Amigos
                         <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
                             class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
                     </button>
@@ -455,8 +482,10 @@ export default {
                                 <div class="flex flex-row items-center pl-1">
                                     <img class="w-8 h-8 rounded-xl mx-auto"
                                         :src="partido.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partido.playerA.nombre" />
-                                    <div class="text-center">
-                                        <span class="text-center">{{ partido.playerA.nombre }} 1ero</span>
+                                    <div class="text-center pl-2">
+                                        <span class="text-center">{{ partido.playerA.nombre }}</span>
+
+                                        <small class="text-rojo-claro">Rank <strong>#{{ partido.playerA.ranking }}</strong></small>
                                     </div>
                                 </div>
                                 <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
@@ -469,8 +498,9 @@ export default {
                                 <div class="flex flex-row items-center pl-1">
                                     <img class="w-8 h-8 rounded-xl mx-auto"
                                         :src="partido.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="partido.playerB.nombre" />
-                                    <div class="text-center">
-                                        <span class="text-center">{{ partido.playerB.nombre }} 2do</span>
+                                    <div class="text-center pl-2">
+                                        <span class="text-center">{{ partido.playerB.nombre }}</span>
+                                        <small class="text-rojo-claro">Rank <strong>#{{ partido.playerB.ranking }}</strong></small>
                                     </div>
                                 </div>
                             
@@ -492,7 +522,8 @@ export default {
                                 <img class="w-8 h-8 rounded-xl mx-auto"
                                     :src="finales.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="finales.playerA.nombre" />
                                 <div class="text-center">
-                                    <span class="text-center">{{ finales.playerA.nombre }} 1ero</span>
+                                    <span class="text-center">{{ finales.playerA.nombre }}</span>
+                                    <small class="text-rojo-claro">Rank <strong>#{{ finales.playerA.ranking }}</strong></small>
                                 </div>
                             </div>
                             <span class="bg-gris-oscuro px-2 py-1 text-white font-bold">
@@ -506,7 +537,8 @@ export default {
                                 <img class="w-8 h-8 rounded-xl mx-auto"
                                     :src="finales.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="finales.playerB.nombre" />
                                 <div class="text-center">
-                                    <span class="text-center">{{ finales.playerB.nombre }} 2do</span>
+                                    <span class="text-center">{{ finales.playerB.nombre }}</span>
+                                    <small class="text-rojo-claro">Rank <strong>#{{ finales.playerB.ranking }}</strong></small>
                                 </div>
                             </div>
                         
@@ -518,7 +550,28 @@ export default {
 
                 </div>
             </div>
+        </div>
+        <div v-if="gruposFinalizados">
 
+            <button @click="showModalConfigurarSemifinales = true" v-if="torneoData.modo_juego && torneoData.n_grupos"
+                class="group p-4 mt-2 opacity-100 transition-all bg-cover"
+                style="background-image:url(/images/others/button.png)">
+                Verificar SemiFinales
+                <img src="/images/icon/arrrow-icon.webp" alt="Arrow Icon"
+                    class="ml-3 w-5 h-5 group-hover:ml-4 transition-all" />
+            </button>
+
+            <vue-final-modal  class="bg-transparent" name="modal-crear-partido" classes="modal-container "
+                content-class="modal-content" v-model="showModalConfigurarSemifinales" 
+                @closed="cerrarTodos"
+                :esc-to-close="true"
+                :adaptive="true">
+                <ConfigurarSemifinales  :grupos="gruposTorneo" :torneo="torneoData"
+                    @hide-modal="showModalConfigurarSemifinales = false" />
+                <button
+                    class="absolute top-0 right-0 icofont-close-line z-999 font-bold text-3xl text-white hover:text-primary transition-all transform hover:rotate-90"
+                    @click="showModalConfigurarSemifinales = false"></button>
+            </vue-final-modal>
         </div>
         <div class="my-16" v-for="grupo in gruposTorneo" :key="grupo.id">
             <div class="team-one">
@@ -598,7 +651,7 @@ export default {
                                 </td>
                                 <td class="border text-center bg-black">{{ ply.puntos }}</td>
                                 <td class="border text-center bg-black">{{ ply.sets }}</td>
-                                <td class="border text-center bg-black">{{ ply.posicion }}</td>
+                                <td class="border text-center bg-black" :class="ply.posicion==1 || ply.posicion==2 ? 'font-bold text-amber-300' : ''">{{ ply.posicion }} <i v-if="ply.posicion==1" class="icofont-cop-badge"></i> <i v-if="ply.posicion==2" class="icofont-badge"></i></td>
                             </tr>
                         </tbody>
                     </table>

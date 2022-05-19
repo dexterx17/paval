@@ -123,10 +123,15 @@ export default {
         ...mapActions(["loadPartidosTorneo","deletePartidoTorneo"]),
         loadMore() {
             let lastPartido = this.matchesData[this.matchesData.length-1];
-            let resultados = this.loadPartidosTorneo({
+            this.loadPartidosTorneo({
                 limit: this.maxPerPage,
                 torneo_id: this.$route.params.id,
                 lastPartido: lastPartido
+            }).then(r => {
+                console.log('rP: ',r);
+                if(r.length == 0){
+                    this.showReadMore = false;
+                }
             });
         },
         formatDate(value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) {
@@ -198,6 +203,11 @@ export default {
         this.loadPartidosTorneo({
             limit: this.maxPerPage,
             torneo_id: this.$route.params.id
+        }).then(r => {
+            console.log('rP: ',r);
+            if(r.length == 0){
+                this.showReadMore = false;
+            }
         });
     },
 }

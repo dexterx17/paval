@@ -15,6 +15,7 @@ import {
 	addDoc,
 	setDoc,
 	updateDoc,
+	increment,
 	arrayUnion
 } from "firebase/firestore";
 
@@ -253,25 +254,34 @@ const actions = {
 		console.log('clubRef',clubRef)
 		payload.players.forEach(p => {
 			console.log('p', p);
-			addDoc(collection(db, "players"), {
+
+			let player_data = {
 				nombre: p[2],
 				bod: null,
 				nacionalidad: "ec",
 				sexo: "H",
-				avatar: null,
-				total_torneos: 0,
+				avatar: p[8] ? p[8] : null,
+				total_torneos: p[6] ? parseInt(p[6]) : 0,
 				total_partidos: 0,
 				total_victorias: 0,
 				total_derrotas: 0,
 				ranking: parseInt(p[0]),
 				puntos: parseInt(p[5]),
 				n_socio: parseInt(p[3]),
-				clubs:[{
+				clubs: [{
 					id: payload.club.id,
 					nombre: payload.club.nombre,
+					slug: payload.club.slug,
 					logo: payload.club.logo
-				}]
-			})
+				}],
+				bulk:1
+			};
+
+			if (p[7]) {
+				player_data['uid'] = p[7];
+			}
+
+			addDoc(collection(db, "players"), player_data)
 			.then((docRef) => {
 				console.log("Player with ID: ", docRef.id);
 				console.log("Player with ID: ", );
@@ -280,7 +290,7 @@ const actions = {
 				const jugador = {
                     jugador_id: docRef.id,
                     nombre: p[2],
-                    avatar: null,
+					avatar: p[8] ? p[8] : null,
 					serie_id: p[4],
 					ranking: parseInt(p[0]),
 					puntos: parseInt(p[5]),
@@ -303,6 +313,11 @@ const actions = {
 				}).then((docRes) => {
 					console.log("Jugador agregado a serie: ", docRes);
 				})
+
+				//incrementamos el total de miembros en el club
+				updateDoc(clubRef, {
+					total_miembros: increment(1),
+				});
 
 				return docRef;
 			})
