@@ -151,14 +151,35 @@ const actions = {
     },
     async fetchClub({ commit }, payload) {
         try {
-            console.log('%cclubsStore.js line:69 payload', 'color: #007acc;', payload);
+            console.log('fetchClub', payload);
             const docRef = doc(db, "clubs", payload);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
                 let club = docSnap.data();
                 club.id = docSnap.id;
-                console.log("Docum ent data:", club);
+                console.log("Club data:", club);
+                commit('SET_CLUB',club);
+                return club;
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        } catch (e) {
+            console.error("Error obteniendo datos de club: ", e);
+        }
+    },
+    async fetchClubBySlug({ commit }, payload) {
+        try {
+            console.log('fetchClubBySlug', payload);
+            const q = query(collection(db, "clubs"), where('slug', '==', payload));
+
+            const docSnap = await getDocs(q);
+
+            if (docSnap.docs) {
+                let club = docSnap.docs[0].data();
+                club.id = docSnap.docs[0].id;
+                console.log("Club data:", club);
                 commit('SET_CLUB',club);
                 return club;
             } else {

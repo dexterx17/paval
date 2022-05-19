@@ -61,7 +61,8 @@ export default {
                 id: club.id,
                 nombre: club.nombre,
                 logo: club.logo,
-                ciudad: club.ciudad
+                ciudad: club.ciudad,
+                slug: club.slug
             };
 
             store.dispatch('loadSeriesClub', {

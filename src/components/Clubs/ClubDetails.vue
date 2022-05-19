@@ -5,19 +5,31 @@
             <div class="flex justify-center items-center w-full p-0">
                 <img class="lg:mr-9 mr-5 w-24 h-24 rounded-lg border-4 border-light-blue-500" :src="club.logo"
                     :alt="club.nombre" />
-                    <button
-                        v-if="isUserAuth && isClubAdmin"
-                        @click="showModalAdministradores = true"
-                        class="group primary-btn opacity-100 transition-all w-auto px-2 bg-cover"
-                        style="background-image:url(/images/others/button2.png);"
-                    >
-                        Admins
-                        <img
-                            src="/images/icon/arrrow-icon.webp"
-                            alt="Arrow Icon"
-                            class="ml-3 w-5 h-5 group-hover:ml-4 transition-all"
-                        />
-                    </button>
+
+                    <Popper hover>
+                        <button
+                            v-if="isUserAuth && isClubAdmin"
+                            @click="showModalAdministradores = true"
+                            class="group primary-btn opacity-100 transition-all w-auto px-2 bg-cover"
+                            style="background-image:url(/images/others/button2.png);"
+                        >
+                            <i class="icofont-user-suited"></i>
+                            
+                        </button>
+                        <template #content>
+                            <div>Administradores Club</div>
+                        </template>
+                    </Popper>
+
+                    <Popper hover>
+                        <RouterLink :to="{name: 'club-stats', params: { id: club.id}}"
+                            class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
+                            <i class="icofont-chart-histogram"></i>
+                        </RouterLink>
+                        <template #content>
+                            <div>Estadísticas Club</div>
+                        </template>
+                    </Popper>
             </div>
         </div>
         <!-- Team Varses Team End -->

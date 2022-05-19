@@ -58,7 +58,7 @@ export default {
         AprobarSolicitud,
         VueFinalModal
     },
-    setup(){
+    setup(props){
         const route = useRoute();
         const store = useStore();
         const solicitudesData = ref([]);
@@ -67,7 +67,7 @@ export default {
 
         const loadSolicitudesData = () => {
             store.dispatch('fetchSolicitudesClub', {
-                club: route.params.id
+                club: props.club.id
             }).then((solicitudes) => {
                 console.log('solicitudesClub');
                 console.log(solicitudes);

@@ -25,9 +25,14 @@ export default {
     ...mapActions(["loadPlayers"]),
     loadMore() {
         let lastPlayer = this.players[this.players.length-1];
-        let resultados = this.loadPlayers({
+        this.loadPlayers({
             limit: this.maxPerPage,
             lastPlayer: lastPlayer
+        }).then(r => {
+            console.log('rPlayers: ',r);
+            if(r.length == 0){
+                this.showReadMore = false;
+            }
         });
     },
   },
@@ -40,6 +45,11 @@ export default {
   mounted() {
     this.loadPlayers({
             limit: this.maxPerPage
+    }).then(r => {
+        console.log('rPlayers: ',r);
+        if(r.length == 0){
+            this.showReadMore = false;
+        }
     });
     
   },
@@ -122,13 +132,14 @@ export default {
 
       <div
           class="flex justify-center mt-73"
-          v-if="showReadMore"
+          
       >
           <div class="flex flex-col justify-center items-center">
               <small class="text-center text-primary py-2">
                   Mostrando {{ totalResults }} jugadores...
               </small>
               <button
+                v-if="showReadMore"
                   class="primary-btn"
                   style="background-image:url(/images/others/btn-bg.webp);"
                   @click="loadMore"
@@ -136,7 +147,7 @@ export default {
           </div>
       </div>
 
-      <p v-else>Aún no hay jugadores registrados.</p>
+      <p v-if="players.length == 0">Aún no hay jugadores registrados.</p>
 
   </div>
   <!-- Blog Post Section End -->

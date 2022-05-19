@@ -189,7 +189,7 @@ export default {
 
         const loadPlayersSerieData = () => {
             store.dispatch('loadSeriesClub', {
-                club: route.params.id
+                club: props.club.id
             }).then((grupos) => {
                 console.log('gruposClub');
                 console.log(grupos);
