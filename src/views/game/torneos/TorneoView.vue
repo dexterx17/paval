@@ -720,7 +720,7 @@ export default {
         </div>
     </div>
 
-    <UltimosPartidosTorneo v-if="torneoData"  :torneo="torneoData" @reload-data="handlePartidoEliminado" />
+    <UltimosPartidosTorneo v-if="torneoData && club" :club="club"  :torneo="torneoData" @reload-data="handlePartidoEliminado" />
 
     <Footer />
 </template>
