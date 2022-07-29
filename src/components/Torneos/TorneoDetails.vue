@@ -45,7 +45,7 @@
                         <Popper v-if="torneo.imagenes.length < 3" hover>
                             <button @click="showImagesUploader = true"
                                 class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
-                                <img class="w-4 h-6" src="/images/icon/facebook-bg.webp" alt="Agregar Imagen Torneo" />
+                                <i class="icofont-ui-add"></i>
                             </button>
                             <template #content>
                                 <div>Agregar Imagen</div>
@@ -55,7 +55,7 @@
                         <Popper hover>
                             <button @click="eliminarImagen()"
                                 class="swipper-arrow align-self-end self-end text-white md:w-68 w-55 md:h-55 h-11 flex items-center justify-center hover:bg-arrow-hover-shape bg-arrow-shape bg-cover transition-all z-50 ml-2">
-                                <img class="w-4 h-6" src="/images/icon/dribble.webp" alt="Eliminar" />
+                                <i class="icofont-ui-delete"></i>
                             </button>
                             <template #content>
                                 <div>Eliminar Imagen</div>

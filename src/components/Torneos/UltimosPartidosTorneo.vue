@@ -35,7 +35,7 @@
                                 class="lg:w-120 lg:h-120 w-88 h-88 bg-primary rounded-full block relative"
                             >
                                 <img
-                                    class="max-w-full h-auto w-auto absolute-center"
+                                    class="max-w-full h-auto w-auto absolute-center hover:scale-110"
                                     :src="`/images/others/play-btn2.webp`"
                                     :alt="match.playAlt"
                                 />
@@ -47,12 +47,15 @@
                             class="md:col-start-10 md:col-end-13 flex md:justify-end justify-center items-center w-full "
                         >
                             <div class="rounded-lg text-center flex flex-col justify-center">
-                                <img :src="match.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="match.playerA.nombre">
+                                <img :src="match.playerA.avatar ?? '/images/others/upcoming-game-thumb3.webp'"
+                                    :alt="match.playerA.nombre"
+                                    class="w-28 h-28 lg:w-24 lg:h-24"
+                                    >
                                 <strong v-if="match.resultado"> {{ match.resultado.split(':')[0] }} </strong>
                             </div>
                             <img class="mx-5" src="/images/others/game-vs1.webp" alt="Feature Icon">
                             <div class="text-center flex flex-col justify-center">
-                                <img class=" rounded-lg" :src="match.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="match.playerB.nombre">
+                                <img class="w-28 h-28 lg:w-24 lg:h-24 rounded-lg" :src="match.playerB.avatar ?? '/images/others/upcoming-game-thumb3.webp'" :alt="match.playerB.nombre">
                                 <strong v-if="match.resultado"> {{ match.resultado.split(':')[1] }} </strong>
                             </div>
                         </div>
@@ -63,7 +66,7 @@
                             placement="top"
                             hover>
                             <button @click="eliminarPartido(match)" >
-                                X
+                                <i class="icofont-ui-delete"></i>
                             </button>
                             <template #content class="z-99">
                                 <div>Eliminar Partido</div>
@@ -109,11 +112,13 @@ export default {
             showReadMore: true,
         }
     },
-    props:['torneo'],
+    props:['torneo','club'],
     computed: {
         ...mapGetters(["isUserAuth", "getUser"]),
         showDeleteButton() {
-            return  this.getUser ? (this.torneo.organizador.id == this.getUser.player.id) : false;
+            let isOrganizador = this.getUser ? (this.torneo.organizador.id == this.getUser.player.id) : false;
+            let isClubAdmin = this.getUser ? ( this.club ? this.club.administradores.includes(this.getUser.player.id) : false ) : false;
+            return isOrganizador || isClubAdmin;
         },
         totalResults() {
             return Object.keys(this.matchesData).length
@@ -147,7 +152,7 @@ export default {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, borrarla!',
+                confirmButtonText: 'Si, borrarlo!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

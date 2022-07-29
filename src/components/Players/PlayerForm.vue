@@ -110,7 +110,7 @@ export default {
 
       <Avatar @change-image="changeImage" :imagen="playerData.avatar" />
       <div class="flex flex-wrap -mx-3 mb-2">
-        <div class="w-full px-3 mb-6 md:mb-0">
+        <div class="w-full px-3 mb-0 md:mb-0">
           <label
             class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
             for="grid-nombre"
@@ -121,6 +121,22 @@ export default {
             type="text"
             placeholder="vEj: Naty Armas"
             v-model="playerData.nombre"
+            required
+          />
+        </div>
+      </div>
+      <div class="flex flex-wrap -mx-3 mb-2">
+        <div class="w-full px-3 mb-0 md:mb-0">
+          <label
+            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            for="grid-telefono"
+          >Teléfono</label>
+          <input
+            class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+            id="grid-telefono"
+            type="text"
+            placeholder="Ej: 098 123456"
+            v-model="playerData.telefono"
             required
           />
         </div>
@@ -228,7 +244,22 @@ export default {
           </datalist>
         </div>
       </div>
-      <div class="flex flex-wrap -mx-3 mb-6">
+      <div class="flex flex-wrap -mx-3 mb-2">
+        <div class="w-full px-3 mb-6 md:mb-0">
+          <label
+            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            for="grid-ocupacion"
+          >Ocupación</label>
+          <input
+            class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+            id="grid-ocupacion"
+            type="text"
+            placeholder="Ej: Desarrollor de Software"
+            v-model="playerData.ocupacion"
+          />
+        </div>
+      </div>
+      <div class="flex flex-wrap -mx-3 mb-0">
         <div class="w-full px-3 mb-6 md:mb-0">
           <label
             class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"

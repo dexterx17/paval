@@ -67,7 +67,7 @@
                             class="lg:w-120 lg:h-120 w-88 h-88 bg-primary rounded-full block relative"
                         >
                             <img
-                                class="max-w-full h-auto w-auto absolute-center"
+                                class="max-w-full h-auto w-auto absolute-center hover:scale-110"
                                 :src="`/images/others/play-btn2.webp`"
                                 :alt="match.playAlt"
                             />

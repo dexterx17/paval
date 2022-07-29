@@ -12,7 +12,11 @@ import { getFirestore,
         doc,
         addDoc,
         collection,
-        setDoc
+        setDoc,
+        runTransaction,
+        query,
+        getDocs,
+        where
     } from "firebase/firestore";
 
 import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
@@ -140,21 +144,88 @@ const state = {
         console.error("Error adding document: ", e);
       }
     },
-    async updateProfile({ commit, dispatch }, payload) {
+    async updateProfile({ commit, dispatch }, payload) {      
       try {
-        console.log('updateProfile', payload);
-        return setDoc(doc(db, "players",payload.id), payload)
-        .then((docRef)=>{
-          console.log("Document written with ID: ", docRef);
-          return docRef;
-        }).catch((error)=>{
-          console.log('error init Player');
-          console.log(error);
-          return null;
-        });
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      }
+        await runTransaction(db, async (transaction) => {
+            console.log('updateProfile', payload);
+            
+            const playerDoc = doc(db, "players",payload.id);
+            setDoc(playerDoc, payload);
+
+            payload.clubs.forEach(c => {
+              console.log('c: ',c);
+              //imagen de solicitudes a club
+              const refSolicitud = doc(db, `clubs/${c.id}/solicitudes/${payload.id}`);
+              transaction.update(refSolicitud,{
+                'avatar'  : payload.avatar
+              })
+
+              //imagen en serie de club
+
+              let q = query(collection(db, `clubs/${c.id}/series`));
+              getDocs(q).then(docSnap => {
+                  if (docSnap.docs) {
+                    let series = docSnap.docs;
+                      series.forEach((serie) => {
+                        let serieData = serie.data();
+                        let jugadorEncontrado = false;
+                        
+                        serieData.jugadores = serieData.jugadores.map(j => {
+                          if(j.jugador_id == payload.id){
+                            console.log("Serie data:", serieData);
+                            console.log("Jugador encontrado en serie:", serieData.nombre);
+                            jugadorEncontrado = true;
+                            j.avatar = payload.avatar;
+                          }
+                          return j;
+                        });
+
+                        if(jugadorEncontrado){
+                          const refSerie = doc(db, `clubs/${c.id}/series/${serie.id}`);
+                          transaction.update(refSerie,serieData);
+                          console.log("Serie acualizada:", serieData);
+                        }
+
+                    });
+                  } else {
+                    console.log("no hay series!");
+                  }
+              });
+
+              
+              // const sfGrupo = await transaction.get(refSolicitud);
+              // if (!sfGrupo.exists()) {
+              //     throw "Document does not exist!";
+              // }
+              // console.log('sfGrupo',sfGrupo.data());
+
+
+            })
+
+    
+    
+            //torneos en los que ha participado el usuario
+              //jugadores en cada torneo
+              //grupos de cada torneo
+    
+            //partidos en los que ha participado
+
+
+            // const refGrupo = doc(db, `torneos/${payload.partido.torneo_id}/grupos/${payload.partido.grupo_id}`);
+
+            // const sfGrupo = await transaction.get(refGrupo);
+            // if (!sfGrupo.exists()) {
+            //     throw "Document does not exist!";
+            // }
+            // console.log('sfGrupo',sfGrupo.data());
+
+          });
+          console.log("Transaction successfully committed!");
+          
+        } catch (e) {
+            console.log("Transaction failed: ", e);
+        }
+        
     }
  };
  const mutations = {

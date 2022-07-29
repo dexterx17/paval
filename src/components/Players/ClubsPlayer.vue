@@ -11,7 +11,7 @@
                 <div class="grid grid-cols-1 items-center">
                     <div class="flex justify-center items-center w-full px-0 lg:px-8">
                         <div class="text-center" v-for="cl in player.clubs" :key="cl.id">
-                            <RouterLink :to="`/club/${cl.id}`" >
+                            <RouterLink :to="`/club/${cl.slug}`" >
                                 <img
                                     class="w-16 h-16 rounded-2xl"
                                     :src="cl ? (cl.logo ??  '/images/others/upcoming-game-thumb3.webp') : ''"
