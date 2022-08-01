@@ -1,12 +1,12 @@
 <script>
 import { mapActions } from "vuex";
-import { ref } from 'vue'
+import { ref } from "vue";
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
 
 export default {
   components: {
-    Breadcrumb
+    Breadcrumb,
   },
   data() {
     return {
@@ -15,7 +15,7 @@ export default {
       form: {
         name: "",
         email: "",
-        password: ""
+        password: "",
       },
       error: null,
     };
@@ -25,11 +25,17 @@ export default {
     const procesando = ref(false);
     return {
       showPassword,
-      procesando
+      procesando,
     };
   },
   methods: {
-    ...mapActions(["signUpAction"]),
+    ...mapActions(["signUpAction", "signUpWithGoogleAction"]),
+    loginWithGoogle() {
+      this.signUpWithGoogleAction({}).then((response) => {
+        console.log("response signup google");
+        console.log(response);
+      });
+    },
     submit() {
       this.procesando = true;
       this.signUpAction({
@@ -38,53 +44,113 @@ export default {
         name: this.form.name,
       }).then((response) => {
         this.procesando = false;
-        console.log('response');
+        console.log("response");
         console.log(response);
         if (response.user) {
           this.$router.replace({ name: "profile" });
-        }else{
-          switch(response.code){
-						case 'auth/email-already-in-use':
-							this.error = 'El email ya esta registrado!';
-							break;
-						case 'auth/weak-password':
-							this.error = 'La contraseña debe tener al menos 6 caracteres!';
-							break;
-						default:
-							this.error = response.message;
-					}
-          console.log('code: ',response.code);
-					console.log('message: ',response.message);
+        } else {
+          switch (response.code) {
+            case "auth/email-already-in-use":
+              this.error = "El email ya esta registrado!";
+              break;
+            case "auth/weak-password":
+              this.error = "La contraseña debe tener al menos 6 caracteres!";
+              break;
+            default:
+              this.error = response.message;
+          }
+          console.log("code: ", response.code);
+          console.log("message: ", response.message);
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
 <template>
-  <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
+  <Breadcrumb
+    :BreadcrumbTitle="BreadcrumbTitle"
+    :BreadcrumbSubTitle="BreadcrumbSubTitle"
+  />
   <div class="container mx-auto px-4 h-full">
     <div class="flex content-center items-center justify-center h-full">
       <div class="w-full px-4">
         <div
-          class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg border-0"
+          class="
+            relative
+            flex flex-col
+            min-w-0
+            break-words
+            w-full
+            mb-6
+            shadow-lg
+            rounded-lg
+            border-0
+          "
         >
           <div class="rounded-t mb-0 px-6 py-6">
             <div class="btn-wrapper text-center">
               <button
-                class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
+                class="
+                  bg-white
+                  active:bg-gray-100
+                  text-gray-800
+                  font-normal
+                  px-4
+                  py-2
+                  rounded
+                  outline-none
+                  focus:outline-none
+                  mr-2
+                  mb-1
+                  uppercase
+                  shadow
+                  hover:shadow-md
+                  inline-flex
+                  items-center
+                  font-bold
+                  text-xs
+                "
                 type="button"
                 style="transition: all 0.15s ease 0s"
               >
-                <img alt="Registrate con Github" class="w-5 mr-1" src="../assets/img/github.svg" />Github
+                <img
+                  alt="Registrate con Github"
+                  class="w-5 mr-1"
+                  src="../assets/img/github.svg"
+                />Github
               </button>
               <button
-                class="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
+                class="
+                  bg-white
+                  active:bg-gray-100
+                  text-gray-800
+                  font-normal
+                  px-4
+                  py-2
+                  rounded
+                  outline-none
+                  focus:outline-none
+                  mr-1
+                  mb-1
+                  uppercase
+                  shadow
+                  hover:shadow-md
+                  inline-flex
+                  items-center
+                  font-bold
+                  text-xs
+                "
                 type="button"
                 style="transition: all 0.15s ease 0s"
+				@click="loginWithGoogle"
               >
-                <img alt="Registrate con Gmail" class="w-5 mr-1" src="../assets/img/google.svg" />Google
+                <img
+                  alt="Registrate con Gmail"
+                  class="w-5 mr-1"
+                  src="../assets/img/google.svg"
+                />Google
               </button>
             </div>
             <hr class="mt-6 border-b-1 border-gray-400" />
@@ -93,12 +159,30 @@ export default {
             <!-- <div class="text-gray-500 text-center mb-3 font-bold">
               <small>O registrate con tus credenciales</small>
             </div>-->
-            <form id="contact-form" class="flex flex-col max-w-lg mx-auto" @submit.prevent="submit">
+            <form
+              id="contact-form"
+              class="flex flex-col max-w-lg mx-auto"
+              @submit.prevent="submit"
+            >
               <div class="single-fild">
                 <input
                   type="text"
                   v-model="form.name"
-                  class="px-6 h-14 mb-6 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
+                  class="
+                    px-6
+                    h-14
+                    mb-6
+                    text-white
+                    border-secondary-80
+                    bg-secondary-100
+                    hover:border-primary
+                    transition-all
+                    border-2 border-solid
+                    block
+                    rounded-md
+                    w-full
+                    focus:outline-none
+                  "
                   placeholder="Nombre"
                   required
                 />
@@ -107,7 +191,21 @@ export default {
                 <input
                   type="email"
                   v-model="form.email"
-                  class="px-6 h-14 mb-6 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
+                  class="
+                    px-6
+                    h-14
+                    mb-6
+                    text-white
+                    border-secondary-80
+                    bg-secondary-100
+                    hover:border-primary
+                    transition-all
+                    border-2 border-solid
+                    block
+                    rounded-md
+                    w-full
+                    focus:outline-none
+                  "
                   placeholder="Correo electrónico"
                   required
                 />
@@ -117,7 +215,21 @@ export default {
                   <input
                     :type="showPassword ? 'password' : 'text'"
                     v-model="form.password"
-                    class="px-6 h-14 mb-6 text-white border-secondary-80 bg-secondary-100 hover:border-primary transition-all border-2 border-solid block rounded-md w-full focus:outline-none"
+                    class="
+                      px-6
+                      h-14
+                      mb-6
+                      text-white
+                      border-secondary-80
+                      bg-secondary-100
+                      hover:border-primary
+                      transition-all
+                      border-2 border-solid
+                      block
+                      rounded-md
+                      w-full
+                      focus:outline-none
+                    "
                     placeholder="Contraseña"
                     style="transition: all 0.15s ease 0s"
                     required
@@ -164,18 +276,29 @@ export default {
                   </div>
                 </div>
               </div>
-              <div v-if="error" class="text-red-800 text-center font-bold">{{ error }}</div>
+              <div v-if="error" class="text-red-800 text-center font-bold">
+                {{ error }}
+              </div>
               <div class="single-fild col-span-2">
                 <div v-if="procesando" class="flex justify-center w-full">
-								<h2 class="text-primary">Procesando...</h2>
-							</div>
-                <div v-else class="form-btn-wrap flex justify-center w-full mt-4">
+                  <h2 class="text-primary">Procesando...</h2>
+                </div>
+                <div
+                  v-else
+                  class="form-btn-wrap flex justify-center w-full mt-4"
+                >
                   <button
                     type="submit"
                     value="submit"
                     name="submit"
-                    class="form-btn group primary-btn opacity-100 transition-all"
-                    style="background-image:url(/images/others/btn-bg.webp)"
+                    class="
+                      form-btn
+                      group
+                      primary-btn
+                      opacity-100
+                      transition-all
+                    "
+                    style="background-image: url(/images/others/btn-bg.webp)"
                   >
                     Registrarme
                     <img
@@ -193,19 +316,46 @@ export default {
           <!-- Contact Banner Section Start -->
           <div class="container pt-0">
             <div
-              class="flex justify-center md:justify-between flex-col md:flex-row items-center bg-no-repeat bg-scroll bg-center bg-cover lg:px-100 px-10 h-300"
+              class="
+                flex
+                justify-center
+                md:justify-between
+                flex-col
+                md:flex-row
+                items-center
+                bg-no-repeat bg-scroll bg-center bg-cover
+                lg:px-100
+                px-10
+                h-300
+              "
               :style="{ backgroundImage: `url(/images/bg/gaming-update.webp)` }"
             >
               <div>
                 <h2
-                  class="text-white md:text-4xl lg:text-5xl xl:text-title sm:text-3xl text-2xl text-center md:text-left mb-6 md:mb-0 uppercase font-bold leading-9 lg:leading-70"
-                >Ya tienes cuenta</h2>
+                  class="
+                    text-white
+                    md:text-4xl
+                    lg:text-5xl
+                    xl:text-title
+                    sm:text-3xl
+                    text-2xl text-center
+                    md:text-left
+                    mb-6
+                    md:mb-0
+                    uppercase
+                    font-bold
+                    leading-9
+                    lg:leading-70
+                  "
+                >
+                  Ya tienes cuenta
+                </h2>
               </div>
               <div>
                 <RouterLink
                   to="/login"
                   class="group primary-btn opacity-100 transition-all"
-                  style="background-image:url(/images/others/btn-bg.webp)"
+                  style="background-image: url(/images/others/btn-bg.webp)"
                 >
                   Iniciar sesión
                   <img

@@ -39,19 +39,19 @@ export default {
 
     data() {
         return {
-            isSticky: false,
+            isSticky: true,
         }
     },
 
     mounted() {
-        window.addEventListener('scroll', () => {
-            let scrollPos = window.scrollY
-            if (scrollPos >= 100) {
-                this.isSticky = true
-            } else {
-                this.isSticky = false
-            }
-        })
+        // window.addEventListener('scroll', () => {
+        //     let scrollPos = window.scrollY
+        //     if (scrollPos >= 100) {
+        //         this.isSticky = true
+        //     } else {
+        //         this.isSticky = false
+        //     }
+        // })
     },
 };
 </script>
