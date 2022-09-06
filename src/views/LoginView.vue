@@ -1,13 +1,17 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { ref } from 'vue'
+import { ref } from "vue";
 
 import Breadcrumb from "@/components/Breadcrumb.vue";
+import BreadcrumbLight from "@/components/BreadcrumbLight.vue";
 import Footer from "@/components/Footer.vue";
+import AboutUs from "@/components/AboutUs.vue";
 
 export default {
 	components: {
 		Breadcrumb,
+		BreadcrumbLight,
+		AboutUs,
 		Footer
 	},
 	data() {
@@ -32,7 +36,14 @@ export default {
 		};
 	},
 	methods: {
-		...mapActions(["signInAction"]),
+		...mapActions(["signInAction","signUpWithGoogleAction"]),
+		loginWithGoogle(){
+			this.signUpWithGoogleAction({}).then((response) => {
+				console.log('response signup google');
+				console.log(response);
+
+			});
+		},
 		submit() {
 			console.log('submit');
 			this.isProcessing = true;
@@ -60,7 +71,8 @@ export default {
 </script>
 
 <template>
-	<Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
+	<!-- <Breadcrumb :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" /> -->
+	<BreadcrumbLight :BreadcrumbTitle="BreadcrumbTitle" :BreadcrumbSubTitle="BreadcrumbSubTitle" />
 	<div class="container mx-auto px-4 h-full">
 		<div class="flex content-center items-center justify-center h-full">
 			<div class="w-full px-4">
@@ -80,6 +92,7 @@ export default {
 								class="bg-white active:bg-gray-100 text-dark-gray font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs"
 								type="button"
 								style="transition: all 0.15s ease 0s"
+								@click="loginWithGoogle"
 							>
 								<img alt="Ingresa con Gmail" class="w-5 mr-1" src="../assets/img/google.svg" />Google
 							</button>
@@ -225,6 +238,8 @@ export default {
 			</div>
 		</div>
 	</div>
+
+    <AboutUs />
 
 	<Footer />
 </template>
