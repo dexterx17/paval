@@ -244,8 +244,8 @@ export default {
                         type="submit"
                         value="submit"
                         name="submit"
-                        class="ml-2 form-btn group primary-btn opacity-100 transition-all"
-                        style="background-image:url(/images/others/btn-bg.webp)"
+                        class="ml-2 form-btn group p-4 mt-2 opacity-100 transition-all bg-cover"
+                        style="background-image:url(/images/others/button.png)"
                     >
                         Aprobar SemiFinales
                         <img
